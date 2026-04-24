@@ -13,6 +13,7 @@ namespace SalonSamochodowy.Entities
         [MaxLength(50)]
         public string RoleName { get; set; } = null!;
         public int PermissionLevel { get; set; }
+
         public virtual ICollection<AppUser> Users { get; set; } = new List<AppUser>();
     }
 }
