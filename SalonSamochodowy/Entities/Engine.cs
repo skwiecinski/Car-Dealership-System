@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SalonSamochodowy.Entities
 {
+    // Engine class
     public class Engine
     {
         public int EngineID { get; set; }
