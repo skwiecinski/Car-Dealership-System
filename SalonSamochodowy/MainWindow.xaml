@@ -1,12 +1,96 @@
-﻿<Window x:Class="SalonSamochodowy.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:SalonSamochodowy"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+﻿<ui:FluentWindow x:Class="SalonSamochodowy.MainWindow"
+                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+                 xmlns:local="clr-namespace:SalonSamochodowy"
+                 Title="AutoManager Pro" Height="850" Width="1350"
+                 WindowBackdropType="None"
+                 Background="#13151A"
+                 ExtendsContentIntoTitleBar="True"
+                 WindowStartupLocation="CenterScreen">
 
+    <Grid Background="#16181D">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Background="#16181D" Panel.ZIndex="10">
+
+            <ui:TitleBar Title="" Margin="10,0,0,0"/>
+
+            <Grid Margin="20,0,140,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="1*" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" IsHitTestVisible="False">
+                    <ui:SymbolIcon Symbol="VehicleCar24" FontSize="32" Foreground="#5B59E8" Margin="0,0,12,0"/>
+                    <TextBlock Text="AutoManager Pro" FontSize="18" FontWeight="Bold" Foreground="#E2E2E2" VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <Grid Grid.Column="1" Width="450" VerticalAlignment="Center" Background="Transparent">
+                    <ui:AutoSuggestBox PlaceholderText="Szukaj pojazdu (VIN, Model, Nr rej.)...." 
+                                       Icon="{ui:SymbolIcon Search24}"
+                                       Background="#1C1E23" BorderBrush="#2D3038" Padding="10,6"/>
+                    <TextBlock Text="Ctrl + K" Foreground="#555" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,15,0" FontSize="11" FontWeight="SemiBold" IsHitTestVisible="False"/>
+                </Grid>
+
+                <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <Border Width="1" Height="30" Background="#2D3038" Margin="0,0,20,0"/>
+
+                    <ui:Button Appearance="Transparent" Padding="5" VerticalAlignment="Center" Click="ProfileBtn_Click">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Border Width="34" Height="34" CornerRadius="17" Background="#4F5466" Margin="0,0,12,0">
+                                <TextBlock Text="JK" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="12" FontWeight="Bold"/>
+                            </Border>
+                            <StackPanel VerticalAlignment="Center" Margin="0,0,5,0">
+                                <TextBlock Text="Jan Kowalski" FontSize="13" FontWeight="SemiBold" Foreground="#E2E2E2"/>
+                                <TextBlock Text="Administrator" FontSize="11" Foreground="#8A8D98"/>
+                            </StackPanel>
+                            <ui:SymbolIcon Symbol="ChevronDown24" FontSize="16" Foreground="#8A8D98" Margin="5,0,0,0"/>
+                        </StackPanel>
+
+                        <ui:Button.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Mój profil" Click="Menu_Profile_Click">
+                                    <MenuItem.Icon>
+                                        <ui:SymbolIcon Symbol="Person24"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Header="Ustawienia" Click="Menu_Settings_Click">
+                                    <MenuItem.Icon>
+                                        <ui:SymbolIcon Symbol="Settings24"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <Separator Background="#2D3038"/>
+                                <MenuItem Header="Wyloguj" Foreground="#ED6262" Click="Menu_Logout_Click">
+                                    <MenuItem.Icon>
+                                        <ui:SymbolIcon Symbol="ArrowExit20"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                            </ContextMenu>
+                        </ui:Button.ContextMenu>
+                    </ui:Button>
+                </StackPanel>
+            </Grid>
+        </Grid>
+
+        <ui:NavigationView Grid.Row="1" x:Name="RootNavigation" 
+                           PaneDisplayMode="Left"
+                           Background="#16181D"
+                           IsBackButtonVisible="Collapsed">
+            <ui:NavigationView.MenuItems>
+                <ui:NavigationViewItem Content="Dashboard" Icon="{ui:SymbolIcon Home24}" TargetPageType="{x:Type local:DashboardPage}"/>
+                <ui:NavigationViewItem Content="Klienci i Sprzedaż" Icon="{ui:SymbolIcon DocumentBulletList24}" TargetPageType="{x:Type local:ClientsPage}"/>
+                <ui:NavigationViewItem Content="Zarządzanie Pojazdami" Icon="{ui:SymbolIcon VehicleCar24}" TargetPageType="{x:Type local:VehiclesPage}"/>
+                <ui:NavigationViewItem Content="Usługi Serwisowe" Icon="{ui:SymbolIcon Wrench24}" TargetPageType="{x:Type local:ServicesPage}"/>
+            </ui:NavigationView.MenuItems>
+            <ui:NavigationView.FooterMenuItems>
+                <ui:NavigationViewItem Content="Administracja" Icon="{ui:SymbolIcon Settings24}" TargetPageType="{x:Type local:AdminPage}"/>
+            </ui:NavigationView.FooterMenuItems>
+        </ui:NavigationView>
     </Grid>
-</Window>
+</ui:FluentWindow>

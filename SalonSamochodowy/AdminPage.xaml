@@ -1,0 +1,73 @@
+﻿<Page x:Class="SalonSamochodowy.AdminPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      Title="AdminPage" Foreground="White" Background="#1A1C23">
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="Ustawienia Administracyjne" FontSize="24" FontWeight="Bold" Margin="0,0,0,20"/>
+
+        <TabControl Grid.Row="1" Background="Transparent" BorderThickness="0">
+            <TabItem Header="Użytkownicy">
+                <Border Background="#22242C" CornerRadius="0,10,10,10" Padding="20" BorderBrush="#2D3038" BorderThickness="1">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="400"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" Margin="0,0,30,0">
+                            <TextBlock Text="Dodaj nowego pracownika" FontSize="18" FontWeight="Bold" Margin="0,0,0,20"/>
+
+                            <TextBlock Text="Imię i Nazwisko" Foreground="#8A8D98" Margin="0,0,0,5"/>
+                            <ui:TextBox PlaceholderText="np. Adam Nowak" Margin="0,0,0,15"/>
+
+                            <TextBlock Text="Rola w systemie" Foreground="#8A8D98" Margin="0,0,0,5"/>
+                            <ComboBox Margin="0,0,0,15" SelectedIndex="0">
+                                <ComboBoxItem Content="Sprzedawca / Doradca"/>
+                                <ComboBoxItem Content="Mechanik / Serwisant"/>
+                                <ComboBoxItem Content="Administrator"/>
+                            </ComboBox>
+
+                            <TextBlock Text="Email (Login)" Foreground="#8A8D98" Margin="0,0,0,5"/>
+                            <ui:TextBox PlaceholderText="anowak@salon.pl" Margin="0,0,0,15"/>
+
+                            <TextBlock Text="Hasło tymczasowe" Foreground="#8A8D98" Margin="0,0,0,5"/>
+                            <ui:PasswordBox PlaceholderText="••••••••" Margin="0,0,0,25"/>
+
+                            <ui:Button Appearance="Primary" Icon="{ui:SymbolIcon PersonAdd24}" Content="Zarejestruj pracownika" HorizontalAlignment="Stretch"/>
+                        </StackPanel>
+
+                        <Border Grid.Column="1" Background="#1C1E23" CornerRadius="8" Padding="15">
+                            <StackPanel>
+                                <TextBlock Text="Aktywne konta" FontWeight="SemiBold" Margin="0,0,0,15"/>
+                                <ui:DataGrid AutoGenerateColumns="False" IsReadOnly="True" Background="Transparent">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Pracownik" Binding="{Binding Name}" Width="*"/>
+                                        <DataGridTextColumn Header="Rola" Binding="{Binding Role}" Width="150"/>
+                                        <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="100"/>
+                                    </DataGrid.Columns>
+                                </ui:DataGrid>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Border>
+            </TabItem>
+            <TabItem Header="Salony (Oddziały)">
+                <Border Background="#22242C" CornerRadius="0,10,10,10" Padding="20" BorderBrush="#2D3038" BorderThickness="1">
+                    <TextBlock Text="Baza oddziałów firmy" FontSize="16" FontWeight="SemiBold"/>
+                </Border>
+            </TabItem>
+            <TabItem Header="Słowniki bazy danych">
+                <Border Background="#22242C" CornerRadius="0,10,10,10" Padding="20" BorderBrush="#2D3038" BorderThickness="1">
+                    <TextBlock Text="Edytor modeli, silników i opcji wyposażenia" FontSize="16" FontWeight="SemiBold"/>
+                </Border>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Page>

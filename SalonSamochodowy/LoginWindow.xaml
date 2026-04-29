@@ -1,0 +1,46 @@
+﻿<ui:FluentWindow x:Class="SalonSamochodowy.LoginWindow"
+                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+                 Title="Logowanie - AutoManager Pro" Height="480" Width="420"
+                 WindowStartupLocation="CenterScreen"
+                 Background="#16181D"
+                 ExtendsContentIntoTitleBar="True"
+                 WindowStyle="SingleBorderWindow">
+    <Grid>
+        <ui:TitleBar Title="AutoManager Pro" VerticalAlignment="Top" />
+
+        <StackPanel VerticalAlignment="Center" Margin="40,20,40,0">
+            <ui:SymbolIcon Symbol="VehicleCar24" FontSize="54" Foreground="#5B59E8" Margin="0,0,0,15"/>
+            <TextBlock Text="AutoManager Pro" FontSize="24" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+            <TextBlock Text="Zaloguj się do systemu salonu" FontSize="14" Foreground="#8A8D98" HorizontalAlignment="Center" Margin="0,0,0,30"/>
+
+            <TextBlock Text="Nazwa użytkownika / Email" Foreground="#8A8D98" Margin="0,0,0,8" FontSize="12"/>
+            <ui:TextBox x:Name="TxtUsername" 
+                        PlaceholderText="jankowalski@salon.pl" 
+                        Icon="{ui:SymbolIcon Person24}"
+                        Margin="0,0,0,20"/>
+
+            <TextBlock Text="Hasło" Foreground="#8A8D98" Margin="0,0,0,8" FontSize="12"/>
+            <ui:PasswordBox x:Name="TxtPassword" 
+                            PlaceholderText="••••••••" 
+                            Icon="{ui:SymbolIcon LockClosed24}"
+                            Margin="0,0,0,30"/>
+
+            <ui:Button Content="Zaloguj się" 
+                       Appearance="Primary" 
+                       HorizontalAlignment="Stretch" 
+                       Height="45" 
+                       FontSize="15" 
+                       FontWeight="SemiBold"
+                       Click="LoginBtn_Click"/>
+
+            <ui:Button Content="Wyjdź z programu" 
+                       Appearance="Transparent" 
+                       HorizontalAlignment="Center" 
+                       Margin="0,20,0,0"
+                       Foreground="#8A8D98"
+                       Click="ExitBtn_Click"/>
+        </StackPanel>
+    </Grid>
+</ui:FluentWindow>
