@@ -101,6 +101,37 @@ namespace SalonSamochodowy.Migrations
                     b.ToTable("Clients");
                 });
 
+            modelBuilder.Entity("SalonSamochodowy.Entities.Dealership", b =>
+                {
+                    b.Property<int>("DealershipID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Owner")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("DealershipID");
+
+                    b.ToTable("Dealerships");
+                });
+
             modelBuilder.Entity("SalonSamochodowy.Entities.Engine", b =>
                 {
                     b.Property<int>("EngineID")
@@ -192,6 +223,9 @@ namespace SalonSamochodowy.Migrations
                     b.Property<int>("ClientID")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("DealershipID")
+                        .HasColumnType("INTEGER");
+
                     b.Property<decimal>("FinalPrice")
                         .HasColumnType("TEXT");
 
@@ -212,6 +246,8 @@ namespace SalonSamochodowy.Migrations
                     b.HasKey("OrderID");
 
                     b.HasIndex("ClientID");
+
+                    b.HasIndex("DealershipID");
 
                     b.HasIndex("VehicleID");
 
@@ -271,6 +307,9 @@ namespace SalonSamochodowy.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("DealershipID")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("EngineID")
                         .HasColumnType("INTEGER");
 
@@ -279,6 +318,11 @@ namespace SalonSamochodowy.Migrations
 
                     b.Property<int>("Mileage")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("TrimID")
                         .HasColumnType("INTEGER");
@@ -289,6 +333,8 @@ namespace SalonSamochodowy.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("VehicleID");
+
+                    b.HasIndex("DealershipID");
 
                     b.HasIndex("EngineID");
 
@@ -342,6 +388,9 @@ namespace SalonSamochodowy.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("DealershipID")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateTime>("EndOfContractDate")
                         .HasColumnType("TEXT");
 
@@ -352,6 +401,8 @@ namespace SalonSamochodowy.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("WorkerID");
+
+                    b.HasIndex("DealershipID");
 
                     b.HasIndex("UserID")
                         .IsUnique();
@@ -416,6 +467,12 @@ namespace SalonSamochodowy.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("SalonSamochodowy.Entities.Dealership", "Dealership")
+                        .WithMany("SalesOrders")
+                        .HasForeignKey("DealershipID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("SalonSamochodowy.Entities.Vehicle", "Vehicle")
                         .WithMany("SalesOrders")
                         .HasForeignKey("VehicleID")
@@ -429,6 +486,8 @@ namespace SalonSamochodowy.Migrations
                         .IsRequired();
 
                     b.Navigation("Client");
+
+                    b.Navigation("Dealership");
 
                     b.Navigation("Vehicle");
 
@@ -467,6 +526,12 @@ namespace SalonSamochodowy.Migrations
 
             modelBuilder.Entity("SalonSamochodowy.Entities.Vehicle", b =>
                 {
+                    b.HasOne("SalonSamochodowy.Entities.Dealership", "Dealership")
+                        .WithMany("Vehicles")
+                        .HasForeignKey("DealershipID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("SalonSamochodowy.Entities.Engine", "Engine")
                         .WithMany("Vehicles")
                         .HasForeignKey("EngineID")
@@ -478,6 +543,8 @@ namespace SalonSamochodowy.Migrations
                         .HasForeignKey("TrimID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Dealership");
 
                     b.Navigation("Engine");
 
@@ -505,11 +572,19 @@ namespace SalonSamochodowy.Migrations
 
             modelBuilder.Entity("SalonSamochodowy.Entities.Worker", b =>
                 {
+                    b.HasOne("SalonSamochodowy.Entities.Dealership", "Dealership")
+                        .WithMany("Workers")
+                        .HasForeignKey("DealershipID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("SalonSamochodowy.Entities.AppUser", "User")
                         .WithOne("Worker")
                         .HasForeignKey("SalonSamochodowy.Entities.Worker", "UserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Dealership");
 
                     b.Navigation("User");
                 });
@@ -529,6 +604,15 @@ namespace SalonSamochodowy.Migrations
             modelBuilder.Entity("SalonSamochodowy.Entities.Client", b =>
                 {
                     b.Navigation("SalesOrders");
+                });
+
+            modelBuilder.Entity("SalonSamochodowy.Entities.Dealership", b =>
+                {
+                    b.Navigation("SalesOrders");
+
+                    b.Navigation("Vehicles");
+
+                    b.Navigation("Workers");
                 });
 
             modelBuilder.Entity("SalonSamochodowy.Entities.Engine", b =>

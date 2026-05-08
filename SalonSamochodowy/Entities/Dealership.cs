@@ -1,14 +1,13 @@
-﻿using Microsoft.Extensions.Logging.Abstractions;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 
 namespace SalonSamochodowy.Entities
 {
-    internal class Dealership
+    public class Dealership
     {
         public int DealershipID { get; set; }
 

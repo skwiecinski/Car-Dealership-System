@@ -20,5 +20,7 @@ namespace SalonSamochodowy.Entities
         public decimal FinalPrice { get; set; }
         [MaxLength(30)]
         public string Status { get; set; } = null!;
+        public int DealershipID { get; set; }
+        public virtual Dealership Dealership { get; set; } = null!;
     }
 }

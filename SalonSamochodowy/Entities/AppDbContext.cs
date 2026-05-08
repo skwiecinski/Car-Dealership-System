@@ -43,7 +43,7 @@ namespace SalonSamochodowy.Entities
         public virtual DbSet<VehicleFeature> VehicleFeatures { get; set; }
         public virtual DbSet<VehicleModel> VehicleModels { get; set; }
         public virtual DbSet<Worker> Workers { get; set; }
-
+        public virtual DbSet<Dealership> Dealerships { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

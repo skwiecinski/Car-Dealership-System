@@ -18,6 +18,10 @@ namespace SalonSamochodowy.Entities
         public virtual Engine Engine { get; set; } = null!;
         public int Mileage { get; set; }
         public bool IsUsed { get; set; }
+        public int DealershipID { get; set; }
+        [MaxLength(30)]
+        public string Status { get; set; } = null!;
+        public virtual Dealership Dealership { get; set; } = null!;
         public virtual ICollection<Job> Jobs { get; set; } = new List<Job>();
         public virtual ICollection<VehicleFeature> VehicleFeatures { get; set; } = new List<VehicleFeature>();
         public virtual ICollection<SalesOrder> SalesOrders { get; set; } = new List<SalesOrder>();

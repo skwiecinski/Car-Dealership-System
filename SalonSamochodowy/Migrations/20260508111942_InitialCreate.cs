@@ -26,6 +26,22 @@ namespace SalonSamochodowy.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Dealerships",
+                columns: table => new
+                {
+                    DealershipID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    Address = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
+                    City = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    Owner = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Dealerships", x => x.DealershipID);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Engines",
                 columns: table => new
                 {
@@ -143,7 +159,8 @@ namespace SalonSamochodowy.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     UserID = table.Column<int>(type: "INTEGER", nullable: false),
                     Payroll = table.Column<decimal>(type: "TEXT", nullable: false),
-                    EndOfContractDate = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    EndOfContractDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    DealershipID = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -153,6 +170,12 @@ namespace SalonSamochodowy.Migrations
                         column: x => x.UserID,
                         principalTable: "AppUsers",
                         principalColumn: "UserID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Workers_Dealerships_DealershipID",
+                        column: x => x.DealershipID,
+                        principalTable: "Dealerships",
+                        principalColumn: "DealershipID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -192,11 +215,19 @@ namespace SalonSamochodowy.Migrations
                     TrimID = table.Column<int>(type: "INTEGER", nullable: false),
                     EngineID = table.Column<int>(type: "INTEGER", nullable: false),
                     Mileage = table.Column<int>(type: "INTEGER", nullable: false),
-                    IsUsed = table.Column<bool>(type: "INTEGER", nullable: false)
+                    IsUsed = table.Column<bool>(type: "INTEGER", nullable: false),
+                    DealershipID = table.Column<int>(type: "INTEGER", nullable: false),
+                    Status = table.Column<string>(type: "TEXT", maxLength: 30, nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Vehicles", x => x.VehicleID);
+                    table.ForeignKey(
+                        name: "FK_Vehicles_Dealerships_DealershipID",
+                        column: x => x.DealershipID,
+                        principalTable: "Dealerships",
+                        principalColumn: "DealershipID",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Vehicles_Engines_EngineID",
                         column: x => x.EngineID,
@@ -257,7 +288,8 @@ namespace SalonSamochodowy.Migrations
                     WorkerID = table.Column<int>(type: "INTEGER", nullable: false),
                     OrderDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     FinalPrice = table.Column<decimal>(type: "TEXT", nullable: false),
-                    Status = table.Column<string>(type: "TEXT", maxLength: 30, nullable: false)
+                    Status = table.Column<string>(type: "TEXT", maxLength: 30, nullable: false),
+                    DealershipID = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -267,6 +299,12 @@ namespace SalonSamochodowy.Migrations
                         column: x => x.ClientID,
                         principalTable: "Clients",
                         principalColumn: "ClientID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_SalesOrders_Dealerships_DealershipID",
+                        column: x => x.DealershipID,
+                        principalTable: "Dealerships",
+                        principalColumn: "DealershipID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_SalesOrders_Vehicles_VehicleID",
@@ -339,6 +377,11 @@ namespace SalonSamochodowy.Migrations
                 column: "ClientID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_SalesOrders_DealershipID",
+                table: "SalesOrders",
+                column: "DealershipID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_SalesOrders_VehicleID",
                 table: "SalesOrders",
                 column: "VehicleID");
@@ -364,6 +407,11 @@ namespace SalonSamochodowy.Migrations
                 column: "FeatureID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Vehicles_DealershipID",
+                table: "Vehicles",
+                column: "DealershipID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Vehicles_EngineID",
                 table: "Vehicles",
                 column: "EngineID");
@@ -372,6 +420,11 @@ namespace SalonSamochodowy.Migrations
                 name: "IX_Vehicles_TrimID",
                 table: "Vehicles",
                 column: "TrimID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Workers_DealershipID",
+                table: "Workers",
+                column: "DealershipID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Workers_UserID",
@@ -409,6 +462,9 @@ namespace SalonSamochodowy.Migrations
 
             migrationBuilder.DropTable(
                 name: "AppUsers");
+
+            migrationBuilder.DropTable(
+                name: "Dealerships");
 
             migrationBuilder.DropTable(
                 name: "Engines");
