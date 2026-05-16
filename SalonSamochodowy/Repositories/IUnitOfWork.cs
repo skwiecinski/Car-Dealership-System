@@ -30,7 +30,8 @@ namespace SalonSamochodowy.Repositories
 
         /**
          * Saves all changes made in this context to the database.
-         * * @return the number of state entries written to the database.
+         * 
+         * @return the number of state entries written to the database.
          */
         Task<int> CompleteAsync();
     }
