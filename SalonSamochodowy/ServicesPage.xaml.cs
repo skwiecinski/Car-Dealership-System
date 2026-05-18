@@ -13,22 +13,10 @@ namespace SalonSamochodowy
         {
             InitializeComponent();
 
-            // Dane testowe mapowane na tabelę Job
-            PendingJobs = new ObservableCollection<ServiceJob>
-            {
-                new ServiceJob { TaskName = "Montaż alarmu", CarModel = "BMW X5 (VIN: ...456)", WorkerName = "Marek Serwisowy" },
-                new ServiceJob { TaskName = "Instalacja czujników", CarModel = "Audi A6 (VIN: ...789)", WorkerName = "Jan Naprawski" }
-            };
-
-            InProgressJobs = new ObservableCollection<ServiceJob>
-            {
-                new ServiceJob { TaskName = "Powłoka ceramiczna", CarModel = "Mercedes GLC (VIN: ...123)", WorkerName = "Marek Serwisowy" }
-            };
-
-            FinishedJobs = new ObservableCollection<ServiceJob>
-            {
-                new ServiceJob { TaskName = "Przegląd przedsprzedażowy", CarModel = "BMW 3 (VIN: ...001)", WorkerName = "Jan Naprawski" }
-            };
+            // Puste kolekcje - backend wypelni z bazy (tabela Job)
+            PendingJobs    = new ObservableCollection<ServiceJob>();
+            InProgressJobs = new ObservableCollection<ServiceJob>();
+            FinishedJobs   = new ObservableCollection<ServiceJob>();
 
             DataContext = this;
         }
@@ -36,8 +24,9 @@ namespace SalonSamochodowy
 
     public class ServiceJob
     {
-        public string TaskName { get; set; }  // FeatureID / FeatureName
-        public string CarModel { get; set; }  // VehicleID
+        public string TaskName { get; set; }   // FeatureID / FeatureName
+        public string CarModel { get; set; }   // VehicleID
         public string WorkerName { get; set; } // WorkerID
+        public int Progress { get; set; }      // 0-100 dla pracy w toku
     }
 }

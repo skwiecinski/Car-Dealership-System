@@ -1,4 +1,4 @@
-﻿using System.Windows.Controls;
+using System.Windows.Controls;
 using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
@@ -25,12 +25,11 @@ namespace SalonSamochodowy
             var accentColor = new SKColor(91, 89, 232);      // #5B59E8
             var axisTextColor = new SKColor(138, 141, 152);  // #8A8D98
             var separatorColor = new SKColor(45, 48, 56);    // #2D3038
-            var chartBackground = new SKColor(34, 36, 44);   // #22242C
 
-            // 1. WYKRES SŁUPKOWY
+            // 1. WYKRES SLUPKOWY - puste dane, backend wypelni
             SalesSeries = new ISeries[] {
                 new ColumnSeries<int> {
-                    Values = new int[] { 28, 22, 17, 14, 9 },
+                    Values = new int[] { 0, 0, 0, 0, 0 },
                     Fill = new SolidColorPaint(accentColor),
                     Name = "Sprzedaż",
                     MaxBarWidth = 35,
@@ -40,7 +39,7 @@ namespace SalonSamochodowy
 
             XAxes = new Axis[] {
                 new Axis {
-                    Labels = new string[] { "Jan K.", "Anna N.", "Piotr Z.", "Marta W.", "Tomasz U." },
+                    Labels = new string[] { "—", "—", "—", "—", "—" },
                     LabelsPaint = new SolidColorPaint(axisTextColor),
                 }
             };
@@ -52,11 +51,10 @@ namespace SalonSamochodowy
                 }
             };
 
-            // 2. WYKRES KOŁOWY
+            // 2. WYKRES KOLOWY - salon BMW + Mini, puste wartosci
             VehicleStructureSeries = new ISeries[] {
-                new PieSeries<int> { Values = new int[] { 30 }, Name = "BMW", InnerRadius = 60, Fill = new SolidColorPaint(new SKColor(45, 127, 249)) },
-                new PieSeries<int> { Values = new int[] { 25 }, Name = "Audi", InnerRadius = 60, Fill = new SolidColorPaint(new SKColor(138, 81, 212)) },
-                new PieSeries<int> { Values = new int[] { 45 }, Name = "Inne", InnerRadius = 60, Fill = new SolidColorPaint(new SKColor(87, 89, 96)) }
+                new PieSeries<int> { Values = new int[] { 0 }, Name = "BMW",  InnerRadius = 60, Fill = new SolidColorPaint(new SKColor(45, 127, 249)) },
+                new PieSeries<int> { Values = new int[] { 0 }, Name = "Mini", InnerRadius = 60, Fill = new SolidColorPaint(new SKColor(249, 115, 22)) }
             };
 
             DataContext = this;

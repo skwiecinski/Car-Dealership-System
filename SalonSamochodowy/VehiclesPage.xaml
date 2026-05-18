@@ -21,23 +21,17 @@
                 <ComboBox SelectedIndex="0" Margin="0,0,0,15" HorizontalAlignment="Stretch">
                     <ComboBoxItem Content="Wszystkie marki"/>
                     <ComboBoxItem Content="BMW"/>
-                    <ComboBoxItem Content="Audi"/>
-                    <ComboBoxItem Content="Mercedes-Benz"/>
+                    <ComboBoxItem Content="Mini"/>
                 </ComboBox>
 
                 <TextBlock Text="Model" Foreground="#8A8D98" Margin="0,0,0,5" FontSize="12"/>
                 <ComboBox SelectedIndex="0" Margin="0,0,0,15" HorizontalAlignment="Stretch">
                     <ComboBoxItem Content="Wszystkie modele"/>
-                    <ComboBoxItem Content="Seria 3"/>
-                    <ComboBoxItem Content="A6"/>
-                    <ComboBoxItem Content="Klasa C"/>
                 </ComboBox>
 
                 <TextBlock Text="Silnik" Foreground="#8A8D98" Margin="0,0,0,5" FontSize="12"/>
                 <ComboBox SelectedIndex="0" Margin="0,0,0,15" HorizontalAlignment="Stretch">
                     <ComboBoxItem Content="Dowolny"/>
-                    <ComboBoxItem Content="Benzyna 2.0 (245 KM)"/>
-                    <ComboBoxItem Content="Diesel 3.0 (286 KM)"/>
                 </ComboBox>
 
                 <TextBlock Text="Status pojazdu" Foreground="#8A8D98" Margin="0,0,0,5" FontSize="12"/>

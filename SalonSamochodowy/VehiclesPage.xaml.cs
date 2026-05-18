@@ -12,46 +12,8 @@ namespace SalonSamochodowy
         {
             InitializeComponent();
 
-            // Generowanie testowych danych
-            VehicleList = new ObservableCollection<VehicleItem>
-            {
-                new VehicleItem
-                {
-                    FullName = "BMW Seria 3 (G20) M-Sport",
-                    EngineInfo = "Silnik: 2.0 Benzyna (245 KM)",
-                    VIN = "WBA31BA00K1234567",
-                    Price = "245 000 PLN",
-                    Status = "Dostępny",
-                    StatusTextColor = "#44C767", StatusBackgroundColor = "#112C1E", StatusBorderColor = "#2D9A4A"
-                },
-                new VehicleItem
-                {
-                    FullName = "Audi A6 Avant quattro",
-                    EngineInfo = "Silnik: 3.0 TDI (286 KM)",
-                    VIN = "WAUZZZ4A5LN098765",
-                    Price = "320 500 PLN",
-                    Status = "Zarezerwowany",
-                    StatusTextColor = "#F0B82B", StatusBackgroundColor = "#332A12", StatusBorderColor = "#D3A125"
-                },
-                new VehicleItem
-                {
-                    FullName = "Mercedes-Benz GLC 220d",
-                    EngineInfo = "Silnik: 2.0 Diesel (197 KM)",
-                    VIN = "W1N2539151F112233",
-                    Price = "289 900 PLN",
-                    Status = "Dostępny",
-                    StatusTextColor = "#44C767", StatusBackgroundColor = "#112C1E", StatusBorderColor = "#2D9A4A"
-                },
-                new VehicleItem
-                {
-                    FullName = "BMW X5 xDrive40i",
-                    EngineInfo = "Silnik: 3.0 Benzyna (381 KM)",
-                    VIN = "5UXCR6C04M9876543",
-                    Price = "415 000 PLN",
-                    Status = "Sprzedany",
-                    StatusTextColor = "#ED6262", StatusBackgroundColor = "#3D1D1D", StatusBorderColor = "#D34545"
-                }
-            };
+            // Pusta kolekcja - backend wypelni z bazy
+            VehicleList = new ObservableCollection<VehicleItem>();
 
             // Ustawienie kontekstu danych dla XAML
             DataContext = this;

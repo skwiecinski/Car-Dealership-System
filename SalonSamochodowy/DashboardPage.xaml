@@ -28,7 +28,7 @@
                         </Border>
                         <StackPanel Grid.Column="1" Margin="20,0,0,0">
                             <TextBlock Text="Nowe zamówienia" FontSize="15" Foreground="#E2E2E2"/>
-                            <TextBlock Text="12" FontSize="36" FontWeight="Bold" Foreground="White"/>
+                            <TextBlock Text="—" FontSize="36" FontWeight="Bold" Foreground="White"/>
                             <StackPanel Orientation="Horizontal">
                                 <Ellipse Width="8" Height="8" Fill="#5B59E8" Margin="0,0,8,0"/>
                                 <TextBlock Text="W procesie" FontSize="13" Foreground="#8A8D98"/>
@@ -48,7 +48,7 @@
                         </Border>
                         <StackPanel Grid.Column="1" Margin="20,0,0,0">
                             <TextBlock Text="Auta na placu" FontSize="15" Foreground="#E2E2E2"/>
-                            <TextBlock Text="85" FontSize="36" FontWeight="Bold" Foreground="White"/>
+                            <TextBlock Text="—" FontSize="36" FontWeight="Bold" Foreground="White"/>
                             <StackPanel Orientation="Horizontal">
                                 <Ellipse Width="8" Height="8" Fill="#2D7FF9" Margin="0,0,8,0"/>
                                 <TextBlock Text="Do sprzedaży" FontSize="13" Foreground="#8A8D98"/>
@@ -68,7 +68,7 @@
                         </Border>
                         <StackPanel Grid.Column="1" Margin="20,0,0,0">
                             <TextBlock Text="Zlecenia serwisowe" FontSize="15" Foreground="#E2E2E2"/>
-                            <TextBlock Text="7" FontSize="36" FontWeight="Bold" Foreground="White"/>
+                            <TextBlock Text="—" FontSize="36" FontWeight="Bold" Foreground="White"/>
                             <StackPanel Orientation="Horizontal">
                                 <Ellipse Width="8" Height="8" Fill="#2D9A4A" Margin="0,0,8,0"/>
                                 <TextBlock Text="W toku" FontSize="13" Foreground="#8A8D98"/>
@@ -142,22 +142,10 @@
 
                     <Separator Background="#2D3038" Margin="0,0,0,10"/>
 
-                    <Grid Margin="0,8">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="1.5*"/>
-                            <ColumnDefinition Width="1.5*"/>
-                            <ColumnDefinition Width="2*"/>
-                            <ColumnDefinition Width="1.5*"/>
-                            <ColumnDefinition Width="1.5*"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="ZAM/2023/10/01" VerticalAlignment="Center" Foreground="White" Grid.Column="0"/>
-                        <TextBlock Text="Jan Kowalski" VerticalAlignment="Center" Foreground="White" Grid.Column="1"/>
-                        <TextBlock Text="BMW X5 30d" VerticalAlignment="Center" Foreground="White" Grid.Column="2"/>
-                        <Border Grid.Column="3" Background="#112C1E" BorderBrush="#2D9A4A" BorderThickness="1" CornerRadius="4" Padding="10,4" HorizontalAlignment="Left">
-                            <TextBlock Text="Sfinalizowane" Foreground="#44C767" FontSize="12" FontWeight="SemiBold"/>
-                        </Border>
-                        <TextBlock Text="01.10.2023 14:32" VerticalAlignment="Center" Foreground="#8A8D98" Grid.Column="4"/>
-                    </Grid>
+                    <!-- Wiersze danych - backend dodaje dynamicznie -->
+                    <TextBlock Text="Brak ostatnich aktywności"
+                               Foreground="#8A8D98" FontSize="12" FontStyle="Italic"
+                               HorizontalAlignment="Center" Margin="0,16,0,8"/>
                 </StackPanel>
             </Border>
         </StackPanel>

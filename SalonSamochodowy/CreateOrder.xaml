@@ -1,0 +1,297 @@
+<Page x:Class="SalonSamochodowy.CreateOrder"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="clr-namespace:SalonSamochodowy"
+      mc:Ignorable="d"
+      d:DesignHeight="800" d:DesignWidth="1100"
+      Title="Dodaj zamówienie"
+      Background="#1A1C23"
+      Foreground="White">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Margin="20,16,20,16">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <!-- Naglowek -->
+                <RowDefinition Height="Auto"/>
+                <!-- 2 kolumny z kartami -->
+                <RowDefinition Height="Auto"/>
+                <!-- Akcje -->
+            </Grid.RowDefinitions>
+
+            <!-- ====== Naglowek ====== -->
+            <StackPanel Grid.Row="0" Margin="0,0,0,12">
+                <TextBlock Text="Dodaj zamówienie"
+                           FontSize="20" FontWeight="Bold"/>
+                <TextBlock Text="Wypełnij dane klienta, wybór pojazdu i warunki zamówienia"
+                           FontSize="12" Opacity="0.6" Margin="0,2,0,0"/>
+            </StackPanel>
+
+            <!-- ====== 2 kolumny ====== -->
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- ====== LEWA KOLUMNA ====== -->
+                <StackPanel Grid.Column="0">
+
+                    <!-- KARTA: Klient -->
+                    <ui:Card Padding="16" Margin="0,0,0,12"
+                             HorizontalContentAlignment="Stretch"
+                             VerticalContentAlignment="Stretch">
+                        <StackPanel>
+                            <TextBlock Text="Klient" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,12"/>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                                <RadioButton x:Name="RbExistingClient"
+                                             Content="Istniejący klient"
+                                             IsChecked="{Binding CzyIstniejacyKlient}"
+                                             GroupName="ClientMode" Margin="0,0,16,0"/>
+                                <RadioButton x:Name="RbNewClient"
+                                             Content="Nowy klient"
+                                             GroupName="ClientMode"/>
+                            </StackPanel>
+
+                            <!-- Istniejacy klient -->
+                            <StackPanel Visibility="{Binding IsChecked, ElementName=RbExistingClient, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <TextBlock Text="Wybierz klienta" Margin="0,0,0,4"/>
+                                <ComboBox ItemsSource="{Binding ListaKlientow}"
+                                          SelectedItem="{Binding WybranyKlient}"
+                                          IsEditable="True"
+                                          Margin="0,0,0,8"/>
+                                <TextBlock Text="Wpisz fragment imienia, nazwiska lub e-maila, aby filtrować"
+                                           FontSize="11" Opacity="0.5"/>
+                            </StackPanel>
+
+                            <!-- Nowy klient -->
+                            <StackPanel Visibility="{Binding IsChecked, ElementName=RbNewClient, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <Grid Margin="0,0,0,8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="8"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="Imię" Margin="0,0,0,4"/>
+                                        <ui:TextBox Text="{Binding NowyImie, UpdateSourceTrigger=PropertyChanged}"
+                                                    PlaceholderText="Jan"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2">
+                                        <TextBlock Text="Nazwisko" Margin="0,0,0,4"/>
+                                        <ui:TextBox Text="{Binding NowyNazwisko, UpdateSourceTrigger=PropertyChanged}"
+                                                    PlaceholderText="Kowalski"/>
+                                    </StackPanel>
+                                </Grid>
+
+                                <TextBlock Text="E-mail" Margin="0,0,0,4"/>
+                                <ui:TextBox Text="{Binding NowyEmail, UpdateSourceTrigger=PropertyChanged}"
+                                            PlaceholderText="jan.kowalski@example.com"
+                                            Margin="0,0,0,8"/>
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="8"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="Telefon" Margin="0,0,0,4"/>
+                                        <ui:TextBox Text="{Binding NowyTelefon, UpdateSourceTrigger=PropertyChanged}"
+                                                    PlaceholderText="+48 600 000 000"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2">
+                                        <TextBlock Text="NIP (opcjonalnie)" Margin="0,0,0,4"/>
+                                        <ui:TextBox Text="{Binding NowyNIP, UpdateSourceTrigger=PropertyChanged}"
+                                                    PlaceholderText="1234567890"/>
+                                    </StackPanel>
+                                </Grid>
+                            </StackPanel>
+                        </StackPanel>
+                    </ui:Card>
+
+                    <!-- KARTA: Wyposazenie dodatkowe -->
+                    <ui:Card Padding="16"
+                             HorizontalContentAlignment="Stretch"
+                             VerticalContentAlignment="Stretch">
+                        <StackPanel>
+                            <TextBlock Text="Wyposażenie dodatkowe" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,12"/>
+
+                            <ItemsControl ItemsSource="{Binding DodatkoweOpcje}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <CheckBox Content="{Binding Nazwa}"
+                                                  IsChecked="{Binding Zaznaczona}"
+                                                  Margin="0,4"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                            <TextBlock Text="Lista zostanie wypełniona po wyborze wersji wyposażenia"
+                                       FontSize="11" Opacity="0.5" Margin="0,8,0,0"/>
+                        </StackPanel>
+                    </ui:Card>
+                </StackPanel>
+
+                <!-- ====== PRAWA KOLUMNA ====== -->
+                <StackPanel Grid.Column="2">
+
+                    <!-- KARTA: Pojazd -->
+                    <ui:Card Padding="16" Margin="0,0,0,12"
+                             HorizontalContentAlignment="Stretch"
+                             VerticalContentAlignment="Stretch">
+                        <StackPanel>
+                            <TextBlock Text="Pojazd" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,12"/>
+
+                            <Grid Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="8"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Marka" Margin="0,0,0,4"/>
+                                    <ComboBox ItemsSource="{Binding Marki}"
+                                              SelectedItem="{Binding WybranaMarka}"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Model" Margin="0,0,0,4"/>
+                                    <ComboBox ItemsSource="{Binding Modele}"
+                                              SelectedItem="{Binding WybranyModel}"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <Grid Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="8"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Wersja wyposażenia" Margin="0,0,0,4"/>
+                                    <ComboBox ItemsSource="{Binding Wersje}"
+                                              SelectedItem="{Binding WybranaWersja}"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Silnik" Margin="0,0,0,4"/>
+                                    <ComboBox ItemsSource="{Binding Silniki}"
+                                              SelectedItem="{Binding WybranySilnik}"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <Grid Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="8"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Kolor" Margin="0,0,0,4"/>
+                                    <ui:TextBox Text="{Binding Kolor, UpdateSourceTrigger=PropertyChanged}"
+                                                PlaceholderText="np. Alpine White"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="VIN" Margin="0,0,0,4"/>
+                                    <ui:TextBox Text="{Binding VIN, UpdateSourceTrigger=PropertyChanged}"
+                                                PlaceholderText="17 znaków"
+                                                MaxLength="17"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <CheckBox Content="Pojazd używany"
+                                      IsChecked="{Binding CzyUzywany}"
+                                      Margin="0,4,0,8"/>
+
+                            <StackPanel Visibility="{Binding CzyUzywany, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <TextBlock Text="Przebieg (km)" Margin="0,0,0,4"/>
+                                <ui:NumberBox Value="{Binding Przebieg}"
+                                              Minimum="0"
+                                              ClearButtonEnabled="False"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </ui:Card>
+
+                    <!-- KARTA: Warunki -->
+                    <ui:Card Padding="16"
+                             HorizontalContentAlignment="Stretch"
+                             VerticalContentAlignment="Stretch">
+                        <StackPanel>
+                            <TextBlock Text="Warunki zamówienia" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,12"/>
+
+                            <Grid Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="8"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Data zamówienia" Margin="0,0,0,4"/>
+                                    <DatePicker SelectedDate="{Binding DataZamowienia}"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Sprzedawca" Margin="0,0,0,4"/>
+                                    <ComboBox ItemsSource="{Binding ListaSprzedawcow}"
+                                              SelectedItem="{Binding WybranySprzedawca}"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <Grid Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="8"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Forma płatności" Margin="0,0,0,4"/>
+                                    <ComboBox ItemsSource="{Binding FormyPlatnosci}"
+                                              SelectedItem="{Binding WybranaFormaPlatnosci}"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Status" Margin="0,0,0,4"/>
+                                    <ComboBox ItemsSource="{Binding StatusyZamowienia}"
+                                              SelectedItem="{Binding WybranyStatus}"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <TextBlock Text="Cena finalna (zł)" Margin="0,0,0,4"/>
+                            <ui:NumberBox Value="{Binding CenaFinalna}"
+                                          Minimum="0"
+                                          ClearButtonEnabled="False"
+                                          Margin="0,0,0,8"/>
+
+                            <TextBlock Text="Uwagi" Margin="0,0,0,4"/>
+                            <ui:TextBox Text="{Binding Uwagi, UpdateSourceTrigger=PropertyChanged}"
+                                        PlaceholderText="Dodatkowe informacje, ustalenia z klientem..."
+                                        AcceptsReturn="True"
+                                        TextWrapping="Wrap"
+                                        Height="80"
+                                        VerticalScrollBarVisibility="Auto"/>
+                        </StackPanel>
+                    </ui:Card>
+                </StackPanel>
+            </Grid>
+
+            <!-- ====== Akcje ====== -->
+            <StackPanel Grid.Row="2"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        Margin="0,16,0,0">
+                <ui:Button Content="Anuluj"
+                           Appearance="Secondary"
+                           Padding="20,8"
+                           Margin="0,0,8,0"
+                           Click="CancelButton_Click"/>
+                <ui:Button Content="Zapisz zamówienie"
+                           Appearance="Primary"
+                           Icon="Save24"
+                           Padding="20,8"
+                           Click="SaveButton_Click"/>
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
+</Page>

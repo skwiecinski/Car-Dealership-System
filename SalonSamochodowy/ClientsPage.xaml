@@ -15,7 +15,7 @@
                 <TextBlock Text="Baza Klientów" FontSize="24" FontWeight="Bold" Foreground="#E2E2E2"/>
                 <TextBlock Text="Zarządzanie danymi nabywców i firm" Foreground="#8A8D98"/>
             </StackPanel>
-            <ui:Button Appearance="Primary" Icon="{ui:SymbolIcon PersonAdd24}" Content="Nowy Klient" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+            <ui:Button Appearance="Primary" Icon="{ui:SymbolIcon PersonAdd24}" Content="Nowy Klient" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="NewClient_Click"/>
         </Grid>
 
         <Grid Grid.Row="1">
@@ -52,7 +52,7 @@
                         <Separator Background="#2D3038" Margin="0,0,0,20"/>
 
                         <ui:Button Content="Nowe Zamówienie" Appearance="Primary" HorizontalAlignment="Stretch" Margin="0,0,0,10" Click="NewOrder_Click"/>
-                        <ui:Button Content="Edytuj dane" Appearance="Secondary" HorizontalAlignment="Stretch"/>
+                        <ui:Button Content="Edytuj dane" Appearance="Secondary" HorizontalAlignment="Stretch" Click="EditClient_Click"/>
                     </StackPanel>
                 </Border>
             </StackPanel>
