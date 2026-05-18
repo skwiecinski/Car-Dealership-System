@@ -25,7 +25,8 @@ namespace SalonSamochodowy.Entities
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlite("Data Source=SalonSamochodowy.db");
+                // sciezka wzgledna (zeby nie korzystac z pliku .db w folderze debug)
+                optionsBuilder.UseSqlite(@"Data Source=..\..\..\SalonSamochodowy.db");
             }
         }
         

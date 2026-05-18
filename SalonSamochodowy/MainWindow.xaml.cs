@@ -19,13 +19,18 @@ namespace SalonSamochodowy
 {
     public partial class MainWindow : Window
     {
-        public MainWindow()
+        public AppUser LoggedInUser { get; private set; }
+        public MainWindow(AppUser loggedIn)
         {
             InitializeComponent();
-
+            LoggedInUser = loggedIn;
+            MessageBox.Show($"{LoggedInUser.FirstName} zalogowany jako: {LoggedInUser.Role.RoleName}");
+        }
+        private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.Loaded -= MainWindow_Loaded;
             DatabaseTestAsync();
         }
-
         public async Task DatabaseTestAsync()
         {
             using (var dbContext = new AppDbContext())

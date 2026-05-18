@@ -1,17 +1,20 @@
 using System.Net.Mail;
 using System.Windows;
+using SalonSamochodowy.Services;
 using Wpf.Ui.Controls;
 
 namespace SalonSamochodowy
 {
     public partial class LoginWindow : FluentWindow
     {
+        // serwis autentykacji
+        private readonly AuthService _authService = new AuthService();
         public LoginWindow()
         {
             InitializeComponent();
         }
 
-        private void LoginButton_Click(object sender, RoutedEventArgs e)
+        private async void LoginButton_Click(object sender, RoutedEventArgs e)
         {
             var email = UsernameTextBox.Text.Trim();
             var password = PasswordBox.Password;
@@ -36,8 +39,18 @@ namespace SalonSamochodowy
                 UsernameTextBox.Focus();
                 return;
             }
-
-            var main = new MainWindow();
+            var loggedUser = await _authService.LoginAsync(email, password);
+            if (loggedUser == null)
+            {
+                System.Windows.MessageBox.Show(
+                    "Nie ma takiego rekordu w bazie",
+                    "Logowanie",
+                    System.Windows.MessageBoxButton.OK,
+                    System.Windows.MessageBoxImage.Warning);
+                UsernameTextBox.Focus();
+                return;
+            }
+            var main = new MainWindow(loggedUser);
             main.Show();
             Close();
         }
