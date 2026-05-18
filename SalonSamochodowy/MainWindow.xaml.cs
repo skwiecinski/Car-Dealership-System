@@ -1,22 +1,32 @@
-﻿using System.Windows;
+using System.Windows;
+using SalonSamochodowy.Entities;
 using Wpf.Ui.Controls;
 
 namespace SalonSamochodowy
 {
     public partial class MainWindow : FluentWindow
     {
-        public MainWindow()
+        // Zalogowany uzytkownik - przekazany z LoginWindow
+        public AppUser LoggedInUser { get; private set; }
+
+        public MainWindow(AppUser loggedIn)
         {
             InitializeComponent();
 
+            LoggedInUser = loggedIn;
+
+            // Wypelnienie panelu profilu w topbarze
+            TxtUserName.Text = $"{loggedIn.FirstName} {loggedIn.LastName}";
+            TxtUserRole.Text = loggedIn.Role?.RoleName ?? "—";
+
+            // Domyslna strona po starcie
             RootNavigation.Loaded += (s, e) =>
             {
                 RootNavigation.Navigate(typeof(DashboardPage));
             };
         }
 
-        // --- OBSŁUGA OTWIERANIA MENU ---
-        // To wymusza rozwinięcie menu po kliknięciu profilu lewym przyciskiem myszy!
+        // --- OBSLUGA OTWIERANIA MENU PROFILU (lewy przycisk myszy) ---
         private void ProfileBtn_Click(object sender, RoutedEventArgs e)
         {
             var btn = sender as System.Windows.Controls.Button;
@@ -28,7 +38,7 @@ namespace SalonSamochodowy
             }
         }
 
-        // --- OBSŁUGA AKCJI W MENU ---
+        // --- AKCJE W MENU ---
 
         private void Menu_Profile_Click(object sender, RoutedEventArgs e)
         {

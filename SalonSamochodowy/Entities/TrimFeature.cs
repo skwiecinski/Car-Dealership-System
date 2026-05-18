@@ -15,6 +15,6 @@ namespace SalonSamochodowy.Entities
         public virtual Feature Feature { get; set; } = null!;
         public bool IsStandard { get; set; }
         public decimal AdditionalPrice { get; set; }
-      
+
     }
 }

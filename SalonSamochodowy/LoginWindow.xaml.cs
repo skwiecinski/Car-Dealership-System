@@ -1,32 +1,77 @@
-﻿using System.Windows;
+using System.Net.Mail;
+using System.Windows;
+using SalonSamochodowy.Services;
+using Wpf.Ui.Controls;
 
-namespace SalonSamochodowy // <--- Sprawdź czy ta nazwa jest identyczna jak w MainWindow.xaml.cs
+namespace SalonSamochodowy
 {
-    public partial class LoginWindow : Wpf.Ui.Controls.FluentWindow // <--- Dodaj pełną ścieżkę do FluentWindow
+    public partial class LoginWindow : FluentWindow
     {
+        // Serwis autentykacji (sprawdza email + haslo w bazie)
+        private readonly AuthService _authService = new AuthService();
+
         public LoginWindow()
         {
             InitializeComponent();
         }
 
-        private void LoginBtn_Click(object sender, System.Windows.RoutedEventArgs e)
+        private async void LoginBtn_Click(object sender, RoutedEventArgs e)
         {
-            // Na potrzeby testu: wpisz cokolwiek w login, żeby wejść
-            if (!string.IsNullOrEmpty(TxtUsername.Text))
+            var email    = TxtUsername.Text.Trim();
+            var password = TxtPassword.Password;
+
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
             {
-                MainWindow main = new MainWindow();
-                main.Show();
-                this.Close();
+                System.Windows.MessageBox.Show(
+                    "Podaj adres e-mail i hasło.",
+                    "Logowanie",
+                    System.Windows.MessageBoxButton.OK,
+                    System.Windows.MessageBoxImage.Warning);
+                return;
             }
-            else
+
+            if (!IsValidEmail(email))
             {
-                System.Windows.MessageBox.Show("Wprowadź dane logowania!");
+                System.Windows.MessageBox.Show(
+                    "Podany adres e-mail jest niepoprawny. Przykład poprawnego adresu: nazwa@domena.pl",
+                    "Logowanie",
+                    System.Windows.MessageBoxButton.OK,
+                    System.Windows.MessageBoxImage.Warning);
+                TxtUsername.Focus();
+                return;
             }
+
+            var loggedUser = await _authService.LoginAsync(email, password);
+            if (loggedUser == null)
+            {
+                System.Windows.MessageBox.Show(
+                    "Niepoprawny e-mail lub hasło.",
+                    "Logowanie",
+                    System.Windows.MessageBoxButton.OK,
+                    System.Windows.MessageBoxImage.Warning);
+                TxtUsername.Focus();
+                return;
+            }
+
+            var main = new MainWindow(loggedUser);
+            main.Show();
+            Close();
         }
 
-        private void ExitBtn_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void ExitBtn_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
+        }
+
+        private static bool IsValidEmail(string email)
+        {
+            if (!MailAddress.TryCreate(email, out var address))
+                return false;
+
+            // wymuszamy cos@cos.cos bo MailAddress przepuszcza a@b bez kropki w domenie
+            var domain = address.Host;
+            var dotIndex = domain.IndexOf('.');
+            return dotIndex > 0 && dotIndex < domain.Length - 1;
         }
     }
 }
