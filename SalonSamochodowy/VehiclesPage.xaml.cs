@@ -25,9 +25,6 @@ namespace SalonSamochodowy
             };
         }
 
-        /// <summary>
-        /// Wypelnia comboboksy filtrow (marka, model, silnik) danymi z bazy.
-        /// </summary>
         private async Task LoadFiltersAsync()
         {
             try
@@ -35,7 +32,6 @@ namespace SalonSamochodowy
                 using var ctx = new AppDbContext();
                 using var uow = new UnitOfWork(ctx);
 
-                // --- Marka ---
                 CbBrand.Items.Clear();
                 CbBrand.Items.Add("Wszystkie marki");
                 var models = (await uow.VehicleModels.GetAllAsync()).ToList();
@@ -45,10 +41,8 @@ namespace SalonSamochodowy
                 }
                 CbBrand.SelectedIndex = 0;
 
-                // --- Model (wszystkie - po wyborze marki przefiltruje sie) ---
                 ReloadModelCombo(models);
 
-                // --- Silnik ---
                 CbEngine.Items.Clear();
                 CbEngine.Items.Add("Dowolny");
                 var engines = (await uow.Engines.GetAllAsync()).OrderBy(en => en.Power);
@@ -73,7 +67,6 @@ namespace SalonSamochodowy
             CbModel.Items.Clear();
             CbModel.Items.Add("Wszystkie modele");
 
-            // Jezeli wybrana konkretna marka, filtrujemy
             var selectedBrand = CbBrand.SelectedItem as string;
             var filtered = !string.IsNullOrEmpty(selectedBrand) && selectedBrand != "Wszystkie marki"
                 ? models.Where(m => m.Brand == selectedBrand)
@@ -88,7 +81,7 @@ namespace SalonSamochodowy
 
         private async void CbBrand_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (!IsLoaded) return; // ignoruj zdarzenie przy inicjalizacji
+            if (!IsLoaded) return;
             try
             {
                 using var ctx = new AppDbContext();
@@ -96,12 +89,9 @@ namespace SalonSamochodowy
                 var models = (await uow.VehicleModels.GetAllAsync()).ToList();
                 ReloadModelCombo(models);
             }
-            catch { /* ignoruj */ }
+            catch { }
         }
 
-        /// <summary>
-        /// Pobiera z bazy pojazdy spelniajace aktualne filtry i renderuje karty.
-        /// </summary>
         private async Task LoadVehiclesAsync()
         {
             try
@@ -112,12 +102,10 @@ namespace SalonSamochodowy
                 var allVehicles = (await uow.Vehicles.GetAllAsync()).ToList();
                 VehicleList.Clear();
 
-                // Pobranie podpowiadanych slownikow raz
                 var trims = (await uow.TrimLevels.GetAllAsync()).ToList();
                 var models = (await uow.VehicleModels.GetAllAsync()).ToList();
                 var engines = (await uow.Engines.GetAllAsync()).ToList();
 
-                // Aktualne filtry (UI -> wartosc)
                 var selectedBrand  = CbBrand.SelectedItem as string;
                 var selectedModel  = CbModel.SelectedItem as string;
                 var selectedEngine = CbEngine.SelectedItem as string;
@@ -131,7 +119,6 @@ namespace SalonSamochodowy
                     if (model == null) continue;
                     var engine = engines.FirstOrDefault(en => en.EngineID == v.EngineID);
 
-                    // Filtry
                     if (!string.IsNullOrEmpty(selectedBrand) && selectedBrand != "Wszystkie marki"
                         && model.Brand != selectedBrand) continue;
 
@@ -175,7 +162,6 @@ namespace SalonSamochodowy
             await LoadVehiclesAsync();
         }
 
-        // Kolory statusu dla badge'a na karcie pojazdu
         private static (string bg, string bd, string fg) StatusColors(string status) => status switch
         {
             "Dostępny"      => ("#112C1E", "#2D9A4A", "#44C767"),

@@ -13,7 +13,6 @@ namespace SalonSamochodowy
         {
             InitializeComponent();
 
-            // Puste kolekcje - backend wypelni z bazy (tabela Job)
             PendingJobs    = new ObservableCollection<ServiceJob>();
             InProgressJobs = new ObservableCollection<ServiceJob>();
             FinishedJobs   = new ObservableCollection<ServiceJob>();

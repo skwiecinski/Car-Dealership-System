@@ -11,18 +11,35 @@
       Background="#1A1C23"
       Foreground="White">
 
+    <DockPanel LastChildFill="True">
+
+        <Border DockPanel.Dock="Bottom"
+                Background="#16181D"
+                BorderBrush="#2D3038"
+                BorderThickness="0,1,0,0"
+                Padding="20,14"
+                MinHeight="68">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                <ui:Button Content="Anuluj"
+                           Appearance="Secondary"
+                           Padding="20,8"
+                           Margin="0,0,8,0"
+                           Click="CancelButton_Click"/>
+                <ui:Button Content="Zapisz zamówienie"
+                           Appearance="Primary"
+                           Icon="{ui:SymbolIcon Save24}"
+                           Padding="20,8"
+                           Click="SaveButton_Click"/>
+            </StackPanel>
+        </Border>
+
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <Grid Margin="20,16,20,16">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
-                <!-- Naglowek -->
                 <RowDefinition Height="Auto"/>
-                <!-- 2 kolumny z kartami -->
-                <RowDefinition Height="Auto"/>
-                <!-- Akcje -->
             </Grid.RowDefinitions>
 
-            <!-- ====== Naglowek ====== -->
             <StackPanel Grid.Row="0" Margin="0,0,0,12">
                 <TextBlock Text="Dodaj zamówienie"
                            FontSize="20" FontWeight="Bold"/>
@@ -30,7 +47,6 @@
                            FontSize="12" Opacity="0.6" Margin="0,2,0,0"/>
             </StackPanel>
 
-            <!-- ====== 2 kolumny ====== -->
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -38,10 +54,8 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <!-- ====== LEWA KOLUMNA ====== -->
                 <StackPanel Grid.Column="0">
 
-                    <!-- KARTA: Klient -->
                     <ui:Card Padding="16" Margin="0,0,0,12"
                              HorizontalContentAlignment="Stretch"
                              VerticalContentAlignment="Stretch">
@@ -58,7 +72,6 @@
                                              GroupName="ClientMode"/>
                             </StackPanel>
 
-                            <!-- Istniejacy klient -->
                             <StackPanel Visibility="{Binding IsChecked, ElementName=RbExistingClient, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <TextBlock Text="Wybierz klienta" Margin="0,0,0,4"/>
                                 <ComboBox ItemsSource="{Binding ListaKlientow}"
@@ -69,7 +82,6 @@
                                            FontSize="11" Opacity="0.5"/>
                             </StackPanel>
 
-                            <!-- Nowy klient -->
                             <StackPanel Visibility="{Binding IsChecked, ElementName=RbNewClient, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <Grid Margin="0,0,0,8">
                                     <Grid.ColumnDefinitions>
@@ -115,7 +127,6 @@
                         </StackPanel>
                     </ui:Card>
 
-                    <!-- KARTA: Wyposazenie dodatkowe -->
                     <ui:Card Padding="16"
                              HorizontalContentAlignment="Stretch"
                              VerticalContentAlignment="Stretch">
@@ -138,10 +149,8 @@
                     </ui:Card>
                 </StackPanel>
 
-                <!-- ====== PRAWA KOLUMNA ====== -->
                 <StackPanel Grid.Column="2">
 
-                    <!-- KARTA: Pojazd -->
                     <ui:Card Padding="16" Margin="0,0,0,12"
                              HorizontalContentAlignment="Stretch"
                              VerticalContentAlignment="Stretch">
@@ -218,7 +227,6 @@
                         </StackPanel>
                     </ui:Card>
 
-                    <!-- KARTA: Warunki -->
                     <ui:Card Padding="16"
                              HorizontalContentAlignment="Stretch"
                              VerticalContentAlignment="Stretch">
@@ -278,22 +286,8 @@
                 </StackPanel>
             </Grid>
 
-            <!-- ====== Akcje ====== -->
-            <StackPanel Grid.Row="2"
-                        Orientation="Horizontal"
-                        HorizontalAlignment="Right"
-                        Margin="0,16,0,0">
-                <ui:Button Content="Anuluj"
-                           Appearance="Secondary"
-                           Padding="20,8"
-                           Margin="0,0,8,0"
-                           Click="CancelButton_Click"/>
-                <ui:Button Content="Zapisz zamówienie"
-                           Appearance="Primary"
-                           Icon="Save24"
-                           Padding="20,8"
-                           Click="SaveButton_Click"/>
-            </StackPanel>
         </Grid>
     </ScrollViewer>
+
+    </DockPanel>
 </Page>

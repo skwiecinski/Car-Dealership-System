@@ -6,22 +6,16 @@ using System.Collections.ObjectModel;
 
 public class CreateOrderViewModel
 {
-    // === Klient ===
-
-    // Tryb wyboru: true = istniejacy klient, false = nowy klient
     public bool CzyIstniejacyKlient { get; set; } = true;
 
     public ObservableCollection<KlientItem> ListaKlientow { get; set; } = new();
     public KlientItem? WybranyKlient { get; set; }
 
-    // Pola nowego klienta (uzywane gdy CzyIstniejacyKlient = false)
     public string NowyImie { get; set; } = "";
     public string NowyNazwisko { get; set; } = "";
     public string NowyEmail { get; set; } = "";
     public string NowyTelefon { get; set; } = "";
     public string NowyNIP { get; set; } = "";
-
-    // === Pojazd ===
 
     public ObservableCollection<string> Marki { get; set; } = new();
     public string? WybranaMarka { get; set; }
@@ -40,10 +34,7 @@ public class CreateOrderViewModel
     public bool CzyUzywany { get; set; } = false;
     public int Przebieg { get; set; } = 0;
 
-    // === Wyposazenie dodatkowe (Features) ===
     public ObservableCollection<DodatkowaOpcja> DodatkoweOpcje { get; set; } = new();
-
-    // === Warunki zamowienia ===
 
     public DateTime DataZamowienia { get; set; } = DateTime.Today;
 
@@ -62,8 +53,6 @@ public class CreateOrderViewModel
 
     public CreateOrderViewModel() { }
 }
-
-// === Elementy listy (z override ToString zeby ComboBox je rendowal bez ItemTemplate) ===
 
 public class KlientItem
 {

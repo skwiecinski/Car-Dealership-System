@@ -1,4 +1,4 @@
-﻿<Page x:Class="SalonSamochodowy.AdminPage"
+<Page x:Class="SalonSamochodowy.AdminPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
@@ -10,64 +10,95 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Text="Ustawienia Administracyjne" FontSize="24" FontWeight="Bold" Margin="0,0,0,20"/>
+        <StackPanel Grid.Row="0" Margin="0,0,0,20">
+            <TextBlock Text="Administracja - Użytkownicy" FontSize="24" FontWeight="Bold" Foreground="#E2E2E2"/>
+            <TextBlock Text="Rejestracja kont pracowników i podgląd aktywnych kont" Foreground="#8A8D98" Margin="0,5,0,0"/>
+        </StackPanel>
 
-        <TabControl Grid.Row="1" Background="Transparent" BorderThickness="0">
-            <TabItem Header="Użytkownicy">
-                <Border Background="#22242C" CornerRadius="0,10,10,10" Padding="20" BorderBrush="#2D3038" BorderThickness="1">
-                    <Grid>
+        <Border Grid.Row="1" Background="#22242C" CornerRadius="10" Padding="20" BorderBrush="#2D3038" BorderThickness="1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="400"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Margin="0,0,30,0">
+                    <TextBlock Text="Dodaj nowego pracownika" FontSize="18" FontWeight="Bold" Margin="0,0,0,20"/>
+
+                    <Grid Margin="0,0,0,15">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="400"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="8"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-
-                        <StackPanel Grid.Column="0" Margin="0,0,30,0">
-                            <TextBlock Text="Dodaj nowego pracownika" FontSize="18" FontWeight="Bold" Margin="0,0,0,20"/>
-
-                            <TextBlock Text="Imię i Nazwisko" Foreground="#8A8D98" Margin="0,0,0,5"/>
-                            <ui:TextBox PlaceholderText="np. Adam Nowak" Margin="0,0,0,15"/>
-
-                            <TextBlock Text="Rola w systemie" Foreground="#8A8D98" Margin="0,0,0,5"/>
-                            <ComboBox Margin="0,0,0,15" SelectedIndex="0">
-                                <ComboBoxItem Content="Sprzedawca / Doradca"/>
-                                <ComboBoxItem Content="Mechanik / Serwisant"/>
-                                <ComboBoxItem Content="Administrator"/>
-                            </ComboBox>
-
-                            <TextBlock Text="Email (Login)" Foreground="#8A8D98" Margin="0,0,0,5"/>
-                            <ui:TextBox PlaceholderText="anowak@salon.pl" Margin="0,0,0,15"/>
-
-                            <TextBlock Text="Hasło tymczasowe" Foreground="#8A8D98" Margin="0,0,0,5"/>
-                            <ui:PasswordBox PlaceholderText="••••••••" Margin="0,0,0,25"/>
-
-                            <ui:Button Appearance="Primary" Icon="{ui:SymbolIcon PersonAdd24}" Content="Zarejestruj pracownika" HorizontalAlignment="Stretch"/>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Imię" Foreground="#8A8D98" Margin="0,0,0,5"/>
+                            <ui:TextBox x:Name="TxtFirstName" PlaceholderText="Adam"/>
                         </StackPanel>
-
-                        <Border Grid.Column="1" Background="#1C1E23" CornerRadius="8" Padding="15">
-                            <StackPanel>
-                                <TextBlock Text="Aktywne konta" FontWeight="SemiBold" Margin="0,0,0,15"/>
-                                <ui:DataGrid AutoGenerateColumns="False" IsReadOnly="True" Background="Transparent">
-                                    <DataGrid.Columns>
-                                        <DataGridTextColumn Header="Pracownik" Binding="{Binding Name}" Width="*"/>
-                                        <DataGridTextColumn Header="Rola" Binding="{Binding Role}" Width="150"/>
-                                        <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="100"/>
-                                    </DataGrid.Columns>
-                                </ui:DataGrid>
-                            </StackPanel>
-                        </Border>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Nazwisko" Foreground="#8A8D98" Margin="0,0,0,5"/>
+                            <ui:TextBox x:Name="TxtLastName" PlaceholderText="Nowak"/>
+                        </StackPanel>
                     </Grid>
+
+                    <TextBlock Text="Rola w systemie" Foreground="#8A8D98" Margin="0,0,0,5"/>
+                    <ComboBox x:Name="CbRole" Margin="0,0,0,15" SelectedIndex="0">
+                        <ComboBoxItem Content="Sprzedawca"/>
+                        <ComboBoxItem Content="Serwisant"/>
+                        <ComboBoxItem Content="Kierownik"/>
+                        <ComboBoxItem Content="Administrator"/>
+                    </ComboBox>
+
+                    <TextBlock Text="Email (login)" Foreground="#8A8D98" Margin="0,0,0,5"/>
+                    <ui:TextBox x:Name="TxtEmail" PlaceholderText="anowak@salon.pl" Margin="0,0,0,15"/>
+
+                    <TextBlock Text="Hasło tymczasowe" Foreground="#8A8D98" Margin="0,0,0,5"/>
+                    <ui:PasswordBox x:Name="TxtPassword" PlaceholderText="••••••••" Margin="0,0,0,25"/>
+
+                    <ui:Button Appearance="Primary" Icon="{ui:SymbolIcon PersonAdd24}"
+                               Content="Zarejestruj pracownika" HorizontalAlignment="Stretch"
+                               Click="RegisterEmployee_Click"/>
+                </StackPanel>
+
+                <Border Grid.Column="1" Background="#1C1E23" CornerRadius="8" Padding="15">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,15">
+                            <TextBlock Text="Aktywne konta" FontWeight="SemiBold" FontSize="15" VerticalAlignment="Center"/>
+                            <TextBlock x:Name="TxtAccountsCount" Text="" Foreground="#8A8D98" FontSize="12"
+                                       HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        </Grid>
+
+                        <DataGrid x:Name="GridAccounts"
+                                  ItemsSource="{Binding Accounts}"
+                                  AutoGenerateColumns="False" IsReadOnly="True"
+                                  Background="Transparent" BorderThickness="0"
+                                  Foreground="White"
+                                  GridLinesVisibility="None"
+                                  RowBackground="Transparent" AlternatingRowBackground="Transparent"
+                                  HorizontalGridLinesBrush="#1AFFFFFF">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Pracownik" Binding="{Binding FullName}" Width="*"/>
+                                <DataGridTextColumn Header="E-mail"    Binding="{Binding Email}"    Width="*"/>
+                                <DataGridTextColumn Header="Rola"      Binding="{Binding RoleName}" Width="130"/>
+                                <DataGridTemplateColumn Header="" Width="90">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <ui:Button Content="Usuń"
+                                                       Appearance="Danger"
+                                                       Padding="10,3"
+                                                       FontSize="12"
+                                                       Margin="0,2"
+                                                       HorizontalAlignment="Center"
+                                                       Click="DeleteEmployee_Click"
+                                                       Tag="{Binding}"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
                 </Border>
-            </TabItem>
-            <TabItem Header="Salony (Oddziały)">
-                <Border Background="#22242C" CornerRadius="0,10,10,10" Padding="20" BorderBrush="#2D3038" BorderThickness="1">
-                    <TextBlock Text="Baza oddziałów firmy" FontSize="16" FontWeight="SemiBold"/>
-                </Border>
-            </TabItem>
-            <TabItem Header="Słowniki bazy danych">
-                <Border Background="#22242C" CornerRadius="0,10,10,10" Padding="20" BorderBrush="#2D3038" BorderThickness="1">
-                    <TextBlock Text="Edytor modeli, silników i opcji wyposażenia" FontSize="16" FontWeight="SemiBold"/>
-                </Border>
-            </TabItem>
-        </TabControl>
+            </Grid>
+        </Border>
     </Grid>
 </Page>

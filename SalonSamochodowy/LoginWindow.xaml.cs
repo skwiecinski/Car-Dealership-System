@@ -7,7 +7,6 @@ namespace SalonSamochodowy
 {
     public partial class LoginWindow : FluentWindow
     {
-        // Serwis autentykacji (sprawdza email + haslo w bazie)
         private readonly AuthService _authService = new AuthService();
 
         public LoginWindow()
@@ -68,7 +67,6 @@ namespace SalonSamochodowy
             if (!MailAddress.TryCreate(email, out var address))
                 return false;
 
-            // wymuszamy cos@cos.cos bo MailAddress przepuszcza a@b bez kropki w domenie
             var domain = address.Host;
             var dotIndex = domain.IndexOf('.');
             return dotIndex > 0 && dotIndex < domain.Length - 1;

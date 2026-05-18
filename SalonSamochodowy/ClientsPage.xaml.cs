@@ -20,13 +20,9 @@ namespace SalonSamochodowy
             ClientsList = new ObservableCollection<ClientModel>();
             this.DataContext = this;
 
-            // Ladowanie klientow z bazy przy starcie strony
             Loaded += async (s, e) => await LoadClientsFromDbAsync();
         }
 
-        /// <summary>
-        /// Pobiera z bazy wszystkich klientow (rola "Klient") i ich dane z AppUser.
-        /// </summary>
         private async Task LoadClientsFromDbAsync()
         {
             try
@@ -40,7 +36,6 @@ namespace SalonSamochodowy
 
                 foreach (var c in clients)
                 {
-                    // Doczytanie usera klienta (Client.UserID -> AppUser)
                     var user = await uow.AppUsers.GetByIdAsync(c.UserID);
                     if (user == null) continue;
 
@@ -87,7 +82,6 @@ namespace SalonSamochodowy
                 Owner = Window.GetWindow(this)
             };
 
-            // AddClientWindow sam zapisuje do bazy. Po sukcesie odswiezamy liste.
             if (dialog.ShowDialog() == true)
             {
                 await LoadClientsFromDbAsync();
@@ -99,7 +93,6 @@ namespace SalonSamochodowy
             if (ClientsGrid.SelectedItem is not ClientModel selected)
                 return;
 
-            // TODO (backend): przekazac selected do CreateOrderViewModel.WybranyKlient.
             if (NavigationService != null)
             {
                 NavigationService.Navigate(new CreateOrder());
@@ -111,7 +104,6 @@ namespace SalonSamochodowy
             if (ClientsGrid.SelectedItem is not ClientModel selected)
                 return;
 
-            // TODO: edycja danych klienta w bazie
             System.Windows.MessageBox.Show(
                 $"Edycja klienta '{selected.FullName}' — do implementacji.",
                 "Edytuj dane",

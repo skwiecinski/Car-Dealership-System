@@ -10,7 +10,6 @@ namespace SalonSamochodowy
 {
     public partial class AddClientWindow : FluentWindow
     {
-        // Wynik dialogu - wypelniony po sukcesie zapisu do bazy, null gdy anulowano.
         public ClientModel? Result { get; private set; }
 
         public AddClientWindow()
@@ -26,7 +25,6 @@ namespace SalonSamochodowy
             var email     = TxtEmail.Text.Trim();
             var isCompany = ChkCompany.IsChecked == true;
 
-            // --- Walidacja ---
             if (string.IsNullOrWhiteSpace(fullName))
             {
                 System.Windows.MessageBox.Show("Podaj imię i nazwisko lub nazwę firmy.", "Nowy klient",
@@ -59,13 +57,11 @@ namespace SalonSamochodowy
                 return;
             }
 
-            // --- Zapis do bazy ---
             try
             {
                 using (var ctx = new AppDbContext())
                 using (var uow = new UnitOfWork(ctx))
                 {
-                    // Sprawdzenie czy e-mail nie jest juz zajety
                     var existingUsers = await uow.AppUsers.FindAsync(u => u.Email == email);
                     if (existingUsers.Any())
                     {
@@ -75,7 +71,6 @@ namespace SalonSamochodowy
                         return;
                     }
 
-                    // Rola "Klient"
                     var rolesKlient = await uow.AppRoles.FindAsync(r => r.RoleName == "Klient");
                     var roleKlient = rolesKlient.FirstOrDefault();
                     if (roleKlient == null)
@@ -85,7 +80,6 @@ namespace SalonSamochodowy
                         return;
                     }
 
-                    // Rozbicie FullName na imie + nazwisko (dla firmy zostaje cale w FirstName)
                     string firstName, lastName;
                     if (isCompany)
                     {
@@ -99,20 +93,18 @@ namespace SalonSamochodowy
                         lastName  = parts.Length > 1 ? parts[1] : "";
                     }
 
-                    // Tworzenie konta uzytkownika (klient nie loguje sie - haslo placeholder)
                     var newUser = new AppUser
                     {
                         FirstName    = firstName,
                         LastName     = lastName,
                         Email        = email,
-                        PasswordHash = "", // klient nie loguje sie do panelu pracowniczego
+                        PasswordHash = "",
                         RoleID       = roleKlient.RoleID,
                         BirthDate    = DateTime.Today
                     };
                     await uow.AppUsers.AddAsync(newUser);
-                    await uow.CompleteAsync(); // potrzebne zeby newUser.UserID sie wypelnilo
+                    await uow.CompleteAsync();
 
-                    // Tworzenie powiazania Client
                     var newClient = new Client
                     {
                         UserID = newUser.UserID,
@@ -122,7 +114,6 @@ namespace SalonSamochodowy
                     await uow.Clients.AddAsync(newClient);
                     await uow.CompleteAsync();
 
-                    // Sukces - przygotowanie wyniku dla ClientsPage
                     Result = new ClientModel
                     {
                         FullName    = fullName,

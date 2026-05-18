@@ -18,13 +18,8 @@ namespace SalonSamochodowy
         public ISeries[] SalesSeries { get; set; } = Array.Empty<ISeries>();
         public Axis[] XAxes { get; set; } = Array.Empty<Axis>();
         public Axis[] YAxes { get; set; } = Array.Empty<Axis>();
-        public ISeries[] VehicleStructureSeries { get; set; } = Array.Empty<ISeries>();
 
         public ObservableCollection<RecentOrderItem> RecentOrders { get; set; } = new();
-
-        // Definicja stylu tekstu legendy
-        public SolidColorPaint LegendTextStyle { get; set; } =
-            new SolidColorPaint(new SKColor(138, 141, 152)); // #8A8D98
 
         public DashboardPage()
         {
@@ -41,7 +36,6 @@ namespace SalonSamochodowy
                 using var ctx = new AppDbContext();
                 using var uow = new UnitOfWork(ctx);
 
-                // --- KPI ---
                 var orders = (await uow.SalesOrders.GetAllAsync()).ToList();
                 var vehicles = (await uow.Vehicles.GetAllAsync()).ToList();
                 var jobs = (await uow.Jobs.GetAllAsync()).ToList();
@@ -51,13 +45,8 @@ namespace SalonSamochodowy
                 TxtKpiVehicles.Text = vehicles.Count(v => v.Status == "Dostępny").ToString();
                 TxtKpiJobs.Text     = jobs.Count(j => j.Status == "Oczekujące" || j.Status == "W trakcie").ToString();
 
-                // --- Wykres slupkowy: sprzedaz w ostatnich 5 miesiacach ---
-                BuildSalesChart(orders);
+                await BuildEmployeeRankingAsync(uow, orders);
 
-                // --- Wykres kolowy: struktura pojazdow na placu (po marce) ---
-                await BuildVehicleStructureAsync(uow, vehicles);
-
-                // --- Tabela: ostatnie zamowienia ---
                 await BuildRecentOrdersAsync(uow, orders);
             }
             catch (Exception ex)
@@ -70,74 +59,65 @@ namespace SalonSamochodowy
             }
         }
 
-        private void BuildSalesChart(System.Collections.Generic.IList<SalesOrder> orders)
+        private async Task BuildEmployeeRankingAsync(UnitOfWork uow, System.Collections.Generic.IList<SalesOrder> orders)
         {
             var accentColor = new SKColor(91, 89, 232);
             var axisTextColor = new SKColor(138, 141, 152);
             var separatorColor = new SKColor(45, 48, 56);
 
-            // Ostatnie 5 miesiecy (rosnaco)
-            var months = Enumerable.Range(0, 5)
-                .Select(i => DateTime.Today.AddMonths(-4 + i))
-                .Select(d => new { Year = d.Year, Month = d.Month })
+            var firstDay = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
+            var nextMonth = firstDay.AddMonths(1);
+
+            var thisMonthOrders = orders.Where(o => o.OrderDate >= firstDay && o.OrderDate < nextMonth).ToList();
+            var grouped = thisMonthOrders
+                .GroupBy(o => o.WorkerID)
+                .Select(g => new { WorkerID = g.Key, Count = g.Count() })
+                .OrderByDescending(x => x.Count)
+                .Take(5)
                 .ToList();
 
-            var values = months.Select(m =>
-                orders.Count(o => o.OrderDate.Year == m.Year && o.OrderDate.Month == m.Month)
-            ).ToArray();
+            var labels = new System.Collections.Generic.List<string>();
+            var values = new System.Collections.Generic.List<int>();
+            foreach (var g in grouped)
+            {
+                var worker = await uow.Workers.GetByIdAsync(g.WorkerID);
+                if (worker == null) continue;
+                var user = await uow.AppUsers.GetByIdAsync(worker.UserID);
+                if (user == null) continue;
+                labels.Add($"{user.FirstName} {user.LastName.FirstOrDefault()}.".Trim());
+                values.Add(g.Count);
+            }
 
-            var labels = months.Select(m =>
-                new DateTime(m.Year, m.Month, 1).ToString("MMM yy")
-            ).ToArray();
+            if (values.Count == 0)
+            {
+                labels.Add("—");
+                values.Add(0);
+            }
 
             SalesSeries = new ISeries[] {
                 new ColumnSeries<int> {
-                    Values = values,
+                    Values = values.ToArray(),
                     Fill = new SolidColorPaint(accentColor),
                     Name = "Sprzedaż",
                     MaxBarWidth = 35,
                     Rx = 6, Ry = 6
                 }
             };
-            XAxes = new[] { new Axis { Labels = labels, LabelsPaint = new SolidColorPaint(axisTextColor) } };
+            XAxes = new[] { new Axis { Labels = labels.ToArray(), LabelsPaint = new SolidColorPaint(axisTextColor) } };
             YAxes = new[] {
                 new Axis {
                     LabelsPaint = new SolidColorPaint(axisTextColor),
-                    SeparatorsPaint = new SolidColorPaint(separatorColor) { StrokeThickness = 1 }
+                    SeparatorsPaint = new SolidColorPaint(separatorColor) { StrokeThickness = 1 },
+                    MinLimit = 0
                 }
             };
 
-            // Wymuszenie rerender wykresu po nadpisaniu serii
+            var polishCulture = new System.Globalization.CultureInfo("pl-PL");
+            var monthName = firstDay.ToString("MMMM yyyy", polishCulture);
+            TxtSalesChartTitle.Text = $"Sprzedaż w {monthName} (Top 5 Pracowników)";
+
             DataContext = null;
             DataContext = this;
-        }
-
-        private async Task BuildVehicleStructureAsync(UnitOfWork uow, System.Collections.Generic.IList<Vehicle> vehicles)
-        {
-            var trims = (await uow.TrimLevels.GetAllAsync()).ToList();
-            var models = (await uow.VehicleModels.GetAllAsync()).ToList();
-
-            // Grupowanie po marce
-            int bmwCount = 0, miniCount = 0, otherCount = 0;
-            foreach (var v in vehicles)
-            {
-                var trim = trims.FirstOrDefault(t => t.TrimID == v.TrimID);
-                var model = trim != null ? models.FirstOrDefault(m => m.ModelID == trim.ModelID) : null;
-                var brand = model?.Brand;
-                if (brand == "BMW") bmwCount++;
-                else if (brand == "Mini") miniCount++;
-                else otherCount++;
-            }
-
-            var series = new System.Collections.Generic.List<ISeries>();
-            if (bmwCount > 0)
-                series.Add(new PieSeries<int> { Values = new[] { bmwCount }, Name = "BMW", InnerRadius = 60, Fill = new SolidColorPaint(new SKColor(45, 127, 249)) });
-            if (miniCount > 0)
-                series.Add(new PieSeries<int> { Values = new[] { miniCount }, Name = "Mini", InnerRadius = 60, Fill = new SolidColorPaint(new SKColor(249, 115, 22)) });
-            if (otherCount > 0)
-                series.Add(new PieSeries<int> { Values = new[] { otherCount }, Name = "Inne", InnerRadius = 60, Fill = new SolidColorPaint(new SKColor(138, 141, 152)) });
-
-            VehicleStructureSeries = series.ToArray();
         }
 
         private async Task BuildRecentOrdersAsync(UnitOfWork uow, System.Collections.Generic.IList<SalesOrder> orders)

@@ -17,15 +17,9 @@ namespace SalonSamochodowy
             InitializeComponent();
             DataContext = _vm;
 
-            // Ladowanie danych slownikowych z bazy po wyrenderowaniu strony
             Loaded += async (s, e) => await LoadFromDbAsync();
         }
 
-        /// <summary>
-        /// Pobiera z bazy wszystkie dane potrzebne do formularza:
-        /// klienci, marki, silniki, sprzedawcy, opcje dodatkowe.
-        /// Modele i Wersje sa filtrowane kaskadowo po wybraniu marki/modelu.
-        /// </summary>
         private async Task LoadFromDbAsync()
         {
             try
@@ -33,7 +27,6 @@ namespace SalonSamochodowy
                 using var ctx = new AppDbContext();
                 using var uow = new UnitOfWork(ctx);
 
-                // --- Klienci (AppUser z rola "Klient" + powiazanie Client) ---
                 _vm.ListaKlientow.Clear();
                 var allClients = await uow.Clients.GetAllAsync();
                 foreach (var c in allClients)
@@ -52,7 +45,6 @@ namespace SalonSamochodowy
                     });
                 }
 
-                // --- Marki (DISTINCT z VehicleModels) ---
                 _vm.Marki.Clear();
                 var allModels = (await uow.VehicleModels.GetAllAsync()).ToList();
                 foreach (var brand in allModels.Select(m => m.Brand).Distinct().OrderBy(b => b))
@@ -60,21 +52,8 @@ namespace SalonSamochodowy
                     _vm.Marki.Add(brand);
                 }
 
-                // --- Silniki (wszystkie) ---
                 _vm.Silniki.Clear();
-                var allEngines = await uow.Engines.GetAllAsync();
-                foreach (var en in allEngines.OrderBy(e => e.Power))
-                {
-                    _vm.Silniki.Add(new EngineItem
-                    {
-                        EngineID   = en.EngineID,
-                        EngineName = en.EngineName,
-                        Power      = en.Power,
-                        Price      = en.Price
-                    });
-                }
 
-                // --- Sprzedawcy (Workery z userami o roli "Sprzedawca" lub "Kierownik") ---
                 _vm.ListaSprzedawcow.Clear();
                 var rSprzedawca = (await uow.AppRoles.FindAsync(r => r.RoleName == "Sprzedawca")).FirstOrDefault();
                 var rKierownik  = (await uow.AppRoles.FindAsync(r => r.RoleName == "Kierownik")).FirstOrDefault();
@@ -95,7 +74,6 @@ namespace SalonSamochodowy
                     }
                 }
 
-                // --- Wyposazenie dodatkowe ---
                 _vm.DodatkoweOpcje.Clear();
                 var features = await uow.Features.GetAllAsync();
                 foreach (var f in features.OrderBy(f => f.Category).ThenBy(f => f.FeatureName))
@@ -118,17 +96,18 @@ namespace SalonSamochodowy
             }
         }
 
-        // --- Kaskada Marka -> Modele ---
         private async void MarkaChanged(object sender, SelectionChangedEventArgs e)
         {
             _vm.Modele.Clear();
             _vm.Wersje.Clear();
+            _vm.Silniki.Clear();
             if (string.IsNullOrEmpty(_vm.WybranaMarka)) return;
 
             try
             {
                 using var ctx = new AppDbContext();
                 using var uow = new UnitOfWork(ctx);
+
                 var models = await uow.VehicleModels.FindAsync(m => m.Brand == _vm.WybranaMarka);
                 foreach (var m in models.OrderBy(m => m.ModelName))
                 {
@@ -139,15 +118,26 @@ namespace SalonSamochodowy
                         ModelName = m.ModelName
                     });
                 }
+
+                var engines = await uow.Engines.FindAsync(en => en.Brand == _vm.WybranaMarka);
+                foreach (var en in engines.OrderBy(en => en.Power))
+                {
+                    _vm.Silniki.Add(new EngineItem
+                    {
+                        EngineID   = en.EngineID,
+                        EngineName = en.EngineName,
+                        Power      = en.Power,
+                        Price      = en.Price
+                    });
+                }
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show($"Błąd ładowania modeli: {ex.Message}",
+                System.Windows.MessageBox.Show($"Błąd ładowania modeli/silników: {ex.Message}",
                     "Dodaj zamówienie", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
             }
         }
 
-        // --- Kaskada Model -> Wersje ---
         private async void ModelChanged(object sender, SelectionChangedEventArgs e)
         {
             _vm.Wersje.Clear();
@@ -176,7 +166,6 @@ namespace SalonSamochodowy
             }
         }
 
-        // --- Zapis zamowienia do bazy ---
         private async void SaveButton_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -184,7 +173,6 @@ namespace SalonSamochodowy
                 using var ctx = new AppDbContext();
                 using var uow = new UnitOfWork(ctx);
 
-                // === Walidacja ===
                 if (_vm.WybranaWersja == null || _vm.WybranySilnik == null)
                 {
                     System.Windows.MessageBox.Show("Wybierz model, wersję i silnik pojazdu.",
@@ -198,7 +186,6 @@ namespace SalonSamochodowy
                     return;
                 }
 
-                // === Klient: istniejacy lub nowy ===
                 int clientId;
                 if (_vm.CzyIstniejacyKlient)
                 {
@@ -212,7 +199,6 @@ namespace SalonSamochodowy
                 }
                 else
                 {
-                    // Nowy klient - walidacja
                     if (string.IsNullOrWhiteSpace(_vm.NowyImie) || string.IsNullOrWhiteSpace(_vm.NowyEmail))
                     {
                         System.Windows.MessageBox.Show("Wypełnij imię i e-mail nowego klienta.",
@@ -220,7 +206,6 @@ namespace SalonSamochodowy
                         return;
                     }
 
-                    // Sprawdzenie czy e-mail nie jest juz zajety
                     var existing = await uow.AppUsers.FindAsync(u => u.Email == _vm.NowyEmail.Trim());
                     if (existing.Any())
                     {
@@ -229,7 +214,6 @@ namespace SalonSamochodowy
                         return;
                     }
 
-                    // Stworz AppUser z rola Klient
                     var roleKlient = (await uow.AppRoles.FindAsync(r => r.RoleName == "Klient")).FirstOrDefault();
                     if (roleKlient == null)
                     {
@@ -262,7 +246,6 @@ namespace SalonSamochodowy
                     clientId = newClient.ClientID;
                 }
 
-                // === Tworzenie pojazdu (konfiguracja z wybranej wersji + silnika) ===
                 var salon = (await uow.Dealerships.GetAllAsync()).First();
                 var vehicle = new Vehicle
                 {
@@ -277,18 +260,16 @@ namespace SalonSamochodowy
                 await uow.Vehicles.AddAsync(vehicle);
                 await uow.CompleteAsync();
 
-                // === Wyposazenie dodatkowe ===
                 foreach (var opcja in _vm.DodatkoweOpcje.Where(o => o.Zaznaczona))
                 {
                     await uow.VehicleFeatures.AddAsync(new VehicleFeature
                     {
                         VehicleID      = vehicle.VehicleID,
                         FeatureID      = opcja.FeatureID,
-                        PurchasePrice  = 0m // backend wypelni cennik
+                        PurchasePrice  = 0m
                     });
                 }
 
-                // === Zamowienie ===
                 decimal cena = _vm.CenaFinalna > 0 ? _vm.CenaFinalna : _vm.WybranaWersja.BasePrice + _vm.WybranySilnik.Price;
                 var order = new SalesOrder
                 {
@@ -309,7 +290,6 @@ namespace SalonSamochodowy
                     System.Windows.MessageBoxButton.OK,
                     System.Windows.MessageBoxImage.Information);
 
-                // Reset formularza
                 _vm.WybranyKlient = null;
                 _vm.NowyImie = _vm.NowyNazwisko = _vm.NowyEmail = _vm.NowyTelefon = _vm.NowyNIP = "";
                 _vm.WybranaMarka = null;
@@ -340,7 +320,6 @@ namespace SalonSamochodowy
             DataContext = new CreateOrderViewModel();
         }
 
-        // Prosty generator placeholdera VIN (17 znakow)
         private static string GenerateVin()
         {
             var rnd = new Random();

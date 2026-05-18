@@ -29,10 +29,10 @@ namespace SalonSamochodowy
                 var rKlient = context.AppRoles.First(r => r.RoleName == "Klient");
 
                 context.AppUsers.AddRange(
-                    new AppUser { FirstName = "Anna", LastName = "Adminowa", Email = "administrator@salon.pl", PasswordHash = "admin", RoleID = rAdmin.RoleID, BirthDate = new DateTime(1980, 1, 15) },
-                    new AppUser { FirstName = "Wiesław", LastName = "Kierowniczy", Email = "admin@salon.pl", PasswordHash = "admin123", RoleID = rKierownik.RoleID, BirthDate = new DateTime(1977, 12, 3) },
-                    new AppUser { FirstName = "Tomasz", LastName = "Sprzedażowy", Email = "sprzedawca@salon.pl", PasswordHash = "haslo123", RoleID = rSprzedawca.RoleID, BirthDate = new DateTime(1990, 5, 10) },
-                    new AppUser { FirstName = "Piotr", LastName = "Serwisowy", Email = "serwis@salon.pl", PasswordHash = "haslo123", RoleID = rSerwisant.RoleID, BirthDate = new DateTime(1985, 8, 20) },
+                    new AppUser { FirstName = "Anna", LastName = "Adminowa", Email = "admin@salon.pl", PasswordHash = "admin123", RoleID = rAdmin.RoleID, BirthDate = new DateTime(1980, 1, 15) },
+                    new AppUser { FirstName = "Wiesław", LastName = "Kierowniczy", Email = "kierownik@salon.pl", PasswordHash = "kierownik123", RoleID = rKierownik.RoleID, BirthDate = new DateTime(1977, 12, 3) },
+                    new AppUser { FirstName = "Tomasz", LastName = "Sprzedażowy", Email = "sprzedawca@salon.pl", PasswordHash = "sprzedawca123", RoleID = rSprzedawca.RoleID, BirthDate = new DateTime(1990, 5, 10) },
+                    new AppUser { FirstName = "Piotr", LastName = "Serwisowy", Email = "serwis@salon.pl", PasswordHash = "serwis123", RoleID = rSerwisant.RoleID, BirthDate = new DateTime(1985, 8, 20) },
                     new AppUser { FirstName = "Jan", LastName = "Kowalski", Email = "klient@wp.pl", PasswordHash = "klient123", RoleID = rKlient.RoleID, BirthDate = new DateTime(1995, 2, 14) }
                 );
                 context.SaveChanges();
@@ -46,14 +46,16 @@ namespace SalonSamochodowy
 
             if (!context.Workers.Any() && !context.Clients.Any())
             {
+                var uKierownik = context.AppUsers.First(u => u.Email == "kierownik@salon.pl");
                 var uSprzedawca = context.AppUsers.First(u => u.Email == "sprzedawca@salon.pl");
                 var uSerwisant = context.AppUsers.First(u => u.Email == "serwis@salon.pl");
                 var uKlient = context.AppUsers.First(u => u.Email == "klient@wp.pl");
                 var salon = context.Dealerships.First();
 
                 context.Workers.AddRange(
+                    new Worker { UserID = uKierownik.UserID,  Payroll = 9000m, EndOfContractDate = new DateTime(2028, 12, 31), DealershipID = salon.DealershipID },
                     new Worker { UserID = uSprzedawca.UserID, Payroll = 6000m, EndOfContractDate = new DateTime(2027, 12, 31), DealershipID = salon.DealershipID },
-                    new Worker { UserID = uSerwisant.UserID, Payroll = 5500m, EndOfContractDate = new DateTime(2026, 12, 31), DealershipID = salon.DealershipID }
+                    new Worker { UserID = uSerwisant.UserID,  Payroll = 5500m, EndOfContractDate = new DateTime(2026, 12, 31), DealershipID = salon.DealershipID }
                 );
 
                 context.Clients.Add(new Client { UserID = uKlient.UserID, NIP = "1234567890", Phone = "987-654-321" });
@@ -63,12 +65,15 @@ namespace SalonSamochodowy
             if (!context.Engines.Any())
             {
                 context.Engines.AddRange(
-                    new Engine { EngineName = "1.5 TwinPower Turbo",         EngineSize = "1.5L", Power = 140, Price = 0m },
-                    new Engine { EngineName = "2.0 TwinPower Turbo Benzyna", EngineSize = "2.0L", Power = 184, Price = 8000m },
-                    new Engine { EngineName = "2.0 TwinPower Turbo Diesel",  EngineSize = "2.0L", Power = 190, Price = 10000m },
-                    new Engine { EngineName = "3.0 TwinPower Turbo Diesel",  EngineSize = "3.0L", Power = 286, Price = 22000m },
-                    new Engine { EngineName = "3.0 TwinPower Turbo Benzyna", EngineSize = "3.0L", Power = 333, Price = 24000m },
-                    new Engine { EngineName = "M xDrive 4.4 V8",             EngineSize = "4.4L", Power = 530, Price = 60000m }
+                    new Engine { Brand = "BMW",  EngineName = "1.5 TwinPower Turbo",         EngineSize = "1.5L", Power = 140, Price = 0m },
+                    new Engine { Brand = "BMW",  EngineName = "2.0 TwinPower Turbo Benzyna", EngineSize = "2.0L", Power = 184, Price = 8000m },
+                    new Engine { Brand = "BMW",  EngineName = "2.0 TwinPower Turbo Diesel",  EngineSize = "2.0L", Power = 190, Price = 10000m },
+                    new Engine { Brand = "BMW",  EngineName = "3.0 TwinPower Turbo Diesel",  EngineSize = "3.0L", Power = 286, Price = 22000m },
+                    new Engine { Brand = "BMW",  EngineName = "3.0 TwinPower Turbo Benzyna", EngineSize = "3.0L", Power = 333, Price = 24000m },
+                    new Engine { Brand = "BMW",  EngineName = "M xDrive 4.4 V8",             EngineSize = "4.4L", Power = 530, Price = 60000m },
+                    new Engine { Brand = "Mini", EngineName = "1.5 Cooper",                  EngineSize = "1.5L", Power = 136, Price = 0m },
+                    new Engine { Brand = "Mini", EngineName = "2.0 Cooper S",                EngineSize = "2.0L", Power = 178, Price = 9000m },
+                    new Engine { Brand = "Mini", EngineName = "2.0 John Cooper Works",       EngineSize = "2.0L", Power = 231, Price = 18000m }
                 );
                 context.SaveChanges();
             }
@@ -105,8 +110,6 @@ namespace SalonSamochodowy
 
             if (!context.TrimLevels.Any())
             {
-                // Dla kazdego modelu BMW: Basic, Advantage, M-Sport
-                // Dla kazdego modelu Mini: Classic, Sport
                 var modelsBmw = context.VehicleModels.Where(m => m.Brand == "BMW").ToList();
                 var modelsMini = context.VehicleModels.Where(m => m.Brand == "Mini").ToList();
 
@@ -174,7 +177,7 @@ namespace SalonSamochodowy
                     WorkerID = wSprzedawca.WorkerID,
                     OrderDate = DateTime.Now,
                     FinalPrice = 251500m,
-                    Status = "W trakcie",
+                    Status = "W realizacji",
                     DealershipID = salon.DealershipID
                 });
 

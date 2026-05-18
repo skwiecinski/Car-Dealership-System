@@ -17,6 +17,8 @@ namespace SalonSamochodowy.Entities
         public string EngineSize { get; set; } = null!;
         public int Power { get; set; }
         public decimal Price { get; set; }
+        [MaxLength(50)]
+        public string Brand { get; set; } = null!;
         public virtual ICollection<Vehicle> Vehicles { get; set; } = new List<Vehicle>();
 
     }
