@@ -18,31 +18,23 @@
                 </StackPanel>
 
                 <TextBlock Text="Marka" Foreground="#8A8D98" Margin="0,0,0,5" FontSize="12"/>
-                <ComboBox SelectedIndex="0" Margin="0,0,0,15" HorizontalAlignment="Stretch">
-                    <ComboBoxItem Content="Wszystkie marki"/>
-                    <ComboBoxItem Content="BMW"/>
-                    <ComboBoxItem Content="Mini"/>
-                </ComboBox>
+                <ComboBox x:Name="CbBrand" SelectedIndex="0" Margin="0,0,0,15" HorizontalAlignment="Stretch" SelectionChanged="CbBrand_SelectionChanged"/>
 
                 <TextBlock Text="Model" Foreground="#8A8D98" Margin="0,0,0,5" FontSize="12"/>
-                <ComboBox SelectedIndex="0" Margin="0,0,0,15" HorizontalAlignment="Stretch">
-                    <ComboBoxItem Content="Wszystkie modele"/>
-                </ComboBox>
+                <ComboBox x:Name="CbModel" SelectedIndex="0" Margin="0,0,0,15" HorizontalAlignment="Stretch"/>
 
                 <TextBlock Text="Silnik" Foreground="#8A8D98" Margin="0,0,0,5" FontSize="12"/>
-                <ComboBox SelectedIndex="0" Margin="0,0,0,15" HorizontalAlignment="Stretch">
-                    <ComboBoxItem Content="Dowolny"/>
-                </ComboBox>
+                <ComboBox x:Name="CbEngine" SelectedIndex="0" Margin="0,0,0,15" HorizontalAlignment="Stretch"/>
 
                 <TextBlock Text="Status pojazdu" Foreground="#8A8D98" Margin="0,0,0,5" FontSize="12"/>
-                <ComboBox SelectedIndex="0" Margin="0,0,0,25" HorizontalAlignment="Stretch">
+                <ComboBox x:Name="CbStatus" SelectedIndex="0" Margin="0,0,0,25" HorizontalAlignment="Stretch">
                     <ComboBoxItem Content="Wszystkie"/>
-                    <ComboBoxItem Content="Dostępny na placu"/>
+                    <ComboBoxItem Content="Dostępny"/>
                     <ComboBoxItem Content="Zarezerwowany"/>
                     <ComboBoxItem Content="Sprzedany"/>
                 </ComboBox>
 
-                <ui:Button Content="Szukaj pojazdów" Appearance="Primary" HorizontalAlignment="Stretch" Icon="{ui:SymbolIcon Search20}"/>
+                <ui:Button Content="Szukaj pojazdów" Appearance="Primary" HorizontalAlignment="Stretch" Icon="{ui:SymbolIcon Search20}" Click="SearchBtn_Click"/>
             </StackPanel>
         </Border>
 

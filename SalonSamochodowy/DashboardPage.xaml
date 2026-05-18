@@ -28,7 +28,7 @@
                         </Border>
                         <StackPanel Grid.Column="1" Margin="20,0,0,0">
                             <TextBlock Text="Nowe zamówienia" FontSize="15" Foreground="#E2E2E2"/>
-                            <TextBlock Text="—" FontSize="36" FontWeight="Bold" Foreground="White"/>
+                            <TextBlock x:Name="TxtKpiOrders" Text="—" FontSize="36" FontWeight="Bold" Foreground="White"/>
                             <StackPanel Orientation="Horizontal">
                                 <Ellipse Width="8" Height="8" Fill="#5B59E8" Margin="0,0,8,0"/>
                                 <TextBlock Text="W procesie" FontSize="13" Foreground="#8A8D98"/>
@@ -48,7 +48,7 @@
                         </Border>
                         <StackPanel Grid.Column="1" Margin="20,0,0,0">
                             <TextBlock Text="Auta na placu" FontSize="15" Foreground="#E2E2E2"/>
-                            <TextBlock Text="—" FontSize="36" FontWeight="Bold" Foreground="White"/>
+                            <TextBlock x:Name="TxtKpiVehicles" Text="—" FontSize="36" FontWeight="Bold" Foreground="White"/>
                             <StackPanel Orientation="Horizontal">
                                 <Ellipse Width="8" Height="8" Fill="#2D7FF9" Margin="0,0,8,0"/>
                                 <TextBlock Text="Do sprzedaży" FontSize="13" Foreground="#8A8D98"/>
@@ -68,7 +68,7 @@
                         </Border>
                         <StackPanel Grid.Column="1" Margin="20,0,0,0">
                             <TextBlock Text="Zlecenia serwisowe" FontSize="15" Foreground="#E2E2E2"/>
-                            <TextBlock Text="—" FontSize="36" FontWeight="Bold" Foreground="White"/>
+                            <TextBlock x:Name="TxtKpiJobs" Text="—" FontSize="36" FontWeight="Bold" Foreground="White"/>
                             <StackPanel Orientation="Horizontal">
                                 <Ellipse Width="8" Height="8" Fill="#2D9A4A" Margin="0,0,8,0"/>
                                 <TextBlock Text="W toku" FontSize="13" Foreground="#8A8D98"/>
@@ -142,10 +142,42 @@
 
                     <Separator Background="#2D3038" Margin="0,0,0,10"/>
 
-                    <!-- Wiersze danych - backend dodaje dynamicznie -->
-                    <TextBlock Text="Brak ostatnich aktywności"
+                    <!-- Empty state - wyswietlane gdy nie ma zamowien -->
+                    <TextBlock x:Name="TxtEmptyOrders"
+                               Text="Brak ostatnich zamówień"
                                Foreground="#8A8D98" FontSize="12" FontStyle="Italic"
-                               HorizontalAlignment="Center" Margin="0,16,0,8"/>
+                               HorizontalAlignment="Center" Margin="0,16,0,8"
+                               Visibility="Collapsed"/>
+
+                    <!-- Wiersze z bazy -->
+                    <ItemsControl ItemsSource="{Binding RecentOrders}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="1.5*"/>
+                                        <ColumnDefinition Width="1.5*"/>
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="1.5*"/>
+                                        <ColumnDefinition Width="1.5*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding OrderCode}"  VerticalAlignment="Center" Foreground="White"   Grid.Column="0"/>
+                                    <TextBlock Text="{Binding ClientName}" VerticalAlignment="Center" Foreground="White"   Grid.Column="1"/>
+                                    <TextBlock Text="{Binding Vehicle}"    VerticalAlignment="Center" Foreground="White"   Grid.Column="2"/>
+                                    <Border Grid.Column="3"
+                                            Background="{Binding StatusBackground}"
+                                            BorderBrush="{Binding StatusBorder}"
+                                            BorderThickness="1"
+                                            CornerRadius="4"
+                                            Padding="10,4"
+                                            HorizontalAlignment="Left">
+                                        <TextBlock Text="{Binding Status}" Foreground="{Binding StatusForeground}" FontSize="12" FontWeight="SemiBold"/>
+                                    </Border>
+                                    <TextBlock Text="{Binding Date}" VerticalAlignment="Center" Foreground="#8A8D98" Grid.Column="4"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
                 </StackPanel>
             </Border>
         </StackPanel>

@@ -2,6 +2,7 @@ namespace SalonSamochodowy;
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 public class CreateOrderViewModel
 {
@@ -10,11 +11,10 @@ public class CreateOrderViewModel
     // Tryb wyboru: true = istniejacy klient, false = nowy klient
     public bool CzyIstniejacyKlient { get; set; } = true;
 
-    // Lista istniejacych klientow - backend wypelni z bazy
-    public List<string> ListaKlientow { get; set; } = new();
-    public string? WybranyKlient { get; set; }
+    public ObservableCollection<KlientItem> ListaKlientow { get; set; } = new();
+    public KlientItem? WybranyKlient { get; set; }
 
-    // Pola nowego klienta
+    // Pola nowego klienta (uzywane gdy CzyIstniejacyKlient = false)
     public string NowyImie { get; set; } = "";
     public string NowyNazwisko { get; set; } = "";
     public string NowyEmail { get; set; } = "";
@@ -23,21 +23,17 @@ public class CreateOrderViewModel
 
     // === Pojazd ===
 
-    // Salon dystrybuuje wylacznie BMW i Mini
-    public List<string> Marki { get; set; } = new() { "BMW", "Mini" };
+    public ObservableCollection<string> Marki { get; set; } = new();
     public string? WybranaMarka { get; set; }
 
-    // Modele - backend wypelni w zaleznosci od wybranej marki
-    public List<string> Modele { get; set; } = new();
-    public string? WybranyModel { get; set; }
+    public ObservableCollection<ModelItem> Modele { get; set; } = new();
+    public ModelItem? WybranyModel { get; set; }
 
-    // Wersje wyposazenia (TrimLevel) - backend wypelni po wybraniu modelu
-    public List<string> Wersje { get; set; } = new();
-    public string? WybranaWersja { get; set; }
+    public ObservableCollection<TrimItem> Wersje { get; set; } = new();
+    public TrimItem? WybranaWersja { get; set; }
 
-    // Silniki - backend wypelni
-    public List<string> Silniki { get; set; } = new();
-    public string? WybranySilnik { get; set; }
+    public ObservableCollection<EngineItem> Silniki { get; set; } = new();
+    public EngineItem? WybranySilnik { get; set; }
 
     public string Kolor { get; set; } = "";
     public string VIN { get; set; } = "";
@@ -45,16 +41,14 @@ public class CreateOrderViewModel
     public int Przebieg { get; set; } = 0;
 
     // === Wyposazenie dodatkowe (Features) ===
-
-    // Backend wypelni - lista dostepnych opcji do zaznaczenia
-    public List<DodatkowaOpcja> DodatkoweOpcje { get; set; } = new();
+    public ObservableCollection<DodatkowaOpcja> DodatkoweOpcje { get; set; } = new();
 
     // === Warunki zamowienia ===
 
     public DateTime DataZamowienia { get; set; } = DateTime.Today;
 
-    public List<string> ListaSprzedawcow { get; set; } = new();
-    public string? WybranySprzedawca { get; set; }
+    public ObservableCollection<SprzedawcaItem> ListaSprzedawcow { get; set; } = new();
+    public SprzedawcaItem? WybranySprzedawca { get; set; }
 
     public List<string> FormyPlatnosci { get; set; } = new() { "Gotówka", "Kredyt", "Leasing" };
     public string? WybranaFormaPlatnosci { get; set; }
@@ -69,8 +63,55 @@ public class CreateOrderViewModel
     public CreateOrderViewModel() { }
 }
 
+// === Elementy listy (z override ToString zeby ComboBox je rendowal bez ItemTemplate) ===
+
+public class KlientItem
+{
+    public int ClientID { get; set; }
+    public int UserID { get; set; }
+    public string FullName { get; set; } = "";
+    public string Email { get; set; } = "";
+    public override string ToString() => string.IsNullOrEmpty(Email) ? FullName : $"{FullName} ({Email})";
+}
+
+public class ModelItem
+{
+    public int ModelID { get; set; }
+    public string Brand { get; set; } = "";
+    public string ModelName { get; set; } = "";
+    public override string ToString() => ModelName;
+}
+
+public class TrimItem
+{
+    public int TrimID { get; set; }
+    public int ModelID { get; set; }
+    public string TrimName { get; set; } = "";
+    public decimal BasePrice { get; set; }
+    public override string ToString() => $"{TrimName} ({BasePrice:N0} zł)";
+}
+
+public class EngineItem
+{
+    public int EngineID { get; set; }
+    public string EngineName { get; set; } = "";
+    public int Power { get; set; }
+    public decimal Price { get; set; }
+    public override string ToString() =>
+        Price > 0 ? $"{EngineName} • {Power} KM (+{Price:N0} zł)" : $"{EngineName} • {Power} KM";
+}
+
+public class SprzedawcaItem
+{
+    public int WorkerID { get; set; }
+    public int UserID { get; set; }
+    public string FullName { get; set; } = "";
+    public override string ToString() => FullName;
+}
+
 public class DodatkowaOpcja
 {
+    public int FeatureID { get; set; }
     public string Nazwa { get; set; } = "";
     public string Kategoria { get; set; } = "";
     public bool Zaznaczona { get; set; }

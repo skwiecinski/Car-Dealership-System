@@ -1,13 +1,16 @@
+using System;
+using System.Linq;
 using System.Net.Mail;
 using System.Windows;
+using SalonSamochodowy.Entities;
+using SalonSamochodowy.Repositories;
 using Wpf.Ui.Controls;
 
 namespace SalonSamochodowy
 {
     public partial class AddClientWindow : FluentWindow
     {
-        // Wynik dialogu - wypelniony po kliknieciu Zapisz, null gdy anulowano.
-        // ClientsPage moze go odebrac i dodac do swojej listy.
+        // Wynik dialogu - wypelniony po sukcesie zapisu do bazy, null gdy anulowano.
         public ClientModel? Result { get; private set; }
 
         public AddClientWindow()
@@ -15,15 +18,15 @@ namespace SalonSamochodowy
             InitializeComponent();
         }
 
-        private void SaveBtn_Click(object sender, RoutedEventArgs e)
+        private async void SaveBtn_Click(object sender, RoutedEventArgs e)
         {
-            var fullName = TxtFullName.Text.Trim();
-            var phone    = TxtPhone.Text.Trim();
-            var taxId    = TxtTaxId.Text.Trim();
-            var email    = TxtEmail.Text.Trim();
+            var fullName  = TxtFullName.Text.Trim();
+            var phone     = TxtPhone.Text.Trim();
+            var taxId     = TxtTaxId.Text.Trim();
+            var email     = TxtEmail.Text.Trim();
             var isCompany = ChkCompany.IsChecked == true;
 
-            // Walidacja podstawowa
+            // --- Walidacja ---
             if (string.IsNullOrWhiteSpace(fullName))
             {
                 System.Windows.MessageBox.Show("Podaj imię i nazwisko lub nazwę firmy.", "Nowy klient",
@@ -40,7 +43,15 @@ namespace SalonSamochodowy
                 return;
             }
 
-            if (!string.IsNullOrWhiteSpace(email) && !IsValidEmail(email))
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                System.Windows.MessageBox.Show("E-mail jest wymagany.", "Nowy klient",
+                    System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Warning);
+                TxtEmail.Focus();
+                return;
+            }
+
+            if (!IsValidEmail(email))
             {
                 System.Windows.MessageBox.Show("Podany adres e-mail jest niepoprawny.", "Nowy klient",
                     System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Warning);
@@ -48,17 +59,91 @@ namespace SalonSamochodowy
                 return;
             }
 
-            Result = new ClientModel
+            // --- Zapis do bazy ---
+            try
             {
-                FullName    = fullName,
-                PhoneNumber = phone,
-                TaxId       = string.IsNullOrWhiteSpace(taxId) ? "-" : taxId,
-                Email       = email,
-                IsCompany   = isCompany
-            };
+                using (var ctx = new AppDbContext())
+                using (var uow = new UnitOfWork(ctx))
+                {
+                    // Sprawdzenie czy e-mail nie jest juz zajety
+                    var existingUsers = await uow.AppUsers.FindAsync(u => u.Email == email);
+                    if (existingUsers.Any())
+                    {
+                        System.Windows.MessageBox.Show("Użytkownik z takim adresem e-mail już istnieje.",
+                            "Nowy klient", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Warning);
+                        TxtEmail.Focus();
+                        return;
+                    }
 
-            DialogResult = true;
-            Close();
+                    // Rola "Klient"
+                    var rolesKlient = await uow.AppRoles.FindAsync(r => r.RoleName == "Klient");
+                    var roleKlient = rolesKlient.FirstOrDefault();
+                    if (roleKlient == null)
+                    {
+                        System.Windows.MessageBox.Show("Rola 'Klient' nie istnieje w bazie. Zgłoś to backendowi.",
+                            "Nowy klient", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                        return;
+                    }
+
+                    // Rozbicie FullName na imie + nazwisko (dla firmy zostaje cale w FirstName)
+                    string firstName, lastName;
+                    if (isCompany)
+                    {
+                        firstName = fullName.Length > 50 ? fullName.Substring(0, 50) : fullName;
+                        lastName  = "";
+                    }
+                    else
+                    {
+                        var parts = fullName.Split(' ', 2);
+                        firstName = parts[0];
+                        lastName  = parts.Length > 1 ? parts[1] : "";
+                    }
+
+                    // Tworzenie konta uzytkownika (klient nie loguje sie - haslo placeholder)
+                    var newUser = new AppUser
+                    {
+                        FirstName    = firstName,
+                        LastName     = lastName,
+                        Email        = email,
+                        PasswordHash = "", // klient nie loguje sie do panelu pracowniczego
+                        RoleID       = roleKlient.RoleID,
+                        BirthDate    = DateTime.Today
+                    };
+                    await uow.AppUsers.AddAsync(newUser);
+                    await uow.CompleteAsync(); // potrzebne zeby newUser.UserID sie wypelnilo
+
+                    // Tworzenie powiazania Client
+                    var newClient = new Client
+                    {
+                        UserID = newUser.UserID,
+                        NIP    = string.IsNullOrWhiteSpace(taxId) ? null : taxId,
+                        Phone  = string.IsNullOrWhiteSpace(phone) ? "" : phone
+                    };
+                    await uow.Clients.AddAsync(newClient);
+                    await uow.CompleteAsync();
+
+                    // Sukces - przygotowanie wyniku dla ClientsPage
+                    Result = new ClientModel
+                    {
+                        FullName    = fullName,
+                        PhoneNumber = phone,
+                        TaxId       = string.IsNullOrWhiteSpace(taxId) ? "-" : taxId,
+                        Email       = email,
+                        IsCompany   = isCompany
+                    };
+                }
+
+                DialogResult = true;
+                Close();
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(
+                    $"Nie udało się zapisać klienta do bazy:\n{ex.Message}\n\n{ex.InnerException?.Message}",
+                    "Nowy klient",
+                    System.Windows.MessageBoxButton.OK,
+                    System.Windows.MessageBoxImage.Error);
+            }
         }
 
         private void CancelBtn_Click(object sender, RoutedEventArgs e)

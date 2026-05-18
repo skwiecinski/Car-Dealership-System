@@ -48,7 +48,7 @@
                 </StackPanel>
             </Grid>
 
-            <TextBlock Text="E-mail" Foreground="#8A8D98" FontSize="12" Margin="0,0,0,4"/>
+            <TextBlock Text="E-mail (wymagany)" Foreground="#8A8D98" FontSize="12" Margin="0,0,0,4"/>
             <ui:TextBox x:Name="TxtEmail"
                         PlaceholderText="klient@example.com"
                         Margin="0,0,0,28"/>

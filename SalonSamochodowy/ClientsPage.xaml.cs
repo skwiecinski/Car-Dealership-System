@@ -1,6 +1,11 @@
+using System;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using SalonSamochodowy.Entities;
+using SalonSamochodowy.Repositories;
 
 namespace SalonSamochodowy
 {
@@ -12,10 +17,57 @@ namespace SalonSamochodowy
         {
             InitializeComponent();
 
-            // Pusta kolekcja - backend wypelni z bazy
             ClientsList = new ObservableCollection<ClientModel>();
-
             this.DataContext = this;
+
+            // Ladowanie klientow z bazy przy starcie strony
+            Loaded += async (s, e) => await LoadClientsFromDbAsync();
+        }
+
+        /// <summary>
+        /// Pobiera z bazy wszystkich klientow (rola "Klient") i ich dane z AppUser.
+        /// </summary>
+        private async Task LoadClientsFromDbAsync()
+        {
+            try
+            {
+                using var ctx = new AppDbContext();
+                using var uow = new UnitOfWork(ctx);
+
+                var clients = await uow.Clients.GetAllAsync();
+
+                ClientsList.Clear();
+
+                foreach (var c in clients)
+                {
+                    // Doczytanie usera klienta (Client.UserID -> AppUser)
+                    var user = await uow.AppUsers.GetByIdAsync(c.UserID);
+                    if (user == null) continue;
+
+                    var fullName = string.IsNullOrWhiteSpace(user.LastName)
+                        ? user.FirstName
+                        : $"{user.FirstName} {user.LastName}";
+
+                    var isCompany = !string.IsNullOrWhiteSpace(c.NIP);
+
+                    ClientsList.Add(new ClientModel
+                    {
+                        FullName    = fullName,
+                        TaxId       = string.IsNullOrWhiteSpace(c.NIP) ? "-" : c.NIP!,
+                        PhoneNumber = c.Phone ?? "",
+                        Email       = user.Email,
+                        IsCompany   = isCompany
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(
+                    $"Nie udało się załadować klientów z bazy:\n{ex.Message}",
+                    "Klienci",
+                    System.Windows.MessageBoxButton.OK,
+                    System.Windows.MessageBoxImage.Error);
+            }
         }
 
         private void ClientsGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -28,19 +80,17 @@ namespace SalonSamochodowy
             }
         }
 
-        private void NewClient_Click(object sender, RoutedEventArgs e)
+        private async void NewClient_Click(object sender, RoutedEventArgs e)
         {
-            // Otwarcie dialogu nowego klienta
             var dialog = new AddClientWindow
             {
                 Owner = Window.GetWindow(this)
             };
 
-            if (dialog.ShowDialog() == true && dialog.Result is ClientModel newClient)
+            // AddClientWindow sam zapisuje do bazy. Po sukcesie odswiezamy liste.
+            if (dialog.ShowDialog() == true)
             {
-                // Tymczasowo dodajemy do lokalnej listy.
-                // TODO (backend): zapis do bazy przez UnitOfWork, potem odswiezenie listy z bazy.
-                ClientsList.Add(newClient);
+                await LoadClientsFromDbAsync();
             }
         }
 
@@ -49,7 +99,6 @@ namespace SalonSamochodowy
             if (ClientsGrid.SelectedItem is not ClientModel selected)
                 return;
 
-            // Przejscie do formularza zamowienia z wybranym klientem.
             // TODO (backend): przekazac selected do CreateOrderViewModel.WybranyKlient.
             if (NavigationService != null)
             {
@@ -62,22 +111,21 @@ namespace SalonSamochodowy
             if (ClientsGrid.SelectedItem is not ClientModel selected)
                 return;
 
-            // TODO (backend): pelna edycja danych w bazie.
-            // Na razie otwieramy ten sam dialog z prewypelnionymi polami i pozwalamy zaktualizowac.
-            MessageBox.Show(
-                $"Edycja klienta '{selected.FullName}' - do implementacji.",
+            // TODO: edycja danych klienta w bazie
+            System.Windows.MessageBox.Show(
+                $"Edycja klienta '{selected.FullName}' — do implementacji.",
                 "Edytuj dane",
-                MessageBoxButton.OK,
-                MessageBoxImage.Information);
+                System.Windows.MessageBoxButton.OK,
+                System.Windows.MessageBoxImage.Information);
         }
     }
 
     public class ClientModel
     {
-        public string FullName { get; set; } = "";
-        public string TaxId { get; set; } = "";
+        public string FullName    { get; set; } = "";
+        public string TaxId       { get; set; } = "";
         public string PhoneNumber { get; set; } = "";
-        public string Email { get; set; } = "";
-        public bool IsCompany { get; set; }
+        public string Email       { get; set; } = "";
+        public bool   IsCompany   { get; set; }
     }
 }

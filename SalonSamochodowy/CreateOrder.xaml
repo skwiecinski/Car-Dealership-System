@@ -157,12 +157,14 @@
                                 <StackPanel Grid.Column="0">
                                     <TextBlock Text="Marka" Margin="0,0,0,4"/>
                                     <ComboBox ItemsSource="{Binding Marki}"
-                                              SelectedItem="{Binding WybranaMarka}"/>
+                                              SelectedItem="{Binding WybranaMarka}"
+                                              SelectionChanged="MarkaChanged"/>
                                 </StackPanel>
                                 <StackPanel Grid.Column="2">
                                     <TextBlock Text="Model" Margin="0,0,0,4"/>
                                     <ComboBox ItemsSource="{Binding Modele}"
-                                              SelectedItem="{Binding WybranyModel}"/>
+                                              SelectedItem="{Binding WybranyModel}"
+                                              SelectionChanged="ModelChanged"/>
                                 </StackPanel>
                             </Grid>
 

@@ -3,7 +3,7 @@
                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                  xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
                  xmlns:local="clr-namespace:SalonSamochodowy"
-                 Title="AutoManager Pro" Height="850" Width="1350"
+                 Title="LeAuto Salon" Height="850" Width="1350"
                  WindowBackdropType="None"
                  Background="#13151A"
                  ExtendsContentIntoTitleBar="True"
@@ -21,16 +21,21 @@
 
             <Grid Margin="20,0,140,0">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="9*" />
+                    <ColumnDefinition Width="11*"/>
+                    <ColumnDefinition Width="5*"/>
+                    <ColumnDefinition Width="0*"/>
+                    <ColumnDefinition Width="13*"/>
+                    <ColumnDefinition Width="470*"/>
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
-                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" IsHitTestVisible="False">
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" IsHitTestVisible="False" Grid.ColumnSpan="6">
                     <ui:SymbolIcon Symbol="VehicleCar24" FontSize="32" Foreground="#5B59E8" Margin="0,0,12,0"/>
-                    <TextBlock Text="AutoManager Pro" FontSize="18" FontWeight="Bold" Foreground="#E2E2E2" VerticalAlignment="Center"/>
+                    <TextBlock Text="LeAuto Salon" FontSize="18" FontWeight="Bold" Foreground="#E2E2E2" VerticalAlignment="Center"/>
                 </StackPanel>
 
-                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                <StackPanel Grid.Column="6" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <Border Width="1" Height="30" Background="#2D3038" Margin="0,0,20,0"/>
 
                     <ui:Button Appearance="Transparent" Padding="5" VerticalAlignment="Center" Click="ProfileBtn_Click">
@@ -75,14 +80,14 @@
                            Background="#16181D"
                            IsBackButtonVisible="Collapsed">
             <ui:NavigationView.MenuItems>
-                <ui:NavigationViewItem Content="Dashboard" Icon="{ui:SymbolIcon Home24}" TargetPageType="{x:Type local:DashboardPage}"/>
-                <ui:NavigationViewItem Content="Klienci i Sprzedaż" Icon="{ui:SymbolIcon DocumentBulletList24}" TargetPageType="{x:Type local:ClientsPage}"/>
-                <ui:NavigationViewItem Content="Dodaj zamówienie" Icon="{ui:SymbolIcon DocumentAdd24}" TargetPageType="{x:Type local:CreateOrder}"/>
-                <ui:NavigationViewItem Content="Zarządzanie Pojazdami" Icon="{ui:SymbolIcon VehicleCar24}" TargetPageType="{x:Type local:VehiclesPage}"/>
-                <ui:NavigationViewItem Content="Usługi Serwisowe" Icon="{ui:SymbolIcon Wrench24}" TargetPageType="{x:Type local:ServicesPage}"/>
+                <ui:NavigationViewItem x:Name="NavDashboard" Content="Dashboard" Icon="{ui:SymbolIcon Home24}" TargetPageType="{x:Type local:DashboardPage}"/>
+                <ui:NavigationViewItem x:Name="NavClients" Content="Klienci i Sprzedaż" Icon="{ui:SymbolIcon DocumentBulletList24}" TargetPageType="{x:Type local:ClientsPage}"/>
+                <ui:NavigationViewItem x:Name="NavCreateOrder" Content="Dodaj zamówienie" Icon="{ui:SymbolIcon DocumentAdd24}" TargetPageType="{x:Type local:CreateOrder}"/>
+                <ui:NavigationViewItem x:Name="NavVehicles" Content="Zarządzanie Pojazdami" Icon="{ui:SymbolIcon VehicleCar24}" TargetPageType="{x:Type local:VehiclesPage}"/>
+                <ui:NavigationViewItem x:Name="NavServices" Content="Usługi Serwisowe" Icon="{ui:SymbolIcon Wrench24}" TargetPageType="{x:Type local:ServicesPage}"/>
             </ui:NavigationView.MenuItems>
             <ui:NavigationView.FooterMenuItems>
-                <ui:NavigationViewItem Content="Administracja" Icon="{ui:SymbolIcon Settings24}" TargetPageType="{x:Type local:AdminPage}"/>
+                <ui:NavigationViewItem x:Name="NavAdmin" Content="Administracja" Icon="{ui:SymbolIcon Settings24}" TargetPageType="{x:Type local:AdminPage}"/>
             </ui:NavigationView.FooterMenuItems>
         </ui:NavigationView>
     </Grid>
