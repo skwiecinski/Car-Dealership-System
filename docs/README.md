@@ -1,22 +1,5 @@
 Salon Samochodowy
 
----
-
-## To-Do
-
-### Backend & Architektura
-- [ ] **Issue 1:** Konfiguracja Dependency Injection w `App.xaml.cs` (wstrzykiwanie `UnitOfWork`).
-- [ ] **Issue 2:** Implementacja `VehicleService` (Ewidencja pojazdów i globalna wyszukiwarka).
-- [ ] **Issue 3:** Implementacja `SalesService` (Obsługa zamówień, klientów i transakcji).
-- [ ] **Issue 4:** Implementacja `AuthService` (Logowanie i weryfikacja ról użytkowników).
-
-### Frontend & UI (WPF / MVVM)
-- [ ] **Issue 5:** Przygotowanie bazowej struktury MVVM (`ViewModelBase`, `RelayCommand`).
-- [ ] **Issue 6:** Zaprojektowanie i podpięcie ekranu logowania (`LoginViewModel`).
-- [ ] **Issue 7:** Główny widok (Dashboard) i tabela dostępnych aut (DataGrid + `MainViewModel`).
-
----
-
 ## Pracowanie z bazą danych
 
 Architektura jest opartana wzorcach **Repository** oraz **Unit of Work**. Dzięki temu nie musimy pisać zapytań SQL, cała komunikacja odbywa się za pomocoą dwóch mechanizmów.
