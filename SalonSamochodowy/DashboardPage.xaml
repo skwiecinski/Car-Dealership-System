@@ -28,7 +28,7 @@
                         </Border>
                         <StackPanel Grid.Column="1" Margin="20,0,0,0">
                             <TextBlock Text="Nowe zamówienia" FontSize="15" Foreground="#E2E2E2"/>
-                            <TextBlock x:Name="TxtKpiOrders" Text="—" FontSize="36" FontWeight="Bold" Foreground="White"/>
+                            <TextBlock Text="{Binding KpiOrders}" FontSize="36" FontWeight="Bold" Foreground="White"/>
                             <StackPanel Orientation="Horizontal">
                                 <Ellipse Width="8" Height="8" Fill="#5B59E8" Margin="0,0,8,0"/>
                                 <TextBlock Text="W procesie" FontSize="13" Foreground="#8A8D98"/>
@@ -48,7 +48,7 @@
                         </Border>
                         <StackPanel Grid.Column="1" Margin="20,0,0,0">
                             <TextBlock Text="Auta na placu" FontSize="15" Foreground="#E2E2E2"/>
-                            <TextBlock x:Name="TxtKpiVehicles" Text="—" FontSize="36" FontWeight="Bold" Foreground="White"/>
+                            <TextBlock Text="{Binding KpiVehicles}" FontSize="36" FontWeight="Bold" Foreground="White"/>
                             <StackPanel Orientation="Horizontal">
                                 <Ellipse Width="8" Height="8" Fill="#2D7FF9" Margin="0,0,8,0"/>
                                 <TextBlock Text="Do sprzedaży" FontSize="13" Foreground="#8A8D98"/>
@@ -68,7 +68,7 @@
                         </Border>
                         <StackPanel Grid.Column="1" Margin="20,0,0,0">
                             <TextBlock Text="Zlecenia serwisowe" FontSize="15" Foreground="#E2E2E2"/>
-                            <TextBlock x:Name="TxtKpiJobs" Text="—" FontSize="36" FontWeight="Bold" Foreground="White"/>
+                            <TextBlock Text="{Binding KpiJobs}" FontSize="36" FontWeight="Bold" Foreground="White"/>
                             <StackPanel Orientation="Horizontal">
                                 <Ellipse Width="8" Height="8" Fill="#2D9A4A" Margin="0,0,8,0"/>
                                 <TextBlock Text="W toku" FontSize="13" Foreground="#8A8D98"/>
@@ -84,9 +84,8 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <TextBlock x:Name="TxtSalesChartTitle"
-                               Grid.Row="0"
-                               Text="Sprzedaż w bieżącym miesiącu:"
+                    <TextBlock Grid.Row="0"
+                               Text="{Binding SalesChartTitle}"
                                FontSize="14" FontWeight="SemiBold" Margin="0,0,0,20" Foreground="#E2E2E2"/>
 
                     <lvc:CartesianChart Grid.Row="1" Height="250"
@@ -122,11 +121,10 @@
 
                     <Separator Background="#2D3038" Margin="0,0,0,10"/>
 
-                    <TextBlock x:Name="TxtEmptyOrders"
-                               Text="Brak ostatnich zamówień"
+                    <TextBlock Text="Brak ostatnich zamówień"
                                Foreground="#8A8D98" FontSize="12" FontStyle="Italic"
                                HorizontalAlignment="Center" Margin="0,16,0,8"
-                               Visibility="Collapsed"/>
+                               Visibility="{Binding EmptyOrdersVisibility}"/>
 
                     <ItemsControl ItemsSource="{Binding RecentOrders}">
                         <ItemsControl.ItemTemplate>

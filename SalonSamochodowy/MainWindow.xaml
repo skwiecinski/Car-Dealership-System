@@ -44,8 +44,8 @@
                                 <ui:SymbolIcon Symbol="Person24" Foreground="White" FontSize="18"/>
                             </Border>
                             <StackPanel VerticalAlignment="Center">
-                                <TextBlock x:Name="TxtUserName" Text="Użytkownik" FontSize="13" FontWeight="SemiBold" Foreground="#E2E2E2"/>
-                                <TextBlock x:Name="TxtUserRole" Text="—" FontSize="11" Foreground="#8A8D98"/>
+                                <TextBlock Text="{Binding UserFullName}" FontSize="13" FontWeight="SemiBold" Foreground="#E2E2E2"/>
+                                <TextBlock Text="{Binding RoleName}" FontSize="11" Foreground="#8A8D98"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>
@@ -58,16 +58,16 @@
                            Background="#16181D"
                            IsBackButtonVisible="Collapsed">
             <ui:NavigationView.MenuItems>
-                <ui:NavigationViewItem x:Name="NavDashboard" Content="Dashboard" Icon="{ui:SymbolIcon Home24}" TargetPageType="{x:Type local:DashboardPage}"/>
-                <ui:NavigationViewItem x:Name="NavClients" Content="Klienci i Sprzedaż" Icon="{ui:SymbolIcon DocumentBulletList24}" TargetPageType="{x:Type local:ClientsPage}"/>
-                <ui:NavigationViewItem x:Name="NavCreateOrder" Content="Dodaj zamówienie" Icon="{ui:SymbolIcon DocumentAdd24}" TargetPageType="{x:Type local:CreateOrder}"/>
-                <ui:NavigationViewItem x:Name="NavVehicles" Content="Zarządzanie Pojazdami" Icon="{ui:SymbolIcon VehicleCar24}" TargetPageType="{x:Type local:VehiclesPage}"/>
-                <ui:NavigationViewItem x:Name="NavServices" Content="Usługi Serwisowe" Icon="{ui:SymbolIcon Wrench24}" TargetPageType="{x:Type local:ServicesPage}"/>
+                <ui:NavigationViewItem Content="Dashboard"             Icon="{ui:SymbolIcon Home24}"                TargetPageType="{x:Type local:DashboardPage}" Visibility="{Binding DashboardVisibility}"/>
+                <ui:NavigationViewItem Content="Klienci i Sprzedaż"    Icon="{ui:SymbolIcon DocumentBulletList24}"  TargetPageType="{x:Type local:ClientsPage}"   Visibility="{Binding ClientsVisibility}"/>
+                <ui:NavigationViewItem Content="Dodaj zamówienie"      Icon="{ui:SymbolIcon DocumentAdd24}"         TargetPageType="{x:Type local:CreateOrder}"   Visibility="{Binding CreateOrderVisibility}"/>
+                <ui:NavigationViewItem Content="Zarządzanie Pojazdami" Icon="{ui:SymbolIcon VehicleCar24}"          TargetPageType="{x:Type local:VehiclesPage}"  Visibility="{Binding VehiclesVisibility}"/>
+                <ui:NavigationViewItem Content="Usługi Serwisowe"      Icon="{ui:SymbolIcon Wrench24}"              TargetPageType="{x:Type local:ServicesPage}"  Visibility="{Binding ServicesVisibility}"/>
             </ui:NavigationView.MenuItems>
             <ui:NavigationView.FooterMenuItems>
-                <ui:NavigationViewItem x:Name="NavProfile" Content="Mój profil" Icon="{ui:SymbolIcon Person24}" Click="Menu_Profile_Click"/>
-                <ui:NavigationViewItem x:Name="NavAdmin" Content="Administracja" Icon="{ui:SymbolIcon ShieldKeyhole24}" TargetPageType="{x:Type local:AdminPage}"/>
-                <ui:NavigationViewItem x:Name="NavLogout" Content="Wyloguj" Icon="{ui:SymbolIcon ArrowExit20}" Click="Menu_Logout_Click"/>
+                <ui:NavigationViewItem Content="Mój profil"   Icon="{ui:SymbolIcon Person24}"        Command="{Binding ProfileCommand}"/>
+                <ui:NavigationViewItem Content="Administracja" Icon="{ui:SymbolIcon ShieldKeyhole24}" TargetPageType="{x:Type local:AdminPage}" Visibility="{Binding AdminVisibility}"/>
+                <ui:NavigationViewItem Content="Wyloguj"      Icon="{ui:SymbolIcon ArrowExit20}"     Command="{Binding LogoutCommand}"/>
             </ui:NavigationView.FooterMenuItems>
         </ui:NavigationView>
     </Grid>

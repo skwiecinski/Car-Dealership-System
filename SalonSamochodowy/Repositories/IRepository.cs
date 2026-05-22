@@ -44,6 +44,24 @@ namespace SalonSamochodowy.Repositories
         Task<IEnumerable<T>> FindAsync(System.Linq.Expressions.Expression<System.Func<T, bool>> predicate);
 
         /**
+         * Retrieves records sorted in descending order by the given key, taking only N latest items.
+         * Filtering and sorting are performed in the database (not in memory).
+         *
+         * @param orderByDesc the key to order by descending.
+         * @param take the maximum number of records to return.
+         * @return a collection of at most 'take' items.
+         */
+        Task<IEnumerable<T>> GetTopOrderedDescAsync<TKey>(System.Linq.Expressions.Expression<System.Func<T, TKey>> orderByDesc, int take);
+
+        /**
+         * Counts records matching the specified condition (filtering performed in the database).
+         *
+         * @param predicate the condition to filter the records.
+         * @return the count of matching items.
+         */
+        Task<int> CountAsync(System.Linq.Expressions.Expression<System.Func<T, bool>> predicate);
+
+        /**
          * Updates an existing record in the database context.
          * 
          * @param entity the object with updated data.

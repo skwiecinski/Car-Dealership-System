@@ -1,0 +1,94 @@
+using System;
+using System.Windows;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using SalonSamochodowy.Entities;
+
+namespace SalonSamochodowy.ViewModels
+{
+    public partial class MainWindowViewModel : ObservableObject
+    {
+        public AppUser LoggedInUser { get; }
+
+        [ObservableProperty] private string userFullName = "";
+        [ObservableProperty] private string roleName = "";
+
+        [ObservableProperty] private Visibility dashboardVisibility   = Visibility.Collapsed;
+        [ObservableProperty] private Visibility clientsVisibility     = Visibility.Collapsed;
+        [ObservableProperty] private Visibility createOrderVisibility = Visibility.Collapsed;
+        [ObservableProperty] private Visibility vehiclesVisibility    = Visibility.Collapsed;
+        [ObservableProperty] private Visibility servicesVisibility    = Visibility.Collapsed;
+        [ObservableProperty] private Visibility adminVisibility       = Visibility.Collapsed;
+
+        public Type? StartupPageType { get; private set; }
+        public string? AccessDeniedMessage { get; private set; }
+
+        public event Action? LogoutRequested;
+        public event Action<string>? ShowProfileRequested;
+
+        public MainWindowViewModel(AppUser loggedIn)
+        {
+            LoggedInUser = loggedIn;
+            UserFullName = $"{loggedIn.FirstName} {loggedIn.LastName}";
+            RoleName     = loggedIn.Role?.RoleName ?? "—";
+
+            ConfigureForRole(loggedIn.Role?.RoleName);
+        }
+
+        private void ConfigureForRole(string? roleName)
+        {
+            switch (roleName)
+            {
+                case "Administrator":
+                    AdminVisibility = Visibility.Visible;
+                    StartupPageType = typeof(AdminPage);
+                    break;
+
+                case "Kierownik":
+                    DashboardVisibility   = Visibility.Visible;
+                    ClientsVisibility     = Visibility.Visible;
+                    CreateOrderVisibility = Visibility.Visible;
+                    VehiclesVisibility    = Visibility.Visible;
+                    ServicesVisibility    = Visibility.Visible;
+                    AdminVisibility       = Visibility.Visible;
+                    StartupPageType       = typeof(DashboardPage);
+                    break;
+
+                case "Sprzedawca":
+                    ClientsVisibility     = Visibility.Visible;
+                    CreateOrderVisibility = Visibility.Visible;
+                    VehiclesVisibility    = Visibility.Visible;
+                    StartupPageType       = typeof(VehiclesPage);
+                    break;
+
+                case "Serwisant":
+                    ServicesVisibility = Visibility.Visible;
+                    StartupPageType    = typeof(ServicesPage);
+                    break;
+
+                case "Klient":
+                    AccessDeniedMessage = "Klienci nie mają dostępu do panelu pracowniczego.";
+                    break;
+
+                default:
+                    AccessDeniedMessage = $"Nieznana rola: '{roleName}'. Brak dostępu do systemu.";
+                    break;
+            }
+        }
+
+        [RelayCommand]
+        private void Profile()
+        {
+            var u = LoggedInUser;
+            var role = u.Role?.RoleName ?? "—";
+            var info = $"Imię: {u.FirstName}\nNazwisko: {u.LastName}\nE-mail: {u.Email}\nRola: {role}";
+            ShowProfileRequested?.Invoke(info);
+        }
+
+        [RelayCommand]
+        private void Logout()
+        {
+            LogoutRequested?.Invoke();
+        }
+    }
+}

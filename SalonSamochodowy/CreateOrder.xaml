@@ -24,12 +24,12 @@
                            Appearance="Secondary"
                            Padding="20,8"
                            Margin="0,0,8,0"
-                           Click="CancelButton_Click"/>
+                           Command="{Binding CancelCommand}"/>
                 <ui:Button Content="Zapisz zamówienie"
                            Appearance="Primary"
                            Icon="{ui:SymbolIcon Save24}"
                            Padding="20,8"
-                           Click="SaveButton_Click"/>
+                           Command="{Binding SaveCommand}"/>
             </StackPanel>
         </Border>
 
@@ -166,14 +166,12 @@
                                 <StackPanel Grid.Column="0">
                                     <TextBlock Text="Marka" Margin="0,0,0,4"/>
                                     <ComboBox ItemsSource="{Binding Marki}"
-                                              SelectedItem="{Binding WybranaMarka}"
-                                              SelectionChanged="MarkaChanged"/>
+                                              SelectedItem="{Binding WybranaMarka, Mode=TwoWay}"/>
                                 </StackPanel>
                                 <StackPanel Grid.Column="2">
                                     <TextBlock Text="Model" Margin="0,0,0,4"/>
                                     <ComboBox ItemsSource="{Binding Modele}"
-                                              SelectedItem="{Binding WybranyModel}"
-                                              SelectionChanged="ModelChanged"/>
+                                              SelectedItem="{Binding WybranyModel, Mode=TwoWay}"/>
                                 </StackPanel>
                             </Grid>
 
