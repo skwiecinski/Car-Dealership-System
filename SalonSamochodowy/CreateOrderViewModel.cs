@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 using SalonSamochodowy.Entities;
 using SalonSamochodowy.Repositories;
 
@@ -61,6 +62,9 @@ public partial class CreateOrderViewModel : ObservableObject
     public event Action<string>? ShowError;
     public event Action<string>? ShowWarning;
 
+    public ObservableCollection<SerwisantItem> ListaSerwisantow { get; } = new();
+    [ObservableProperty] private SerwisantItem? wybranySerwisant;
+
     public CreateOrderViewModel() { }
 
     public async Task LoadFromDbAsync()
@@ -98,10 +102,12 @@ public partial class CreateOrderViewModel : ObservableObject
             ListaSprzedawcow.Clear();
             var rSprzedawca = (await uow.AppRoles.FindAsync(r => r.RoleName == "Sprzedawca")).FirstOrDefault();
             var rKierownik  = (await uow.AppRoles.FindAsync(r => r.RoleName == "Kierownik")).FirstOrDefault();
+            var rSerwisant = (await uow.AppRoles.FindAsync(r => r.RoleName == "Serwisant")).FirstOrDefault();
             var sprzedawcaId = rSprzedawca?.RoleID ?? -1;
             var kierownikId  = rKierownik?.RoleID ?? -1;
+            var serwisantId = rSerwisant?.RoleID ?? -1; 
 
-            var validUsers = (await uow.AppUsers.FindAsync(u => u.RoleID == sprzedawcaId || u.RoleID == kierownikId)).ToList();
+            var validUsers = (await uow.AppUsers.FindAsync(u => u.RoleID == sprzedawcaId || u.RoleID == kierownikId || u.RoleID == serwisantId)).ToList();
             var userIds = validUsers.Select(u => u.UserID).ToList();
             var validWorkers = await uow.Workers.FindAsync(w => userIds.Contains(w.UserID));
 
@@ -109,12 +115,25 @@ public partial class CreateOrderViewModel : ObservableObject
             {
                 var user = validUsers.FirstOrDefault(u => u.UserID == w.UserID);
                 if (user == null) continue;
-                ListaSprzedawcow.Add(new SprzedawcaItem
+
+                if(user.RoleID == sprzedawcaId || user.RoleID == kierownikId)
                 {
-                    WorkerID = w.WorkerID,
-                    UserID   = user.UserID,
-                    FullName = $"{user.FirstName} {user.LastName}".Trim()
-                });
+                    ListaSprzedawcow.Add(new SprzedawcaItem
+                    {
+                        WorkerID = w.WorkerID,
+                        UserID = user.UserID,
+                        FullName = $"{user.FirstName} {user.LastName}".Trim()
+                    });
+                }
+                else if(user.RoleID == serwisantId)
+                {
+                    ListaSerwisantow.Add(new SerwisantItem
+                    {
+                        WorkerID = w.WorkerID,
+                        UserID = user.UserID,
+                        FullName = $"{user.FirstName} {user.LastName}".Trim()
+                    });
+                }    
             }
 
             DodatkoweOpcje.Clear();
@@ -208,6 +227,11 @@ public partial class CreateOrderViewModel : ObservableObject
                 ShowWarning?.Invoke("Wybierz sprzedawcę.");
                 return;
             }
+            if(WybranySerwisant == null)
+            {
+                ShowWarning?.Invoke("Wybierz serwisanta.");
+                return;
+            }
 
             int clientId;
             if (CzyIstniejacyKlient)
@@ -287,6 +311,16 @@ public partial class CreateOrderViewModel : ObservableObject
                     FeatureID      = opcja.FeatureID,
                     PurchasePrice  = 0m
                 });
+
+
+                await uow.Jobs.AddAsync(new Job
+                {
+                    VehicleID = vehicle.VehicleID,
+                    FeatureID = opcja.FeatureID, 
+                    WorkerID = WybranySerwisant.WorkerID,
+                    Status = "Created",
+                    CreatedAt = DateTime.Now
+                });
             }
 
             decimal cena = CenaFinalna > 0 ? CenaFinalna : WybranaWersja.BasePrice + WybranySilnik.Price;
@@ -300,6 +334,12 @@ public partial class CreateOrderViewModel : ObservableObject
                 Status       = WybranyStatus,
                 DealershipID = salon.DealershipID
             };
+
+            /*
+             Dodać opcję że gdy przy zamówieniu wybrane zostanie wyposażenie dodatkowe to jednocześnie tworzy się zlecenie serwisowe dla serwisanta.
+                Dodać możliwość tworzenia nowych zleceń serwisowych dla serwisanta
+             */
+
             await uow.SalesOrders.AddAsync(order);
             await uow.CompleteAsync();
 
@@ -394,4 +434,12 @@ public class DodatkowaOpcja
     public string Nazwa { get; set; } = "";
     public string Kategoria { get; set; } = "";
     public bool Zaznaczona { get; set; }
+}
+
+public class SerwisantItem
+{
+    public int WorkerID { get; set; }
+    public int UserID { get; set; }
+    public string FullName { get; set; } = "";
+    public override string ToString() => FullName;
 }

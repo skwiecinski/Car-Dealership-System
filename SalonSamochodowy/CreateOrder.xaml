@@ -266,7 +266,20 @@
                                 </StackPanel>
                             </Grid>
 
-                            <TextBlock Text="Cena finalna (zł)" Margin="0,0,0,4"/>
+                                <Grid Margin="0,0,0,8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="8"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="Serwisant (instalacja wyposażenia)" Margin="0,0,0,4"/>
+                                        <ComboBox ItemsSource="{Binding ListaSerwisantow}"
+                                            SelectedItem="{Binding WybranySerwisant}"/>
+                                    </StackPanel>
+                                </Grid>
+
+                                <TextBlock Text="Cena finalna (zł)" Margin="0,0,0,4"/>
                             <ui:NumberBox Value="{Binding CenaFinalna}"
                                           Minimum="0"
                                           ClearButtonEnabled="False"
