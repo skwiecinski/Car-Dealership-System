@@ -1,4 +1,5 @@
-﻿using System.Windows;
+using System;
+using System.Windows;
 using SalonSamochodowy.Entities;
 
 namespace SalonSamochodowy
@@ -7,16 +8,35 @@ namespace SalonSamochodowy
     {
         protected override void OnStartup(StartupEventArgs e)
         {
-            using (var context = new AppDbContext())
+            AppDomain.CurrentDomain.UnhandledException += (s, ex) =>
             {
-                // zapewnia ze plik .db istnieje
-                context.Database.EnsureCreated();
-                // bazowe dane - po jednym rekordzie na kazda tabele
-                // lokalizacja: Entities/DbSeeder
-                DbSeeder.Seed(context);
+                MessageBox.Show($"Błąd krytyczny: {ex.ExceptionObject}");
+            };
+
+            try
+            {
+                using (var context = new AppDbContext())
+                {
+                    context.Database.EnsureCreated();
+                    DbSeeder.Seed(context);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Błąd podczas inicjalizacji bazy danych:\n{ex.Message}\n\n{ex.InnerException?.Message}");
             }
 
             base.OnStartup(e);
+
+            try
+            {
+                var loginWindow = new LoginWindow();
+                loginWindow.Show();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Błąd podczas startu okna logowania:\n{ex.Message}\n\n{ex.InnerException?.Message}");
+            }
         }
     }
 }

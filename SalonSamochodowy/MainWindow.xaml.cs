@@ -1,62 +1,53 @@
-﻿using Microsoft.EntityFrameworkCore.Storage;
-using SalonSamochodowy.Entities;
-using SalonSamochodowy.Repositories;
-using System;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using SalonSamochodowy.Entities;
+using SalonSamochodowy.ViewModels;
+using Wpf.Ui.Controls;
 
 namespace SalonSamochodowy
 {
-    public partial class MainWindow : Window
+    public partial class MainWindow : FluentWindow
     {
-        public AppUser LoggedInUser { get; private set; }
+        public AppUser LoggedInUser => _vm.LoggedInUser;
+
+        private readonly MainWindowViewModel _vm;
+
         public MainWindow(AppUser loggedIn)
         {
             InitializeComponent();
-            LoggedInUser = loggedIn;
-            MessageBox.Show($"{LoggedInUser.FirstName} zalogowany jako: {LoggedInUser.Role.RoleName}");
-        }
-        private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
-        {
-            this.Loaded -= MainWindow_Loaded;
-            DatabaseTestAsync();
-        }
-        public async Task DatabaseTestAsync()
-        {
-            using (var dbContext = new AppDbContext())
-            using (var unitOfWork = new UnitOfWork(dbContext))
+
+            _vm = new MainWindowViewModel(loggedIn);
+            DataContext = _vm;
+
+            if (_vm.AccessDeniedMessage != null)
             {
-                var dealerships = await unitOfWork.Dealerships.GetAllAsync();
+                System.Windows.MessageBox.Show(
+                    _vm.AccessDeniedMessage,
+                    "Brak uprawnień",
+                    System.Windows.MessageBoxButton.OK,
+                    System.Windows.MessageBoxImage.Warning);
+                Application.Current.Shutdown();
+                return;
+            }
 
-                if (!dealerships.Any())
-                {
-                    var newDealerhip = new Dealership
-                    {
-                        Name = "Salon BMW",
-                        Address = "ul. Gliwicka 67",
-                        City = "Gliwice",
-                        Owner = "Marek Gokarter Znamirowski"
-                    };
+            _vm.LogoutRequested += () =>
+            {
+                var login = new LoginWindow();
+                login.Show();
+                Close();
+            };
 
-                    await unitOfWork.Dealerships.AddAsync(newDealerhip);
-                    await unitOfWork.CompleteAsync();
+            _vm.ShowProfileRequested += info =>
+            {
+                System.Windows.MessageBox.Show(
+                    info,
+                    "Mój profil",
+                    System.Windows.MessageBoxButton.OK,
+                    System.Windows.MessageBoxImage.Information);
+            };
 
-                    MessageBox.Show("Salon dodany.", "Test bazy danych");
-                }
-                else
-                {
-                    MessageBox.Show($"W bazie znaleziono salon. {dealerships.Count()} salonów w systemie.", "Test bazy danych");
-                }
+            if (_vm.StartupPageType != null)
+            {
+                RootNavigation.Loaded += (s, e) => RootNavigation.Navigate(_vm.StartupPageType);
             }
         }
     }

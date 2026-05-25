@@ -69,8 +69,25 @@ namespace SalonSamochodowy.Repositories
         }
 
         /**
+         * Retrieves records sorted in descending order by the given key, taking only N latest items.
+         * Filtering and sorting are performed in the database (not in memory).
+         */
+        public async Task<IEnumerable<T>> GetTopOrderedDescAsync<TKey>(System.Linq.Expressions.Expression<System.Func<T, TKey>> orderByDesc, int take)
+        {
+            return await _dbSet.OrderByDescending(orderByDesc).Take(take).ToListAsync();
+        }
+
+        /**
+         * Counts records matching the specified condition (filtering performed in the database).
+         */
+        public async Task<int> CountAsync(System.Linq.Expressions.Expression<System.Func<T, bool>> predicate)
+        {
+            return await _dbSet.CountAsync(predicate);
+        }
+
+        /**
          * Updates an existing record in the database context.
-         * 
+         *
          * @param entity the object with updated data.
          */
         public void Update(T entity)

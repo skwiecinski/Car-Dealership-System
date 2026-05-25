@@ -1,69 +1,25 @@
-using System.Net.Mail;
 using System.Windows;
-using SalonSamochodowy.Services;
+using SalonSamochodowy.ViewModels;
 using Wpf.Ui.Controls;
 
 namespace SalonSamochodowy
 {
     public partial class LoginWindow : FluentWindow
     {
-        // serwis autentykacji
-        private readonly AuthService _authService = new AuthService();
         public LoginWindow()
         {
             InitializeComponent();
-        }
 
-        private async void LoginButton_Click(object sender, RoutedEventArgs e)
-        {
-            var email = UsernameTextBox.Text.Trim();
-            var password = PasswordBox.Password;
-
-            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+            var vm = new LoginViewModel();
+            vm.LoginSucceeded += user =>
             {
-                System.Windows.MessageBox.Show(
-                    "Podaj adres e-mail użytkownika i hasło.",
-                    "Logowanie",
-                    System.Windows.MessageBoxButton.OK,
-                    System.Windows.MessageBoxImage.Warning);
-                return;
-            }
+                var main = new MainWindow(user);
+                main.Show();
+                Close();
+            };
+            vm.ExitRequested += () => Application.Current.Shutdown();
 
-            if (!IsValidEmail(email))
-            {
-                System.Windows.MessageBox.Show(
-                    "Podany adres e-mail jest niepoprawny. Przykład poprawnego adresu: nazwa@domena.pl",
-                    "Logowanie",
-                    System.Windows.MessageBoxButton.OK,
-                    System.Windows.MessageBoxImage.Warning);
-                UsernameTextBox.Focus();
-                return;
-            }
-            var loggedUser = await _authService.LoginAsync(email, password);
-            if (loggedUser == null)
-            {
-                System.Windows.MessageBox.Show(
-                    "Nie ma takiego rekordu w bazie",
-                    "Logowanie",
-                    System.Windows.MessageBoxButton.OK,
-                    System.Windows.MessageBoxImage.Warning);
-                UsernameTextBox.Focus();
-                return;
-            }
-            var main = new MainWindow(loggedUser);
-            main.Show();
-            Close();
-        }
-
-        private static bool IsValidEmail(string email)
-        {
-            if (!MailAddress.TryCreate(email, out var address))
-                return false;
-
-            // wymuszamy cos@cos.cos bo MailAddress przepuszcza a@b bez kropki w domenie
-            var domain = address.Host;
-            var dotIndex = domain.IndexOf('.');
-            return dotIndex > 0 && dotIndex < domain.Length - 1;
+            DataContext = vm;
         }
     }
 }

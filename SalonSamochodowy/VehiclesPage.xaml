@@ -1,0 +1,108 @@
+<Page x:Class="SalonSamochodowy.VehiclesPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      Title="VehiclesPage" Foreground="White" Background="#1A1C23">
+
+    <Grid Margin="20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="280"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0" Background="#22242C" CornerRadius="10" BorderBrush="#2D3038" BorderThickness="1" Padding="20" Margin="0,0,20,0" VerticalAlignment="Top">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,20" VerticalAlignment="Center">
+                    <ui:SymbolIcon Symbol="Filter24" FontSize="20" Foreground="#5B59E8" Margin="0,0,10,0"/>
+                    <TextBlock Text="Filtrowanie" FontSize="18" FontWeight="Bold"/>
+                </StackPanel>
+
+                <TextBlock Text="Marka" Foreground="#8A8D98" Margin="0,0,0,5" FontSize="12"/>
+                <ComboBox ItemsSource="{Binding Brands}"
+                          SelectedItem="{Binding SelectedBrand, Mode=TwoWay}"
+                          Margin="0,0,0,15" HorizontalAlignment="Stretch"/>
+
+                <TextBlock Text="Model" Foreground="#8A8D98" Margin="0,0,0,5" FontSize="12"/>
+                <ComboBox ItemsSource="{Binding Models}"
+                          SelectedItem="{Binding SelectedModel, Mode=TwoWay}"
+                          Margin="0,0,0,15" HorizontalAlignment="Stretch"/>
+
+                <TextBlock Text="Silnik" Foreground="#8A8D98" Margin="0,0,0,5" FontSize="12"/>
+                <ComboBox ItemsSource="{Binding Engines}"
+                          SelectedItem="{Binding SelectedEngine, Mode=TwoWay}"
+                          Margin="0,0,0,15" HorizontalAlignment="Stretch"/>
+
+                <TextBlock Text="Status pojazdu" Foreground="#8A8D98" Margin="0,0,0,5" FontSize="12"/>
+                <ComboBox SelectedValue="{Binding SelectedStatus, Mode=TwoWay}"
+                          SelectedValuePath="Content"
+                          SelectedIndex="0"
+                          Margin="0,0,0,25" HorizontalAlignment="Stretch">
+                    <ComboBoxItem Content="Wszystkie"/>
+                    <ComboBoxItem Content="Dostępny"/>
+                    <ComboBoxItem Content="Zarezerwowany"/>
+                    <ComboBoxItem Content="Sprzedany"/>
+                </ComboBox>
+
+                <ui:Button Content="Szukaj pojazdów" Appearance="Primary"
+                           HorizontalAlignment="Stretch" Icon="{ui:SymbolIcon Search20}"
+                           Command="{Binding SearchCommand}"/>
+            </StackPanel>
+        </Border>
+
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Text="Katalog dostępnych pojazdów" FontSize="24" FontWeight="Bold" Margin="0,0,0,20"/>
+
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                <ItemsControl ItemsSource="{Binding VehicleList}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Width="320" Background="#22242C" CornerRadius="10" BorderBrush="#2D3038" BorderThickness="1" Margin="0,0,20,20" Padding="15">
+                                <StackPanel>
+                                    <Grid Margin="0,0,0,10">
+                                        <Border Background="#1C1E23" CornerRadius="8" Padding="10" HorizontalAlignment="Left">
+                                            <ui:SymbolIcon Symbol="VehicleCar24" FontSize="32" Foreground="#8A8D98"/>
+                                        </Border>
+                                        <Border HorizontalAlignment="Right" VerticalAlignment="Top" Background="{Binding StatusBackgroundColor}" BorderBrush="{Binding StatusBorderColor}" BorderThickness="1" CornerRadius="4" Padding="8,4">
+                                            <TextBlock Text="{Binding Status}" Foreground="{Binding StatusTextColor}" FontSize="11" FontWeight="SemiBold"/>
+                                        </Border>
+                                    </Grid>
+
+                                    <TextBlock Text="{Binding FullName}" FontWeight="Bold" FontSize="16" Foreground="#E2E2E2" TextWrapping="Wrap"/>
+                                    <TextBlock Text="{Binding EngineInfo}" Foreground="#8A8D98" FontSize="13" Margin="0,4,0,0"/>
+
+                                    <Separator Background="#2D3038" Margin="0,15,0,15"/>
+
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0">
+                                            <TextBlock Text="VIN" FontSize="11" Foreground="#8A8D98"/>
+                                            <TextBlock Text="{Binding VIN}" FontSize="12" Foreground="#E2E2E2" FontFamily="Consolas"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="1" HorizontalAlignment="Right">
+                                            <TextBlock Text="Cena detaliczna" FontSize="11" Foreground="#8A8D98" HorizontalAlignment="Right"/>
+                                            <TextBlock Text="{Binding Price}" FontSize="16" FontWeight="Bold" Foreground="#5B59E8" HorizontalAlignment="Right"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</Page>
