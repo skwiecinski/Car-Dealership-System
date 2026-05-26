@@ -1,4 +1,4 @@
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using SalonSamochodowy.Entities;
 using SalonSamochodowy.Repositories;
@@ -12,35 +12,68 @@ namespace SalonSamochodowy.ViewModels
         public ObservableCollection<ServiceJob> FinishedJobs { get; } = new();
         public async Task LoadFromDbAsync()
         {
+            var loggedInUser = SessionContext.CurrentUser;
 
-            /*
-             za� tu trzeba zajeba� trochu rozkminki
-            zebrac userID zalogowanego
-            bo kierownik musi widziec wszystkie zlecenia jego mr�wek
-            a mr�wka tylko sw�j
-             */
+            if (loggedInUser.Role == null)
+            {
+                using var ctxRole = new AppDbContext();
+                using var uowRole = new UnitOfWork(ctxRole);
+                loggedInUser.Role = await uowRole.AppRoles.GetByIdAsync(loggedInUser.RoleID);
+            }
 
             try
             {
                 using var ctx = new AppDbContext();
                 using var uow = new UnitOfWork(ctx);
+                IEnumerable<Job> allJobs = Enumerable.Empty<Job>();
 
-                if(loggedInUserRole == "Kierownik")
+                if (loggedInUser.Role?.RoleName == "Kierownik")
                 {
-
+                    allJobs = await uow.Jobs.GetAllAsync(); 
                 }
-                else if(loggedInUserRole == "Serwisant")
+                else if (loggedInUser.Role?.RoleName == "Serwisant")
                 {
-
+                    var worker = await uow.Workers.FindAsync(w => w.UserID == loggedInUser.UserID);
+                    var workerObj = worker.FirstOrDefault();
+                    if (workerObj != null)
+                        allJobs = await uow.Jobs.FindAsync(j => j.WorkerID == workerObj.WorkerID);
                 }
 
-                    var allJobs = await uow.Jobs.GetAllAsync();
+                PendingJobs.Clear();
+                InProgressJobs.Clear();
+                FinishedJobs.Clear();
 
                 foreach (var job in allJobs)
                 {
-                    String jobStatus = job.Status;
+                    // doczytaj nawigacyjne właściwości ręcznie
+                    var vehicle = await uow.Vehicles.GetByIdAsync(job.VehicleID);
+                    var worker = await uow.Workers.GetByIdAsync(job.WorkerID);
+                    var workerUser = worker != null ? await uow.AppUsers.GetByIdAsync(worker.UserID) : null;
+
+                    var serviceJob = new ServiceJob
+                    {
+                        TaskName = job.CreatedAt.ToString("dd.MM.yyyy"), // tutaj trzeba tuning zajebać
+                        CarModel = vehicle?.VIN ?? "Nieznany pojazd",
+                        WorkerName = workerUser != null ? $"{workerUser.FirstName} {workerUser.LastName}" : "—",
+                        Progress = 0
+                    };
 
 
+                    switch (job.Status)
+                    {
+                        case "Oczekujące" : // jako, że case wykonuje się aż do breaka, można ustawić ich kilka, bo jebaniec będzie jebał w dół, takżę zostaw to huju lepiej dla dobra ogółu
+                        case "PendingJob" :
+                            PendingJobs.Add(serviceJob);
+                            break;
+                        case "W trakcie" :
+                        case "InProgressJob" :
+                            InProgressJobs.Add(serviceJob);
+                            break;
+                        case "Zakończone":
+                        case "FinishedJob" :
+                            FinishedJobs.Add(serviceJob);
+                            break;
+                    }
                 }
             }
             catch (Exception ex)

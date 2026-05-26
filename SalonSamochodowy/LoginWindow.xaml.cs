@@ -13,6 +13,7 @@ namespace SalonSamochodowy
             var vm = new LoginViewModel();
             vm.LoginSucceeded += user =>
             {
+                SessionContext.CurrentUser = user; // zeby miec info o userze, jest static, takze mozna sie odwolywac bez tworzenia klasy
                 var main = new MainWindow(user);
                 main.Show();
                 Close();

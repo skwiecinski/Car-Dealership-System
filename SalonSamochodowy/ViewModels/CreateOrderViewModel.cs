@@ -318,7 +318,7 @@ public partial class CreateOrderViewModel : ObservableObject
                     VehicleID = vehicle.VehicleID,
                     FeatureID = opcja.FeatureID, 
                     WorkerID = WybranySerwisant.WorkerID,
-                    Status = "Created",
+                    Status = "PendingJob",
                     CreatedAt = DateTime.Now
                 });
             }

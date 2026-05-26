@@ -1,3 +1,4 @@
+using System.Windows;
 using System.Windows.Controls;
 using SalonSamochodowy.ViewModels;
 
@@ -9,6 +10,9 @@ namespace SalonSamochodowy
         {
             InitializeComponent();
             DataContext = new ServicesPageViewModel();
+
+            Loaded += async (s, e) => await ((ServicesPageViewModel)DataContext).LoadFromDbAsync();
         }
     }
 }
+
