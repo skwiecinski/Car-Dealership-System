@@ -1,27 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+﻿using System.Windows;
+using SalonSamochodowy.ViewModels;
+using Wpf.Ui.Controls;
 
 namespace SalonSamochodowy
 {
-    /// <summary>
-    /// Logika interakcji dla klasy ServicesDetailsWindow.xaml
-    /// </summary>
-    public partial class ServicesDetailsWindow : Window
+    public partial class ServicesDetailsWindow : FluentWindow
     {
-        public ServicesDetailsWindow()
+        private readonly ServicesDetailsViewModel _vm;
+
+        public ServicesDetailsWindow(int jobId, Window? owner = null)
         {
             InitializeComponent();
+
+            _vm = new ServicesDetailsViewModel(jobId);
+            DataContext = _vm;
+
+            if (owner != null)
+                Owner = owner;
+
+            _vm.ShowError += msg => System.Windows.MessageBox.Show(
+                msg, "Błąd",
+                System.Windows.MessageBoxButton.OK,
+                MessageBoxImage.Error);
+
+            _vm.ShowSuccess += msg => System.Windows.MessageBox.Show(
+                msg, "Zlecenie",
+                System.Windows.MessageBoxButton.OK,
+                MessageBoxImage.Information);
+
+            _vm.CloseRequested += () => Close();
+
+            Loaded += async (s, e) => await _vm.LoadAsync();
+        }
+
+        /// <summary>
+        /// Expose StatusChanged event so ServicesPage can reload after status update.
+        /// </summary>
+        public event Action? StatusChanged
+        {
+            add => _vm.StatusChanged += value;
+            remove => _vm.StatusChanged -= value;
         }
     }
 }
