@@ -9,14 +9,6 @@ using CommunityToolkit.Mvvm.Input;
 using SalonSamochodowy.Entities;
 using SalonSamochodowy.Repositories;
 
-/*
- public ICommand AddCommand { get; }
-
-
-
-
- */
-
 namespace SalonSamochodowy.ViewModels
 {
     public partial class VehiclesPageViewModel : ObservableObject
