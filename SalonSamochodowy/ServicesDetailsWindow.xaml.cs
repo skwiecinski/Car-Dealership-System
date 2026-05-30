@@ -18,7 +18,7 @@ namespace SalonSamochodowy
             if (owner != null)
                 Owner = owner;
 
-            _vm.ShowError += msg => System.Windows.MessageBox.Show(
+            _vm.ShowError += msg => System.Windows.MessageBox.Show( // do poprawy, nie chcemy takich okienek
                 msg, "Błąd",
                 System.Windows.MessageBoxButton.OK,
                 MessageBoxImage.Error);
@@ -33,9 +33,6 @@ namespace SalonSamochodowy
             Loaded += async (s, e) => await _vm.LoadAsync();
         }
 
-        /// <summary>
-        /// Expose StatusChanged event so ServicesPage can reload after status update.
-        /// </summary>
         public event Action? StatusChanged
         {
             add => _vm.StatusChanged += value;

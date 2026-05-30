@@ -16,19 +16,13 @@ namespace SalonSamochodowy
             DataContext = _vm;
             Loaded += async (s, e) => await _vm.LoadFromDbAsync();
         }
-            /// <summary>
-            /// Wywo³ywane przez MouseDoubleClick lub MouseLeftButtonUp na karcie joba
-            /// (podepnij w XAML do ListBox/ItemsControl jako handler).
-            /// </summary>
+
         private async void JobCard_Click(object sender, MouseButtonEventArgs e)
         {
             if (sender is FrameworkElement fe && fe.DataContext is ServiceJob job)
                 await OpenJobDetailAsync(job.JobID);
         }
 
-        /// <summary>
-        /// Wariant dla przycisku / innego eventu bez MouseButtonEventArgs.
-        /// </summary>
         private async void JobCard_Clicked(object sender, RoutedEventArgs e)
         {
             if (sender is FrameworkElement fe && fe.DataContext is ServiceJob job)
@@ -40,7 +34,6 @@ namespace SalonSamochodowy
             var owner = Window.GetWindow(this);
             var detail = new ServicesDetailsWindow(jobId, owner);
 
-            // po zmianie statusu w popupie — odœwie¿ listê
             detail.StatusChanged += async () => await _vm.LoadFromDbAsync();
 
             detail.ShowDialog();
