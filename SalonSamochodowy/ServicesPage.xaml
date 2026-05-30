@@ -35,7 +35,9 @@
                     </HeaderedItemsControl.Header>
                     <HeaderedItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <ui:Card Margin="0,0,0,10" Padding="15">
+                            <ui:Card Margin="0,0,0,10" Padding="15"
+                                     Cursor="Hand"
+                                     PreviewMouseLeftButtonUp="JobCard_Click">
                                 <StackPanel>
                                     <TextBlock Text="{Binding TaskName}" FontWeight="Bold" FontSize="14" Margin="0,0,0,5"/>
                                     <TextBlock Text="{Binding CarModel}" Foreground="#8A8D98" FontSize="12"/>
@@ -59,7 +61,9 @@
                     </HeaderedItemsControl.Header>
                     <HeaderedItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <ui:Card Margin="0,0,0,10" Padding="15" Background="#262218">
+                            <ui:Card Margin="0,0,0,10" Padding="15" Background="#262218"
+                                     Cursor="Hand"
+                                     PreviewMouseLeftButtonUp="JobCard_Click">
                                 <StackPanel>
                                     <TextBlock Text="{Binding TaskName}" FontWeight="Bold" FontSize="14" Margin="0,0,0,5"/>
                                     <TextBlock Text="{Binding CarModel}" Foreground="#8A8D98" FontSize="12"/>
@@ -81,7 +85,9 @@
                     </HeaderedItemsControl.Header>
                     <HeaderedItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <ui:Card Margin="0,0,0,10" Padding="15" Opacity="0.7">
+                            <ui:Card Margin="0,0,0,10" Padding="15" Opacity="0.7"
+                                     Cursor="Hand"
+                                     PreviewMouseLeftButtonUp="JobCard_Click">
                                 <StackPanel>
                                     <Grid>
                                         <TextBlock Text="{Binding TaskName}" FontWeight="Bold" FontSize="14" TextDecorations="Strikethrough"/>

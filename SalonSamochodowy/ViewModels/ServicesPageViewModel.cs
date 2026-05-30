@@ -45,17 +45,17 @@ namespace SalonSamochodowy.ViewModels
 
                 foreach (var job in allJobs)
                 {
-                    // doczytaj nawigacyjne właściwości ręcznie
                     var vehicle = await uow.Vehicles.GetByIdAsync(job.VehicleID);
                     var worker = await uow.Workers.GetByIdAsync(job.WorkerID);
                     var workerUser = worker != null ? await uow.AppUsers.GetByIdAsync(worker.UserID) : null;
 
                     var serviceJob = new ServiceJob
                     {
+                        JobID = job.JobID,
                         TaskName = job.CreatedAt.ToString("dd.MM.yyyy"), // tutaj trzeba tuning zajebać
                         CarModel = vehicle?.VIN ?? "Nieznany pojazd",
                         WorkerName = workerUser != null ? $"{workerUser.FirstName} {workerUser.LastName}" : "—",
-                        Progress = 0
+                        Progress = 0 // klasa servicejob do poprawy
                     };
 
 
@@ -84,6 +84,7 @@ namespace SalonSamochodowy.ViewModels
     }
     public class ServiceJob
     {
+        public int JobID { get; set; }
         public string TaskName { get; set; } = "";
         public string CarModel { get; set; } = "";
         public string WorkerName { get; set; } = "";
