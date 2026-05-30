@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SalonSamochodowy.Entities;
-using SalonSamochodowy.Repositories; // Zakładam, że tu macie UnitOfWork
+using SalonSamochodowy.Repositories;
 
 namespace SalonSamochodowy.ViewModels
 {
@@ -13,60 +14,92 @@ namespace SalonSamochodowy.ViewModels
     {
         public Vehicle NewVehicle { get; set; }
 
-        // Inicjalizacja pustych kolekcji od razu, zgodnie z Waszym standardem
         public ObservableCollection<Engine> AvailableEngines { get; } = new();
+        public ObservableCollection<VehicleModel> AvailableModels { get; } = new();
         public ObservableCollection<TrimLevel> AvailableTrims { get; } = new();
+
+        private List<TrimLevel> _allTrims = new();
 
         public Engine SelectedEngine { get; set; }
 
-        public TrimFeature SelectedTrim { get; set; }
+        private VehicleModel _selectedModel;
+        public VehicleModel SelectedModel
+        {
+            get => _selectedModel;
+            set
+            {
+                if (SetProperty(ref _selectedModel, value))
+                {
+                    FilterTrims();
+                }
+            }
+        }
+
+        private TrimLevel _selectedTrim;
+        public TrimLevel SelectedTrim
+        {
+            get => _selectedTrim;
+            set => SetProperty(ref _selectedTrim, value);
+        }
+
+        public event Action? CloseRequested;
+        public event Action<string>? ShowError;
+        public event Action<string>? ShowSuccess;
+        public event Action? VehicleAdded;
 
         public AddVehicleViewModel()
         {
-            // Przygotowanie pustego obiektu przed wyświetleniem
-            NewVehicle = new Vehicle
-            {
-                Status = "Dostępny",
-                IsUsed = false
-            };
+            NewVehicle = new Vehicle { Status = "Dostępny", IsUsed = false };
         }
 
-        // Metoda do wywołania np. w zdarzeniu Loaded okna AddVehicleWindow
-        public async Task LoadFromDbAsync()
+        public async Task LoadAsync()
         {
             try
             {
                 using var ctx = new AppDbContext();
                 using var uow = new UnitOfWork(ctx);
 
-                // Zakładam, że repozytoria mają taką metodę
                 var engines = await uow.Engines.GetAllAsync();
+                var models = await uow.VehicleModels.GetAllAsync();
                 var trims = await uow.TrimLevels.GetAllAsync();
 
                 AvailableEngines.Clear();
-                foreach (var e in engines)
-                {
-                    AvailableEngines.Add(e);
-                }
+                foreach (var e in engines) AvailableEngines.Add(e);
 
+                AvailableModels.Clear();
+                foreach (var m in models) AvailableModels.Add(m);
+
+                _allTrims = trims.ToList();
                 AvailableTrims.Clear();
-                foreach (var t in trims)
-                {
-                    AvailableTrims.Add(t);
-                }
             }
             catch (Exception ex)
             {
-                // Tutaj jak w Waszym kodzie - puste catch lub logowanie błędu
+                ShowError?.Invoke("Nie udało się pobrać danych słownikowych.");
+            }
+        }
+
+        private void FilterTrims()
+        {
+            AvailableTrims.Clear();
+            SelectedTrim = null; 
+
+            if (SelectedModel != null)
+            {
+                var filteredTrims = _allTrims.Where(t => t.ModelID == SelectedModel.ModelID);
+
+                foreach (var trim in filteredTrims)
+                {
+                    AvailableTrims.Add(trim);
+                }
             }
         }
 
         [RelayCommand]
-        private async Task SaveAsync(Window window)
+        private async Task SaveAsync()
         {
-            if (string.IsNullOrWhiteSpace(NewVehicle.VIN) || SelectedEngine == null || SelectedTrim == null)
+            if (string.IsNullOrWhiteSpace(NewVehicle.VIN) || SelectedEngine == null || SelectedModel == null || SelectedTrim == null)
             {
-                MessageBox.Show("Uzupełnij VIN oraz wybierz silnik i wersję wyposażenia.", "Brak danych", MessageBoxButton.OK, MessageBoxImage.Warning);
+                ShowError?.Invoke("Uzupełnij VIN oraz wybierz silnik, model i wersję wyposażenia.");
                 return;
             }
 
@@ -77,38 +110,25 @@ namespace SalonSamochodowy.ViewModels
 
                 NewVehicle.EngineID = SelectedEngine.EngineID;
                 NewVehicle.TrimID = SelectedTrim.TrimID;
-
-                // Ustawiamy Dealership - na sztywno, lub z SessionContext
                 NewVehicle.DealershipID = 1;
 
-                // Dodawanie obiektu do repozytorium
-                // UWAGA: użyj właściwej nazwy metody z Waszego interfejsu (np. AddAsync, Insert)
                 await uow.Vehicles.AddAsync(NewVehicle);
-
-                // Zapisanie zmian - zależy, czy robicie to przez UoW czy prosto z kontekstu
                 await ctx.SaveChangesAsync();
-                // lub await uow.CompleteAsync() - dopasuj do Waszej implementacji UoW
 
-                if (window != null)
-                {
-                    window.DialogResult = true;
-                    window.Close();
-                }
+                ShowSuccess?.Invoke("Pojazd został poprawnie dodany.");
+                VehicleAdded?.Invoke();
+                CloseRequested?.Invoke();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Błąd podczas zapisu do bazy: {ex.Message}", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
+                ShowError?.Invoke($"Błąd podczas zapisu do bazy: {ex.Message}");
             }
         }
 
         [RelayCommand]
-        private void Cancel(Window window)
+        private void Close()
         {
-            if (window != null)
-            {
-                window.DialogResult = false;
-                window.Close();
-            }
+            CloseRequested?.Invoke();
         }
     }
 }

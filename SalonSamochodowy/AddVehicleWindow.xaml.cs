@@ -1,35 +1,51 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using SalonSamochodowy.ViewModels;
+using Wpf.Ui.Controls;
 
 namespace SalonSamochodowy
 {
-    public partial class AddVehicleWindow : Window
+    public partial class AddVehicleWindow : FluentWindow
     {
-        private readonly ViewModels.AddVehicleViewModel _viewModel;
+        private readonly AddVehicleViewModel _vm;
 
-        public AddVehicleWindow()
+        public AddVehicleWindow(Window? owner = null)
         {
             InitializeComponent();
-            _viewModel = new ViewModels.AddVehicleViewModel();
-            DataContext = _viewModel;
 
-            this.Loaded += AddVehicleWindow_Loaded;
+            _vm = new AddVehicleViewModel();
+            DataContext = _vm;
+
+            if (owner != null)
+            {
+                this.Owner = owner;
+                this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            }
+            else
+            {
+                this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            }
+
+            // Obsługa komunikatów
+            _vm.ShowError += msg => System.Windows.MessageBox.Show(
+                msg, "Błąd",
+                System.Windows.MessageBoxButton.OK,
+                MessageBoxImage.Error);
+
+            _vm.ShowSuccess += msg => System.Windows.MessageBox.Show(
+                msg, "Dodawanie pojazdu",
+                System.Windows.MessageBoxButton.OK,
+                MessageBoxImage.Information);
+
+            _vm.CloseRequested += () => Close();
+
+            Loaded += async (s, e) => await _vm.LoadAsync();
         }
 
-        private async void AddVehicleWindow_Loaded(object sender, RoutedEventArgs e)
+        public event Action? VehicleAdded
         {
-            await _viewModel.LoadFromDbAsync();
+            add => _vm.VehicleAdded += value;
+            remove => _vm.VehicleAdded -= value;
         }
     }
 }

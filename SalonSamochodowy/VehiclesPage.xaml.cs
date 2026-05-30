@@ -24,5 +24,15 @@ namespace SalonSamochodowy
                 await _vm.LoadVehiclesAsync();
             };
         }
+
+        private async void AddVehicle_Click(object sender, RoutedEventArgs e)
+        {
+            var owner = Application.Current.MainWindow;
+            var addWindow = new AddVehicleWindow(owner);
+
+            addWindow.VehicleAdded += async () => await _vm.LoadVehiclesAsync();
+
+            addWindow.ShowDialog();
+        }
     }
 }
