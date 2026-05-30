@@ -55,7 +55,25 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row="0" Text="Katalog dostępnych pojazdów" FontSize="24" FontWeight="Bold" Margin="0,0,0,20"/>
+            <Grid Grid.Row="0" Margin="0,0,0,20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" 
+                           Text="Katalog dostępnych pojazdów" 
+                           FontSize="24" 
+                           FontWeight="Bold" 
+                           VerticalAlignment="Center"/>
+
+                <ui:Button Grid.Column="1" 
+                           Content="Dodaj pojazd" 
+                           Appearance="Primary"
+                           Icon="{ui:SymbolIcon Add24}"
+                           VerticalAlignment="Center"
+                           Command="{Binding AddCommand}"/>
+            </Grid>
 
             <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
                 <ItemsControl ItemsSource="{Binding VehicleList}">

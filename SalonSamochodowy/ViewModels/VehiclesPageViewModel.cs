@@ -3,10 +3,19 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SalonSamochodowy.Entities;
 using SalonSamochodowy.Repositories;
+
+/*
+ public ICommand AddCommand { get; }
+
+
+
+
+ */
 
 namespace SalonSamochodowy.ViewModels
 {
@@ -20,6 +29,24 @@ namespace SalonSamochodowy.ViewModels
         [ObservableProperty] private string? selectedModel;
         [ObservableProperty] private string? selectedEngine;
         [ObservableProperty] private string? selectedStatus;
+
+        public ICommand AddCommand { get; }
+        public VehiclesPageViewModel()
+        {
+            AddCommand = new RelayCommand(OpenAddVehicleWindow);
+        }
+        private void OpenAddVehicleWindow()
+        {
+            var addVehicleWindow = new AddVehicleWindow();
+
+            // ShowDialog blokuje główne okno do czasu zamknięcia okna dodawania
+            bool? result = addVehicleWindow.ShowDialog();
+
+            if (result == true)
+            {
+                //LoadVehicles();
+            }
+        }
 
         public ObservableCollection<VehicleItem> VehicleList { get; } = new();
 
