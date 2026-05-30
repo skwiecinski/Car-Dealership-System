@@ -55,7 +55,7 @@ namespace SalonSamochodowy.ViewModels
                         TaskName = job.CreatedAt.ToString("dd.MM.yyyy"), // tutaj trzeba tuning zajebać
                         CarModel = vehicle?.VIN ?? "Nieznany pojazd",
                         WorkerName = workerUser != null ? $"{workerUser.FirstName} {workerUser.LastName}" : "—",
-                        Progress = 0
+                        Progress = 0 // klasa servicejob do poprawy
                     };
 
 
