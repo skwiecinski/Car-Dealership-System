@@ -61,7 +61,6 @@ namespace SalonSamochodowy.ViewModels
                         ? await uow.AppUsers.GetByIdAsync(worker.UserID)
                         : null;
 
-                    // Budujemy czytelną nazwę modelu auta zamiast samego VIN
                     string carLabel = vehicle?.VIN ?? "Nieznany pojazd";
                     if (vehicle != null)
                     {

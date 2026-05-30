@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SalonSamochodowy.Entities;
@@ -22,27 +21,17 @@ namespace SalonSamochodowy.ViewModels
         [ObservableProperty] private string? selectedEngine;
         [ObservableProperty] private string? selectedStatus;
 
-        public ICommand AddCommand { get; }
-        public VehiclesPageViewModel()
-        {
-            AddCommand = new RelayCommand(OpenAddVehicleWindow);
-        }
-        private void OpenAddVehicleWindow()
-        {
-            var addVehicleWindow = new AddVehicleWindow();
-
-            // ShowDialog blokuje główne okno do czasu zamknięcia okna dodawania
-            bool? result = addVehicleWindow.ShowDialog();
-
-            if (result == true)
-            {
-                //LoadVehicles();
-            }
-        }
-
         public ObservableCollection<VehicleItem> VehicleList { get; } = new();
 
+        // View subskrybuje ten event i otwiera okno z właściwym ownerem
+        public event Action? OpenAddVehicleRequested;
         public event Action<string>? LoadFailed;
+
+        [RelayCommand]
+        private void Add() => OpenAddVehicleRequested?.Invoke();
+
+        [RelayCommand]
+        private async Task SearchAsync() => await LoadVehiclesAsync();
 
         public async Task LoadFiltersAsync()
         {
@@ -106,12 +95,6 @@ namespace SalonSamochodowy.ViewModels
             SelectedModel = Models[0];
         }
 
-        [RelayCommand]
-        private async Task SearchAsync()
-        {
-            await LoadVehiclesAsync();
-        }
-
         public async Task LoadVehiclesAsync()
         {
             try
@@ -121,13 +104,9 @@ namespace SalonSamochodowy.ViewModels
 
                 IEnumerable<Vehicle> vehicles;
                 if (!string.IsNullOrEmpty(SelectedStatus) && SelectedStatus != "Wszystkie")
-                {
                     vehicles = await uow.Vehicles.FindAsync(v => v.Status == SelectedStatus);
-                }
                 else
-                {
                     vehicles = await uow.Vehicles.GetAllAsync();
-                }
 
                 VehicleList.Clear();
 
@@ -153,14 +132,16 @@ namespace SalonSamochodowy.ViewModels
 
                     VehicleList.Add(new VehicleItem
                     {
-                        FullName              = $"{model.Brand} {model.ModelName} {trim.TrimName}",
-                        EngineInfo            = engine != null ? $"Silnik: {engine.EngineName} ({engine.Power} KM)" : "Silnik: —",
-                        VIN                   = v.VIN,
-                        Price                 = $"{price:N0} PLN",
-                        Status                = v.Status,
+                        FullName = $"{model.Brand} {model.ModelName} {trim.TrimName}",
+                        EngineInfo = engine != null
+                            ? $"Silnik: {engine.EngineName} ({engine.Power} KM)"
+                            : "Silnik: —",
+                        VIN = v.VIN,
+                        Price = $"{price:N0} PLN",
+                        Status = v.Status,
                         StatusBackgroundColor = bg,
-                        StatusBorderColor     = bd,
-                        StatusTextColor       = fg
+                        StatusBorderColor = bd,
+                        StatusTextColor = fg
                     });
                 }
             }
@@ -172,22 +153,22 @@ namespace SalonSamochodowy.ViewModels
 
         private static (string bg, string bd, string fg) StatusColors(string status) => status switch
         {
-            "Dostępny"      => ("#112C1E", "#2D9A4A", "#44C767"),
+            "Dostępny" => ("#112C1E", "#2D9A4A", "#44C767"),
             "Zarezerwowany" => ("#332A12", "#D3A125", "#F0B82B"),
-            "Sprzedany"     => ("#3D1D1D", "#D34545", "#ED6262"),
-            _               => ("#2D3038", "#4F5466", "#8A8D98"),
+            "Sprzedany" => ("#3D1D1D", "#D34545", "#ED6262"),
+            _ => ("#2D3038", "#4F5466", "#8A8D98"),
         };
     }
 
     public class VehicleItem
     {
-        public string FullName              { get; set; } = "";
-        public string EngineInfo            { get; set; } = "";
-        public string VIN                   { get; set; } = "";
-        public string Price                 { get; set; } = "";
-        public string Status                { get; set; } = "";
-        public string StatusTextColor       { get; set; } = "";
+        public string FullName { get; set; } = "";
+        public string EngineInfo { get; set; } = "";
+        public string VIN { get; set; } = "";
+        public string Price { get; set; } = "";
+        public string Status { get; set; } = "";
+        public string StatusTextColor { get; set; } = "";
         public string StatusBackgroundColor { get; set; } = "";
-        public string StatusBorderColor     { get; set; } = "";
+        public string StatusBorderColor { get; set; } = "";
     }
 }

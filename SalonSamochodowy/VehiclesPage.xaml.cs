@@ -18,6 +18,9 @@ namespace SalonSamochodowy
                 System.Windows.MessageBoxButton.OK,
                 System.Windows.MessageBoxImage.Error);
 
+            // VM sygnalizuje chęć otwarcia okna — View otwiera je z właściwym ownerem
+            _vm.OpenAddVehicleRequested += OpenAddVehicleWindow;
+
             Loaded += async (s, e) =>
             {
                 await _vm.LoadFiltersAsync();
@@ -25,9 +28,9 @@ namespace SalonSamochodowy
             };
         }
 
-        private async void AddVehicle_Click(object sender, RoutedEventArgs e)
+        private async void OpenAddVehicleWindow()
         {
-            var owner = Application.Current.MainWindow;
+            var owner = Window.GetWindow(this);
             var addWindow = new AddVehicleWindow(owner);
 
             addWindow.VehicleAdded += async () => await _vm.LoadVehiclesAsync();

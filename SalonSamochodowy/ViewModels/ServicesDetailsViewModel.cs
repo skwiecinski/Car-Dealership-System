@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Emit;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -14,7 +11,7 @@ namespace SalonSamochodowy.ViewModels
     {
         private readonly int _jobId;
 
-        // ── Info o jobbie ──────────────────────────────────────────────
+        // ── Info o zleceniu ───────────────────────────────────────────
         [ObservableProperty] private string jobCode = "—";
         [ObservableProperty] private string createdAt = "—";
         [ObservableProperty] private string featureName = "—";
@@ -31,7 +28,7 @@ namespace SalonSamochodowy.ViewModels
         [ObservableProperty] private string workerEmail = "—";
         [ObservableProperty] private string dealershipName = "—";
 
-        // ── Status joba ───────────────────────────────────────────────
+        // ── Status ────────────────────────────────────────────────────
         [ObservableProperty] private string currentStatus = "—";
         [ObservableProperty] private string statusBadgeBackground = "#1F2536";
         [ObservableProperty] private string statusBadgeBorder = "#3B82F6";
@@ -45,7 +42,7 @@ namespace SalonSamochodowy.ViewModels
         public event Action<string>? ShowError;
         public event Action<string>? ShowSuccess;
         public event Action? CloseRequested;
-        public event Action? StatusChanged;   // żeby ServicesPage mogło odświeżyć listę
+        public event Action? StatusChanged;
 
         public ServicesDetailsViewModel(int jobId)
         {
@@ -66,16 +63,13 @@ namespace SalonSamochodowy.ViewModels
                     return;
                 }
 
-                // job code
                 JobCode = $"ZLS/{job.CreatedAt:yyyy}/{job.JobID:D4}";
                 CreatedAt = job.CreatedAt.ToString("dd.MM.yyyy HH:mm");
 
-                // feature
                 var feature = await uow.Features.GetByIdAsync(job.FeatureID);
                 FeatureName = feature?.FeatureName ?? "—";
                 FeatureCategory = feature?.Category ?? "—";
 
-                // pojazd
                 var vehicle = await uow.Vehicles.GetByIdAsync(job.VehicleID);
                 if (vehicle != null)
                 {
@@ -84,15 +78,16 @@ namespace SalonSamochodowy.ViewModels
 
                     var trim = await uow.TrimLevels.GetByIdAsync(vehicle.TrimID);
                     var model = trim != null ? await uow.VehicleModels.GetByIdAsync(trim.ModelID) : null;
-                    VehicleModel = model != null && trim != null
+                    VehicleModel = (model != null && trim != null)
                         ? $"{model.Brand} {model.ModelName} {trim.TrimName}"
                         : "—";
 
                     var engine = await uow.Engines.GetByIdAsync(vehicle.EngineID);
-                    VehicleEngine = engine != null ? $"{engine.EngineName} • {engine.Power} KM" : "—";
+                    VehicleEngine = engine != null
+                        ? $"{engine.EngineName} • {engine.Power} KM"
+                        : "—";
                 }
 
-                // serwisant
                 var worker = await uow.Workers.GetByIdAsync(job.WorkerID);
                 if (worker != null)
                 {
@@ -101,7 +96,9 @@ namespace SalonSamochodowy.ViewModels
                     WorkerEmail = wUser?.Email ?? "—";
 
                     var dealership = await uow.Dealerships.GetByIdAsync(worker.DealershipID);
-                    DealershipName = dealership != null ? $"{dealership.Name} ({dealership.City})" : "—";
+                    DealershipName = dealership != null
+                        ? $"{dealership.Name} ({dealership.City})"
+                        : "—";
                 }
 
                 ApplyStatus(job.Status);
@@ -116,9 +113,9 @@ namespace SalonSamochodowy.ViewModels
         {
             CurrentStatus = status switch
             {
-                "PendingJob" or "Oczekujące" => "Oczekujące",
-                "InProgressJob" or "W trakcie" => "W trakcie",
-                "FinishedJob" or "Zakończone" => "Zakończone",
+                "Oczekujące" => "Oczekujące",
+                "W trakcie" => "W trakcie",
+                "Zakończone" => "Zakończone",
                 _ => status
             };
 

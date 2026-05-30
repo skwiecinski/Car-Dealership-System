@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using SalonSamochodowy.ViewModels;
 using Wpf.Ui.Controls;
 
@@ -16,15 +17,22 @@ namespace SalonSamochodowy
             DataContext = _vm;
 
             if (owner != null)
+            {
                 Owner = owner;
+                WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            }
+            else
+            {
+                WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            }
 
-            _vm.ShowError += msg => System.Windows.MessageBox.Show( // do poprawy, nie chcemy takich okienek
+            _vm.ShowError += msg => System.Windows.MessageBox.Show(
                 msg, "Błąd",
                 System.Windows.MessageBoxButton.OK,
                 MessageBoxImage.Error);
 
             _vm.ShowSuccess += msg => System.Windows.MessageBox.Show(
-                msg, "Zlecenie",
+                msg, "Zlecenie serwisowe",
                 System.Windows.MessageBoxButton.OK,
                 MessageBoxImage.Information);
 
