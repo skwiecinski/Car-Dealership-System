@@ -2,7 +2,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-    Title="Dodaj nowy pojazd" Width="500" Height="600"
+    Title="Dodaj nowy pojazd" Width="500" Height="620"
     WindowStartupLocation="CenterOwner"
     ResizeMode="NoResize" ExtendsContentIntoTitleBar="True">
 
@@ -24,12 +24,12 @@
         </Style>
 
         <Style x:Key="SectionCard" TargetType="Border">
-            <Setter Property="Background"       Value="{StaticResource BgCard}"/>
-            <Setter Property="BorderBrush"      Value="{StaticResource BorderColor}"/>
-            <Setter Property="BorderThickness"  Value="1"/>
-            <Setter Property="CornerRadius"     Value="10"/>
-            <Setter Property="Padding"          Value="18,16"/>
-            <Setter Property="Margin"           Value="0,0,0,15"/>
+            <Setter Property="Background"      Value="{StaticResource BgCard}"/>
+            <Setter Property="BorderBrush"     Value="{StaticResource BorderColor}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius"    Value="10"/>
+            <Setter Property="Padding"         Value="18,16"/>
+            <Setter Property="Margin"          Value="0,0,0,15"/>
         </Style>
     </ui:FluentWindow.Resources>
 
@@ -41,27 +41,40 @@
 
         <Grid Grid.Row="0" Background="{StaticResource BgSurface}">
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="18,0">
-                <Border Width="8" Height="8" CornerRadius="4" Background="{StaticResource Accent}" Margin="0,0,10,0"/>
-                <TextBlock Text="Katalog Pojazdów" Foreground="{StaticResource TextPrimary}" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center"/>
-                <TextBlock Text=" · Dodawanie nowego pojazdu" Foreground="{StaticResource TextMuted}" FontSize="13" VerticalAlignment="Center"/>
+                <Border Width="8" Height="8" CornerRadius="4"
+                        Background="{StaticResource Accent}" Margin="0,0,10,0"/>
+                <TextBlock Text="Katalog Pojazdów"
+                           Foreground="{StaticResource TextPrimary}"
+                           FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                <TextBlock Text=" · Dodawanie nowego pojazdu"
+                           Foreground="{StaticResource TextMuted}"
+                           FontSize="13" VerticalAlignment="Center"/>
             </StackPanel>
             <ui:TitleBar ShowMinimize="False" ShowMaximize="False" VerticalAlignment="Center"/>
         </Grid>
 
-        <ScrollViewer Grid.Row="1" Padding="20">
+        <ScrollViewer Grid.Row="1" Padding="20" VerticalScrollBarVisibility="Auto">
             <StackPanel>
 
                 <Border Style="{StaticResource SectionCard}">
                     <StackPanel>
                         <TextBlock Text="DANE IDENTYFIKACYJNE" Style="{StaticResource SectionHeader}"/>
 
-                        <TextBlock Text="Numer VIN" Foreground="{StaticResource TextMuted}" FontSize="12" Margin="0,0,0,5"/>
-                        <ui:TextBox Text="{Binding NewVehicle.VIN}" MaxLength="17" FontFamily="Segoe UI Mono" Margin="0,0,0,15"/>
+                        <TextBlock Text="Numer VIN (17 znaków)"
+                                   Foreground="{StaticResource TextMuted}" FontSize="12" Margin="0,0,0,5"/>
+                        <ui:TextBox Text="{Binding NewVehicle.VIN, UpdateSourceTrigger=PropertyChanged}"
+                                    MaxLength="17" FontFamily="Segoe UI Mono"
+                                    PlaceholderText="np. WBA3A5G59FNS00000"
+                                    Margin="0,0,0,15"/>
 
-                        <TextBlock Text="Przebieg (km)" Foreground="{StaticResource TextMuted}" FontSize="12" Margin="0,0,0,5"/>
-                        <ui:TextBox Text="{Binding NewVehicle.Mileage}" Margin="0,0,0,15"/>
+                        <TextBlock Text="Przebieg (km)"
+                                   Foreground="{StaticResource TextMuted}" FontSize="12" Margin="0,0,0,5"/>
+                        <ui:TextBox Text="{Binding NewVehicle.Mileage, UpdateSourceTrigger=PropertyChanged}"
+                                    PlaceholderText="0" Margin="0,0,0,15"/>
 
-                        <CheckBox Content="Pojazd używany" IsChecked="{Binding NewVehicle.IsUsed}" Foreground="{StaticResource TextPrimary}"/>
+                        <CheckBox Content="Pojazd używany"
+                                  IsChecked="{Binding NewVehicle.IsUsed}"
+                                  Foreground="{StaticResource TextPrimary}"/>
                     </StackPanel>
                 </Border>
 
@@ -69,42 +82,72 @@
                     <StackPanel>
                         <TextBlock Text="SPECYFIKACJA" Style="{StaticResource SectionHeader}"/>
 
-                        <TextBlock Text="Model pojazdu" Foreground="{StaticResource TextMuted}" FontSize="12" Margin="0,0,0,5"/>
-                        <ComboBox ItemsSource="{Binding AvailableModels}" 
-                                  SelectedItem="{Binding SelectedModel}" 
+                        <TextBlock Text="Model pojazdu"
+                                   Foreground="{StaticResource TextMuted}" FontSize="12" Margin="0,0,0,5"/>
+                        <ComboBox ItemsSource="{Binding AvailableModels}"
+                                  SelectedItem="{Binding SelectedModel}"
                                   Margin="0,0,0,15" HorizontalAlignment="Stretch">
                             <ComboBox.ItemTemplate>
                                 <DataTemplate>
                                     <TextBlock>
-                                        <Run Text="{Binding Brand}" FontWeight="Bold"/> 
+                                        <Run Text="{Binding Brand}" FontWeight="Bold"/>
                                         <Run Text="{Binding ModelName}"/>
                                     </TextBlock>
                                 </DataTemplate>
                             </ComboBox.ItemTemplate>
                         </ComboBox>
 
-                        <TextBlock Text="Wersja wyposażenia" Foreground="{StaticResource TextMuted}" FontSize="12" Margin="0,0,0,5"/>
-                        <ComboBox ItemsSource="{Binding AvailableTrims}" 
-                                  SelectedItem="{Binding SelectedTrim}" 
-                                  DisplayMemberPath="TrimName" 
+                        <TextBlock Text="Wersja wyposażenia"
+                                   Foreground="{StaticResource TextMuted}" FontSize="12" Margin="0,0,0,5"/>
+                        <ComboBox ItemsSource="{Binding AvailableTrims}"
+                                  SelectedItem="{Binding SelectedTrim}"
                                   Margin="0,0,0,15" HorizontalAlignment="Stretch"
-                                  IsEnabled="{Binding AvailableTrims.Count}"/>
-                        <TextBlock Text="Silnik" Foreground="{StaticResource TextMuted}" FontSize="12" Margin="0,0,0,5"/>
-                        <ComboBox ItemsSource="{Binding AvailableEngines}" 
-                                  SelectedItem="{Binding SelectedEngine}" 
-                                  DisplayMemberPath="EngineName" Margin="0,0,0,0" HorizontalAlignment="Stretch"/>
+                                  IsEnabled="{Binding AvailableTrims.Count}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock>
+                                        <Run Text="{Binding TrimName}" FontWeight="SemiBold"/>
+                                        <Run Text=" — "/>
+                                        <Run Text="{Binding BasePrice, StringFormat={}{0:N0} zł}" Foreground="#5B59E8"/>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+
+                        <TextBlock Text="Silnik"
+                                   Foreground="{StaticResource TextMuted}" FontSize="12" Margin="0,0,0,5"/>
+                        <ComboBox ItemsSource="{Binding AvailableEngines}"
+                                  SelectedItem="{Binding SelectedEngine}"
+                                  HorizontalAlignment="Stretch"
+                                  IsEnabled="{Binding AvailableEngines.Count}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock>
+                                        <Run Text="{Binding EngineName}" FontWeight="SemiBold"/>
+                                        <Run Text=" • "/>
+                                        <Run Text="{Binding Power}"/>
+                                        <Run Text=" KM"/>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
                     </StackPanel>
                 </Border>
 
-                <Grid Margin="0,10,0,0">
+                <Grid Margin="0,5,0,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="10"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <ui:Button Grid.Column="0" Content="Anuluj" Command="{Binding CloseCommand}" HorizontalAlignment="Stretch"/>
-                    <ui:Button Grid.Column="2" Content="Dodaj pojazd" Appearance="Primary" Command="{Binding SaveCommand}" HorizontalAlignment="Stretch"/>
+                    <ui:Button Grid.Column="0" Content="Anuluj"
+                               Command="{Binding CloseCommand}"
+                               HorizontalAlignment="Stretch"/>
+                    <ui:Button Grid.Column="2" Content="Dodaj pojazd"
+                               Appearance="Primary"
+                               Command="{Binding SaveCommand}"
+                               HorizontalAlignment="Stretch"/>
                 </Grid>
 
             </StackPanel>

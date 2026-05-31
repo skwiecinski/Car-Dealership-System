@@ -10,7 +10,6 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <!-- Panel filtrów -->
         <Border Grid.Column="0" Background="#22242C" CornerRadius="10"
                 BorderBrush="#2D3038" BorderThickness="1"
                 Padding="20" Margin="0,0,20,0" VerticalAlignment="Top">
@@ -52,14 +51,12 @@
             </StackPanel>
         </Border>
 
-        <!-- Prawa kolumna: nagłówek + lista -->
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <!-- Nagłówek z przyciskiem -->
             <Grid Grid.Row="0" Margin="0,0,0,20">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -79,7 +76,6 @@
                            Command="{Binding AddCommand}"/>
             </Grid>
 
-            <!-- x:Name potrzebny żeby code-behind mógł obsłużyć PreviewMouseWheel -->
             <ScrollViewer x:Name="VehicleScrollViewer"
                           Grid.Row="1"
                           VerticalScrollBarVisibility="Auto"

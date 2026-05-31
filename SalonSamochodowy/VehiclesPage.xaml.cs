@@ -38,11 +38,6 @@ namespace SalonSamochodowy
             addWindow.ShowDialog();
         }
 
-        // Kółko myszy nad ItemsControl (ani żadnym dzieckiem bez własnego ScrollViewera)
-        // generuje PreviewMouseWheel który bubbluje w górę. NavigationView WPF-UI
-        // przechwytuje go zanim dotrze do naszego ScrollViewera.
-        // Handler na ScrollViewerze z e.Handled = true zatrzymuje dalsze bąbelkowanie
-        // i ręcznie scrolluje o dokładnie tę samą deltę co system.
         private void VehicleScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
             var sv = (ScrollViewer)sender;
