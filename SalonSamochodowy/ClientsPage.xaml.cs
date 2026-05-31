@@ -25,9 +25,7 @@ namespace SalonSamochodowy
                     Owner = Window.GetWindow(this)
                 };
                 if (dialog.ShowDialog() == true)
-                {
                     await _vm.LoadFromDbAsync();
-                }
             };
 
             _vm.NewOrderRequested += selected =>
@@ -36,13 +34,11 @@ namespace SalonSamochodowy
                     NavigationService.Navigate(new CreateOrder());
             };
 
-            _vm.EditClientRequested += selected =>
+            _vm.EditClientRequested += async selected =>
             {
-                System.Windows.MessageBox.Show(
-                    $"Edycja klienta '{selected.FullName}' — do implementacji.",
-                    "Edytuj dane",
-                    System.Windows.MessageBoxButton.OK,
-                    System.Windows.MessageBoxImage.Information);
+                var dialog = new EditClientWindow(selected, Window.GetWindow(this));
+                if (dialog.ShowDialog() == true)
+                    await _vm.LoadFromDbAsync();
             };
 
             Loaded += async (s, e) => await _vm.LoadFromDbAsync();

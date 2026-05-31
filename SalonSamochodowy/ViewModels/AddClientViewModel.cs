@@ -9,7 +9,7 @@ using SalonSamochodowy.Repositories;
 
 namespace SalonSamochodowy.ViewModels
 {
-    public partial class AddClientWindowViewModel : ObservableObject
+    public partial class AddClientViewModel : ObservableObject
     {
         [ObservableProperty] private string fullName = "";
         [ObservableProperty] private string phone = "";
@@ -68,31 +68,31 @@ namespace SalonSamochodowy.ViewModels
                 var roleKlient = (await uow.AppRoles.FindAsync(r => r.RoleName == "Klient")).FirstOrDefault();
                 if (roleKlient == null)
                 {
-                    ShowError?.Invoke("Rola 'Klient' nie istnieje w bazie. Zgłoś to backendowi.");
+                    ShowError?.Invoke("Rola 'Klient' nie istnieje w bazie.");
                     return;
                 }
 
                 string firstName, lastName;
                 if (IsCompany)
                 {
-                    firstName = fn.Length > 50 ? fn.Substring(0, 50) : fn;
-                    lastName  = "";
+                    firstName = fn.Length > 50 ? fn[..50] : fn;
+                    lastName = "";
                 }
                 else
                 {
                     var parts = fn.Split(' ', 2);
                     firstName = parts[0];
-                    lastName  = parts.Length > 1 ? parts[1] : "";
+                    lastName = parts.Length > 1 ? parts[1] : "";
                 }
 
                 var newUser = new AppUser
                 {
-                    FirstName    = firstName,
-                    LastName     = lastName,
-                    Email        = em,
+                    FirstName = firstName,
+                    LastName = lastName,
+                    Email = em,
                     PasswordHash = "",
-                    RoleID       = roleKlient.RoleID,
-                    BirthDate    = DateTime.Today
+                    RoleID = roleKlient.RoleID,
+                    BirthDate = DateTime.Today
                 };
                 await uow.AppUsers.AddAsync(newUser);
                 await uow.CompleteAsync();
@@ -100,19 +100,21 @@ namespace SalonSamochodowy.ViewModels
                 var newClient = new Client
                 {
                     UserID = newUser.UserID,
-                    NIP    = string.IsNullOrWhiteSpace(nip) ? null : nip,
-                    Phone  = string.IsNullOrWhiteSpace(ph) ? "" : ph
+                    NIP = string.IsNullOrWhiteSpace(nip) ? null : nip,
+                    Phone = string.IsNullOrWhiteSpace(ph) ? "" : ph
                 };
                 await uow.Clients.AddAsync(newClient);
                 await uow.CompleteAsync();
 
                 Result = new ClientModel
                 {
-                    FullName    = fn,
+                    ClientId = newClient.ClientID,
+                    UserId = newUser.UserID,
+                    FullName = fn,
                     PhoneNumber = ph,
-                    TaxId       = string.IsNullOrWhiteSpace(nip) ? "-" : nip,
-                    Email       = em,
-                    IsCompany   = IsCompany
+                    TaxId = string.IsNullOrWhiteSpace(nip) ? "-" : nip,
+                    Email = em,
+                    IsCompany = IsCompany
                 };
 
                 SaveSucceeded?.Invoke();
@@ -130,7 +132,6 @@ namespace SalonSamochodowy.ViewModels
         {
             if (!MailAddress.TryCreate(email, out var address))
                 return false;
-
             var domain = address.Host;
             var dotIndex = domain.IndexOf('.');
             return dotIndex > 0 && dotIndex < domain.Length - 1;

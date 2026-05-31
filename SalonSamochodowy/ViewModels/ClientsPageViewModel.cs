@@ -30,9 +30,9 @@ namespace SalonSamochodowy.ViewModels
                 DetailsVisibility = Visibility.Collapsed;
                 return;
             }
-            DetailsVisibility    = Visibility.Visible;
-            SelectedClientName   = value.FullName;
-            SelectedClientType   = value.IsCompany ? "Klient Biznesowy" : "Klient Indywidualny";
+            DetailsVisibility = Visibility.Visible;
+            SelectedClientName = value.FullName;
+            SelectedClientType = value.IsCompany ? "Klient Biznesowy" : "Klient Indywidualny";
         }
 
         public async Task LoadFromDbAsync()
@@ -58,11 +58,13 @@ namespace SalonSamochodowy.ViewModels
 
                     ClientsList.Add(new ClientModel
                     {
-                        FullName    = fullName,
-                        TaxId       = string.IsNullOrWhiteSpace(c.NIP) ? "-" : c.NIP!,
+                        ClientId = c.ClientID,
+                        UserId = user.UserID,
+                        FullName = fullName,
+                        TaxId = string.IsNullOrWhiteSpace(c.NIP) ? "-" : c.NIP!,
                         PhoneNumber = c.Phone ?? "",
-                        Email       = user.Email,
-                        IsCompany   = isCompany
+                        Email = user.Email,
+                        IsCompany = isCompany
                     });
                 }
             }
@@ -92,10 +94,12 @@ namespace SalonSamochodowy.ViewModels
 
     public class ClientModel
     {
-        public string FullName    { get; set; } = "";
-        public string TaxId       { get; set; } = "";
+        public int ClientId { get; set; }
+        public int UserId { get; set; }
+        public string FullName { get; set; } = "";
+        public string TaxId { get; set; } = "";
         public string PhoneNumber { get; set; } = "";
-        public string Email       { get; set; } = "";
-        public bool   IsCompany   { get; set; }
+        public string Email { get; set; } = "";
+        public bool IsCompany { get; set; }
     }
 }

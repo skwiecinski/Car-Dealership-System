@@ -6,7 +6,7 @@ namespace SalonSamochodowy
 {
     public partial class AddClientWindow : FluentWindow
     {
-        private readonly AddClientWindowViewModel _vm = new AddClientWindowViewModel();
+        private readonly AddClientViewModel _vm = new AddClientViewModel();
 
         public ClientModel? Result => _vm.Result;
 
