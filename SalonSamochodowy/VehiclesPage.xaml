@@ -10,7 +10,10 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <Border Grid.Column="0" Background="#22242C" CornerRadius="10" BorderBrush="#2D3038" BorderThickness="1" Padding="20" Margin="0,0,20,0" VerticalAlignment="Top">
+        <!-- Panel filtrów -->
+        <Border Grid.Column="0" Background="#22242C" CornerRadius="10"
+                BorderBrush="#2D3038" BorderThickness="1"
+                Padding="20" Margin="0,0,20,0" VerticalAlignment="Top">
             <StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,20" VerticalAlignment="Center">
                     <ui:SymbolIcon Symbol="Filter24" FontSize="20" Foreground="#5B59E8" Margin="0,0,10,0"/>
@@ -49,33 +52,40 @@
             </StackPanel>
         </Border>
 
+        <!-- Prawa kolumna: nagłówek + lista -->
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
+            <!-- Nagłówek z przyciskiem -->
             <Grid Grid.Row="0" Margin="0,0,0,20">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Grid.Column="0" 
-                           Text="Katalog dostępnych pojazdów" 
-                           FontSize="24" 
-                           FontWeight="Bold" 
+                <TextBlock Grid.Column="0"
+                           Text="Katalog dostępnych pojazdów"
+                           FontSize="24" FontWeight="Bold"
                            VerticalAlignment="Center"/>
 
-                <ui:Button Grid.Column="1" 
-                           Content="Dodaj pojazd" 
+                <ui:Button Grid.Column="1"
+                           Content="Dodaj pojazd"
                            Appearance="Primary"
                            Icon="{ui:SymbolIcon Add24}"
                            VerticalAlignment="Center"
                            Command="{Binding AddCommand}"/>
             </Grid>
 
-            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <!-- x:Name potrzebny żeby code-behind mógł obsłużyć PreviewMouseWheel -->
+            <ScrollViewer x:Name="VehicleScrollViewer"
+                          Grid.Row="1"
+                          VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled"
+                          CanContentScroll="False"
+                          PreviewMouseWheel="VehicleScrollViewer_PreviewMouseWheel">
                 <ItemsControl ItemsSource="{Binding VehicleList}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -85,19 +95,30 @@
 
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Border Width="320" Background="#22242C" CornerRadius="10" BorderBrush="#2D3038" BorderThickness="1" Margin="0,0,20,20" Padding="15">
+                            <Border Width="320" Background="#22242C" CornerRadius="10"
+                                    BorderBrush="#2D3038" BorderThickness="1"
+                                    Margin="0,0,20,20" Padding="15">
                                 <StackPanel>
                                     <Grid Margin="0,0,0,10">
-                                        <Border Background="#1C1E23" CornerRadius="8" Padding="10" HorizontalAlignment="Left">
+                                        <Border Background="#1C1E23" CornerRadius="8"
+                                                Padding="10" HorizontalAlignment="Left">
                                             <ui:SymbolIcon Symbol="VehicleCar24" FontSize="32" Foreground="#8A8D98"/>
                                         </Border>
-                                        <Border HorizontalAlignment="Right" VerticalAlignment="Top" Background="{Binding StatusBackgroundColor}" BorderBrush="{Binding StatusBorderColor}" BorderThickness="1" CornerRadius="4" Padding="8,4">
-                                            <TextBlock Text="{Binding Status}" Foreground="{Binding StatusTextColor}" FontSize="11" FontWeight="SemiBold"/>
+                                        <Border HorizontalAlignment="Right" VerticalAlignment="Top"
+                                                Background="{Binding StatusBackgroundColor}"
+                                                BorderBrush="{Binding StatusBorderColor}"
+                                                BorderThickness="1" CornerRadius="4" Padding="8,4">
+                                            <TextBlock Text="{Binding Status}"
+                                                       Foreground="{Binding StatusTextColor}"
+                                                       FontSize="11" FontWeight="SemiBold"/>
                                         </Border>
                                     </Grid>
 
-                                    <TextBlock Text="{Binding FullName}" FontWeight="Bold" FontSize="16" Foreground="#E2E2E2" TextWrapping="Wrap"/>
-                                    <TextBlock Text="{Binding EngineInfo}" Foreground="#8A8D98" FontSize="13" Margin="0,4,0,0"/>
+                                    <TextBlock Text="{Binding FullName}"
+                                               FontWeight="Bold" FontSize="16"
+                                               Foreground="#E2E2E2" TextWrapping="Wrap"/>
+                                    <TextBlock Text="{Binding EngineInfo}"
+                                               Foreground="#8A8D98" FontSize="13" Margin="0,4,0,0"/>
 
                                     <Separator Background="#2D3038" Margin="0,15,0,15"/>
 
@@ -108,11 +129,15 @@
                                         </Grid.ColumnDefinitions>
                                         <StackPanel Grid.Column="0">
                                             <TextBlock Text="VIN" FontSize="11" Foreground="#8A8D98"/>
-                                            <TextBlock Text="{Binding VIN}" FontSize="12" Foreground="#E2E2E2" FontFamily="Consolas"/>
+                                            <TextBlock Text="{Binding VIN}" FontSize="12"
+                                                       Foreground="#E2E2E2" FontFamily="Consolas"/>
                                         </StackPanel>
                                         <StackPanel Grid.Column="1" HorizontalAlignment="Right">
-                                            <TextBlock Text="Cena detaliczna" FontSize="11" Foreground="#8A8D98" HorizontalAlignment="Right"/>
-                                            <TextBlock Text="{Binding Price}" FontSize="16" FontWeight="Bold" Foreground="#5B59E8" HorizontalAlignment="Right"/>
+                                            <TextBlock Text="Cena detaliczna" FontSize="11"
+                                                       Foreground="#8A8D98" HorizontalAlignment="Right"/>
+                                            <TextBlock Text="{Binding Price}" FontSize="16"
+                                                       FontWeight="Bold" Foreground="#5B59E8"
+                                                       HorizontalAlignment="Right"/>
                                         </StackPanel>
                                     </Grid>
                                 </StackPanel>
@@ -124,5 +149,3 @@
         </Grid>
     </Grid>
 </Page>
-    
-    

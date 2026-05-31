@@ -1,5 +1,6 @@
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using SalonSamochodowy.ViewModels;
 
 namespace SalonSamochodowy
@@ -18,7 +19,6 @@ namespace SalonSamochodowy
                 System.Windows.MessageBoxButton.OK,
                 System.Windows.MessageBoxImage.Error);
 
-            // VM sygnalizuje chęć otwarcia okna — View otwiera je z właściwym ownerem
             _vm.OpenAddVehicleRequested += OpenAddVehicleWindow;
 
             Loaded += async (s, e) =>
@@ -36,6 +36,18 @@ namespace SalonSamochodowy
             addWindow.VehicleAdded += async () => await _vm.LoadVehiclesAsync();
 
             addWindow.ShowDialog();
+        }
+
+        // Kółko myszy nad ItemsControl (ani żadnym dzieckiem bez własnego ScrollViewera)
+        // generuje PreviewMouseWheel który bubbluje w górę. NavigationView WPF-UI
+        // przechwytuje go zanim dotrze do naszego ScrollViewera.
+        // Handler na ScrollViewerze z e.Handled = true zatrzymuje dalsze bąbelkowanie
+        // i ręcznie scrolluje o dokładnie tę samą deltę co system.
+        private void VehicleScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            var sv = (ScrollViewer)sender;
+            sv.ScrollToVerticalOffset(sv.VerticalOffset - e.Delta);
+            e.Handled = true;
         }
     }
 }
