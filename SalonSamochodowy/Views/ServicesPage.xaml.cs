@@ -1,3 +1,4 @@
+using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -12,7 +13,7 @@ namespace SalonSamochodowy.Views
         public ServicesPage()
         {
             InitializeComponent();
-            _vm = new ServicesPageViewModel();
+            _vm = ((App)Application.Current).Services.GetRequiredService<ServicesPageViewModel>();
             DataContext = _vm;
             Loaded += async (s, e) => await _vm.LoadFromDbAsync();
         }

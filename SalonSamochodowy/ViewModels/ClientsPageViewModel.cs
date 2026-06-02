@@ -11,6 +11,12 @@ namespace SalonSamochodowy.ViewModels
 {
     public partial class ClientsPageViewModel : ObservableObject
     {
+        private readonly IUnitOfWork _uow;
+
+        public ClientsPageViewModel(IUnitOfWork uow)
+        {
+            _uow = uow;
+        }
         public ObservableCollection<ClientModel> ClientsList { get; } = new();
 
         [ObservableProperty] private ClientModel? selectedClient;
@@ -39,8 +45,7 @@ namespace SalonSamochodowy.ViewModels
         {
             try
             {
-                using var ctx = new AppDbContext();
-                using var uow = new UnitOfWork(ctx);
+                var uow = _uow;
 
                 var clients = await uow.Clients.GetAllAsync();
 

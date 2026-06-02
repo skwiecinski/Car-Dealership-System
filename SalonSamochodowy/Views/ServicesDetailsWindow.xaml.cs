@@ -1,3 +1,4 @@
+using Microsoft.Extensions.DependencyInjection;
 ﻿using System.Windows;
 using SalonSamochodowy.ViewModels;
 using Wpf.Ui.Controls;
@@ -12,7 +13,8 @@ namespace SalonSamochodowy.Views
         {
             InitializeComponent();
 
-            _vm = new ServicesDetailsViewModel(jobId);
+            _vm = ((App)Application.Current).Services.GetRequiredService<ServicesDetailsViewModel>();
+            _vm.Initialize(jobId);
             DataContext = _vm;
 
             if (owner != null)

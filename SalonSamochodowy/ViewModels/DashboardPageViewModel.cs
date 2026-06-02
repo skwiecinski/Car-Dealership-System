@@ -16,6 +16,12 @@ namespace SalonSamochodowy.ViewModels
 {
     public partial class DashboardPageViewModel : ObservableObject
     {
+        private readonly IUnitOfWork _uow;
+
+        public DashboardPageViewModel(IUnitOfWork uow)
+        {
+            _uow = uow;
+        }
         [ObservableProperty] private string kpiOrders = "—";
         [ObservableProperty] private string kpiVehicles = "—";
         [ObservableProperty] private string kpiJobs = "—";
@@ -36,8 +42,7 @@ namespace SalonSamochodowy.ViewModels
         {
             try
             {
-                using var ctx = new AppDbContext();
-                using var uow = new UnitOfWork(ctx);
+                var uow = _uow;
 
                 var firstDayOfMonth = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
 
@@ -56,7 +61,7 @@ namespace SalonSamochodowy.ViewModels
             }
         }
 
-        private async Task BuildEmployeeRankingAsync(UnitOfWork uow, IList<SalesOrder> thisMonthOrders, DateTime firstDay)
+        private async Task BuildEmployeeRankingAsync(IUnitOfWork uow, IList<SalesOrder> thisMonthOrders, DateTime firstDay)
         {
             var accentColor = new SKColor(91, 89, 232);
             var axisTextColor = new SKColor(138, 141, 152);
@@ -110,7 +115,7 @@ namespace SalonSamochodowy.ViewModels
             SalesChartTitle = $"Sprzedaż w {monthName} (Top 5 Pracowników)";
         }
 
-        private async Task BuildRecentOrdersAsync(UnitOfWork uow)
+        private async Task BuildRecentOrdersAsync(IUnitOfWork uow)
         {
             RecentOrders.Clear();
 

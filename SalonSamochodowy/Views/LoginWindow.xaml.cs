@@ -1,3 +1,4 @@
+using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 using SalonSamochodowy.ViewModels;
 using Wpf.Ui.Controls;
@@ -10,7 +11,7 @@ namespace SalonSamochodowy.Views
         {
             InitializeComponent();
 
-            var vm = new LoginViewModel();
+            var vm = ((App)Application.Current).Services.GetRequiredService<LoginViewModel>();
             vm.LoginSucceeded += user =>
             {
                 SessionContext.CurrentUser = user; // zeby miec info o userze, jest static, takze mozna sie odwolywac bez tworzenia klasy

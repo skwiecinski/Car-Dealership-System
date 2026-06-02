@@ -12,7 +12,13 @@ namespace SalonSamochodowy.ViewModels
 {
     public partial class ServicesDetailsViewModel : ObservableObject
     {
-        private readonly int _jobId;
+        private readonly IUnitOfWork _uow;
+
+        public ServicesDetailsViewModel(IUnitOfWork uow)
+        {
+            _uow = uow;
+        }
+        private int _jobId;
 
         // ── Info o jobbie ──────────────────────────────────────────────
         [ObservableProperty] private string jobCode = "—";
@@ -47,7 +53,7 @@ namespace SalonSamochodowy.ViewModels
         public event Action? CloseRequested;
         public event Action? StatusChanged;   // żeby ServicesPage mogło odświeżyć listę
 
-        public ServicesDetailsViewModel(int jobId)
+        public void Initialize(int jobId)
         {
             _jobId = jobId;
         }
@@ -56,8 +62,7 @@ namespace SalonSamochodowy.ViewModels
         {
             try
             {
-                using var ctx = new AppDbContext();
-                using var uow = new UnitOfWork(ctx);
+                var uow = _uow;
 
                 var job = await uow.Jobs.GetByIdAsync(_jobId);
                 if (job == null)
@@ -148,8 +153,7 @@ namespace SalonSamochodowy.ViewModels
         {
             try
             {
-                using var ctx = new AppDbContext();
-                using var uow = new UnitOfWork(ctx);
+                var uow = _uow;
 
                 var job = await uow.Jobs.GetByIdAsync(_jobId);
                 if (job == null)

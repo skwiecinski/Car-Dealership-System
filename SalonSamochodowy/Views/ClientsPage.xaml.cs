@@ -1,3 +1,4 @@
+using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 using System.Windows.Controls;
 using SalonSamochodowy.ViewModels;
@@ -6,11 +7,12 @@ namespace SalonSamochodowy.Views
 {
     public partial class ClientsPage : Page
     {
-        private readonly ClientsPageViewModel _vm = new ClientsPageViewModel();
+        private readonly ClientsPageViewModel _vm;
 
         public ClientsPage()
         {
             InitializeComponent();
+            _vm = ((App)Application.Current).Services.GetRequiredService<ClientsPageViewModel>();
             DataContext = _vm;
 
             _vm.LoadFailed += msg => System.Windows.MessageBox.Show(

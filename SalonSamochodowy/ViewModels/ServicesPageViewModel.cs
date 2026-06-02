@@ -7,6 +7,12 @@ namespace SalonSamochodowy.ViewModels
 {
     public partial class ServicesPageViewModel : ObservableObject
     {
+        private readonly IUnitOfWork _uow;
+
+        public ServicesPageViewModel(IUnitOfWork uow)
+        {
+            _uow = uow;
+        }
         public ObservableCollection<ServiceJob> PendingJobs { get; } = new();
         public ObservableCollection<ServiceJob> InProgressJobs { get; } = new();
         public ObservableCollection<ServiceJob> FinishedJobs { get; } = new();
@@ -16,15 +22,13 @@ namespace SalonSamochodowy.ViewModels
 
             if (loggedInUser.Role == null)
             {
-                using var ctxRole = new AppDbContext();
-                using var uowRole = new UnitOfWork(ctxRole);
+                var uowRole = _uow;
                 loggedInUser.Role = await uowRole.AppRoles.GetByIdAsync(loggedInUser.RoleID);
             }
 
             try
             {
-                using var ctx = new AppDbContext();
-                using var uow = new UnitOfWork(ctx);
+                var uow = _uow;
                 IEnumerable<Job> allJobs = Enumerable.Empty<Job>();
 
                 if (loggedInUser.Role?.RoleName == "Kierownik")

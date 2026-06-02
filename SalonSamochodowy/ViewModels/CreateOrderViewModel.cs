@@ -65,14 +65,18 @@ public partial class CreateOrderViewModel : ObservableObject
     public ObservableCollection<SerwisantItem> ListaSerwisantow { get; } = new();
     [ObservableProperty] private SerwisantItem? wybranySerwisant;
 
-    public CreateOrderViewModel() { }
+    private readonly IUnitOfWork _uow;
+
+    public CreateOrderViewModel(IUnitOfWork uow)
+    {
+        _uow = uow;
+    }
 
     public async Task LoadFromDbAsync()
     {
         try
         {
-            using var ctx = new AppDbContext();
-            using var uow = new UnitOfWork(ctx);
+            var uow = _uow;
 
             ListaKlientow.Clear();
             var allClients = await uow.Clients.GetAllAsync();
@@ -173,8 +177,7 @@ public partial class CreateOrderViewModel : ObservableObject
 
         try
         {
-            using var ctx = new AppDbContext();
-            using var uow = new UnitOfWork(ctx);
+            var uow = _uow;
 
             var models = await uow.VehicleModels.FindAsync(m => m.Brand == brand);
             foreach (var m in models.OrderBy(m => m.ModelName))
@@ -197,8 +200,7 @@ public partial class CreateOrderViewModel : ObservableObject
 
         try
         {
-            using var ctx = new AppDbContext();
-            using var uow = new UnitOfWork(ctx);
+            var uow = _uow;
             var trims = await uow.TrimLevels.FindAsync(t => t.ModelID == model.ModelID);
             foreach (var t in trims.OrderBy(t => t.BasePrice))
                 Wersje.Add(new TrimItem { TrimID = t.TrimID, ModelID = t.ModelID, TrimName = t.TrimName, BasePrice = t.BasePrice });
@@ -214,8 +216,7 @@ public partial class CreateOrderViewModel : ObservableObject
     {
         try
         {
-            using var ctx = new AppDbContext();
-            using var uow = new UnitOfWork(ctx);
+            var uow = _uow;
 
             if (WybranaWersja == null || WybranySilnik == null)
             {

@@ -12,6 +12,12 @@ namespace SalonSamochodowy.ViewModels
 {
     public partial class VehiclesPageViewModel : ObservableObject
     {
+        private readonly IUnitOfWork _uow;
+
+        public VehiclesPageViewModel(IUnitOfWork uow)
+        {
+            _uow = uow;
+        }
         public ObservableCollection<string> Brands { get; } = new() { "Wszystkie marki" };
         public ObservableCollection<string> Models { get; } = new() { "Wszystkie modele" };
         public ObservableCollection<string> Engines { get; } = new() { "Dowolny" };
@@ -29,8 +35,7 @@ namespace SalonSamochodowy.ViewModels
         {
             try
             {
-                using var ctx = new AppDbContext();
-                using var uow = new UnitOfWork(ctx);
+                var uow = _uow;
 
                 var models = (await uow.VehicleModels.GetAllAsync()).ToList();
 
@@ -64,8 +69,7 @@ namespace SalonSamochodowy.ViewModels
         {
             try
             {
-                using var ctx = new AppDbContext();
-                using var uow = new UnitOfWork(ctx);
+                var uow = _uow;
                 var models = (await uow.VehicleModels.GetAllAsync()).ToList();
                 ReloadModelCombo(models);
             }
@@ -97,8 +101,7 @@ namespace SalonSamochodowy.ViewModels
         {
             try
             {
-                using var ctx = new AppDbContext();
-                using var uow = new UnitOfWork(ctx);
+                var uow = _uow;
 
                 IEnumerable<Vehicle> vehicles;
                 if (!string.IsNullOrEmpty(SelectedStatus) && SelectedStatus != "Wszystkie")

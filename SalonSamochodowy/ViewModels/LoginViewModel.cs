@@ -10,7 +10,12 @@ namespace SalonSamochodowy.ViewModels
 {
     public partial class LoginViewModel : ObservableObject
     {
-        private readonly AuthService _authService = new AuthService();
+        private readonly AuthService _authService;
+
+        public LoginViewModel(AuthService authService)
+        {
+            _authService = authService;
+        }
 
         [ObservableProperty]
         private string email = "";

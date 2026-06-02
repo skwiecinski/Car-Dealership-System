@@ -11,6 +11,12 @@ namespace SalonSamochodowy.ViewModels
 {
     public partial class AddClientWindowViewModel : ObservableObject
     {
+        private readonly IUnitOfWork _uow;
+
+        public AddClientWindowViewModel(IUnitOfWork uow)
+        {
+            _uow = uow;
+        }
         [ObservableProperty] private string fullName = "";
         [ObservableProperty] private string phone = "";
         [ObservableProperty] private string taxId = "";
@@ -55,8 +61,7 @@ namespace SalonSamochodowy.ViewModels
 
             try
             {
-                using var ctx = new AppDbContext();
-                using var uow = new UnitOfWork(ctx);
+                var uow = _uow;
 
                 var existingUsers = await uow.AppUsers.FindAsync(u => u.Email == em);
                 if (existingUsers.Any())

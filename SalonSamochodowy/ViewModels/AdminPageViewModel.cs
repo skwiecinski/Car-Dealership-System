@@ -13,6 +13,12 @@ namespace SalonSamochodowy.ViewModels
 {
     public partial class AdminPageViewModel : ObservableObject
     {
+        private readonly IUnitOfWork _uow;
+
+        public AdminPageViewModel(IUnitOfWork uow)
+        {
+            _uow = uow;
+        }
         public ObservableCollection<AccountRow> Accounts { get; } = new();
         public ObservableCollection<DealershipRow> Dealerships { get; } = new();
         public ObservableCollection<DealershipItem> AvailableDealerships { get; } = new();
@@ -46,8 +52,7 @@ namespace SalonSamochodowy.ViewModels
         {
             try
             {
-                using var ctx = new AppDbContext();
-                using var uow = new UnitOfWork(ctx);
+                var uow = _uow;
 
                 Accounts.Clear();
                 var users = (await uow.AppUsers.GetAllAsync()).ToList();
@@ -80,8 +85,7 @@ namespace SalonSamochodowy.ViewModels
         {
             try
             {
-                using var ctx = new AppDbContext();
-                using var uow = new UnitOfWork(ctx);
+                var uow = _uow;
 
                 var prevSelectedId = SelectedDealershipForEmployee?.DealershipID;
 
@@ -157,8 +161,7 @@ namespace SalonSamochodowy.ViewModels
 
             try
             {
-                using var ctx = new AppDbContext();
-                using var uow = new UnitOfWork(ctx);
+                var uow = _uow;
 
                 var existing = await uow.AppUsers.FindAsync(u => u.Email == em);
                 if (existing.Any())
@@ -230,8 +233,7 @@ namespace SalonSamochodowy.ViewModels
 
             try
             {
-                using var ctx = new AppDbContext();
-                using var uow = new UnitOfWork(ctx);
+                var uow = _uow;
 
                 var user = (await uow.AppUsers.FindAsync(u => u.Email == row.Email)).FirstOrDefault();
                 if (user == null)
@@ -285,8 +287,7 @@ namespace SalonSamochodowy.ViewModels
 
             try
             {
-                using var ctx = new AppDbContext();
-                using var uow = new UnitOfWork(ctx);
+                var uow = _uow;
 
                 var existing = await uow.Dealerships.FindAsync(d => d.Name == name && d.City == city);
                 if (existing.Any())
@@ -326,8 +327,7 @@ namespace SalonSamochodowy.ViewModels
 
             try
             {
-                using var ctx = new AppDbContext();
-                using var uow = new UnitOfWork(ctx);
+                var uow = _uow;
 
                 var workersHere = await uow.Workers.CountAsync(w => w.DealershipID == row.DealershipID);
                 if (workersHere > 0)
