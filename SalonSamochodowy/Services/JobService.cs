@@ -22,11 +22,11 @@ namespace SalonSamochodowy.Services
         {
             IEnumerable<Job> allJobs = Enumerable.Empty<Job>();
 
-            if (user.Role?.RoleName == "Kierownik")
+            if (user.Role?.RoleName == RoleNames.Kierownik)
             {
                 allJobs = await _uow.Jobs.GetAllAsync();
             }
-            else if (user.Role?.RoleName == "Serwisant")
+            else if (user.Role?.RoleName == RoleNames.Serwisant)
             {
                 var worker = (await _uow.Workers.FindAsync(w => w.UserID == user.UserID)).FirstOrDefault();
                 if (worker != null)
@@ -39,8 +39,9 @@ namespace SalonSamochodowy.Services
             foreach (var job in allJobs)
             {
                 var vehicle = await _vehicleService.GetVehicleByIdAsync(job.VehicleID);
-                var worker = await _uow.Workers.GetByIdAsync(job.WorkerID);
-                var workerUser = worker != null ? await _uow.AppUsers.GetByIdAsync(worker.UserID) : null;
+                var workers = await _uow.Workers.FindWithIncludesAsync(w => w.WorkerID == job.WorkerID, w => w.User);
+                var worker = workers.FirstOrDefault();
+                var workerUser = worker?.User;
 
                 dtos.Add(new JobDto
                 {
@@ -76,9 +77,10 @@ namespace SalonSamochodowy.Services
                 vehicleEngine = engine != null ? $"{engine.EngineName} • {engine.Power} KM" : "—";
             }
 
-            var worker = await _uow.Workers.GetByIdAsync(job.WorkerID);
-            var workerUser = worker != null ? await _uow.AppUsers.GetByIdAsync(worker.UserID) : null;
-            var dealership = worker != null ? await _uow.Dealerships.GetByIdAsync(worker.DealershipID) : null;
+            var workers = await _uow.Workers.FindWithIncludesAsync(w => w.WorkerID == job.WorkerID, w => w.User, w => w.Dealership);
+            var worker = workers.FirstOrDefault();
+            var workerUser = worker?.User;
+            var dealership = worker?.Dealership;
 
             return new JobDetailsDto
             {
@@ -124,7 +126,7 @@ namespace SalonSamochodowy.Services
                     VehicleID = vehicleId,
                     FeatureID = featureId,
                     WorkerID = workerId,
-                    Status = "Oczekujące",
+                    Status = JobStatuses.Pending,
                     CreatedAt = DateTime.Now
                 });
             }
@@ -133,7 +135,7 @@ namespace SalonSamochodowy.Services
 
         public async Task<int> GetActiveJobsCountAsync()
         {
-            return await _uow.Jobs.CountAsync(j => j.Status == "Oczekujące" || j.Status == "W trakcie" || j.Status == "PendingJob" || j.Status == "InProgressJob");
+            return await _uow.Jobs.CountAsync(j => j.Status == JobStatuses.Pending || j.Status == JobStatuses.InProgress || j.Status == JobStatuses.Pending || j.Status == JobStatuses.InProgress);
         }
     }
 }

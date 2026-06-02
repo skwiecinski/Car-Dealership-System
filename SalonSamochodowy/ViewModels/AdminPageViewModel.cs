@@ -26,7 +26,7 @@ namespace SalonSamochodowy.ViewModels
         [ObservableProperty] private string firstName = "";
         [ObservableProperty] private string lastName = "";
         [ObservableProperty] private string email = "";
-        [ObservableProperty] private string roleName = "Sprzedawca";
+        [ObservableProperty] private string roleName = RoleNames.Sprzedawca;
         [ObservableProperty] private DealershipItem? selectedDealershipForEmployee;
         [ObservableProperty] private string accountsCountText = "";
 
@@ -55,15 +55,13 @@ namespace SalonSamochodowy.ViewModels
                 var uow = _uow;
 
                 Accounts.Clear();
-                var users = (await uow.AppUsers.GetAllAsync()).ToList();
+                var users = (await uow.AppUsers.GetAllWithIncludesAsync(u => u.Role)).ToList();
                 foreach (var u in users.OrderBy(x => x.RoleID).ThenBy(x => x.LastName))
                 {
-                    var role = await uow.AppRoles.GetByIdAsync(u.RoleID);
-                    var workers = await uow.Workers.FindAsync(w => w.UserID == u.UserID);
+                    var role = u.Role;
+                    var workers = await uow.Workers.FindWithIncludesAsync(w => w.UserID == u.UserID, w => w.Dealership);
                     var worker = workers.FirstOrDefault();
-                    Dealership? dealership = null;
-                    if (worker != null)
-                        dealership = await uow.Dealerships.GetByIdAsync(worker.DealershipID);
+                    Dealership? dealership = worker?.Dealership;
 
                     Accounts.Add(new AccountRow
                     {
@@ -152,7 +150,7 @@ namespace SalonSamochodowy.ViewModels
                 return;
             }
 
-            var isWorkerRole = RoleName == "Sprzedawca" || RoleName == "Serwisant" || RoleName == "Kierownik";
+            var isWorkerRole = RoleName == RoleNames.Sprzedawca || RoleName == RoleNames.Serwisant || RoleName == RoleNames.Kierownik;
             if (isWorkerRole && SelectedDealershipForEmployee == null)
             {
                 ShowMessage?.Invoke("Wybierz salon, do którego pracownik ma zostać przypisany.", MessageBoxImage.Warning);
@@ -206,7 +204,7 @@ namespace SalonSamochodowy.ViewModels
                 FirstName = "";
                 LastName = "";
                 Email = "";
-                RoleName = "Sprzedawca";
+                RoleName = RoleNames.Sprzedawca;
                 ClearPassword?.Invoke();
 
                 await LoadAccountsAsync();
@@ -222,7 +220,7 @@ namespace SalonSamochodowy.ViewModels
         {
             if (row == null) return;
 
-            if (row.RoleName == "Kierownik")
+            if (row.RoleName == RoleNames.Kierownik)
             {
                 ShowMessage?.Invoke("Konto kierownika jest chronione i nie może zostać usunięte.", MessageBoxImage.Warning);
                 return;

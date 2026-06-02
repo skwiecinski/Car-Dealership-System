@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SalonSamochodowy.Entities;
@@ -83,6 +83,26 @@ namespace SalonSamochodowy.Repositories
         public async Task<int> CountAsync(System.Linq.Expressions.Expression<System.Func<T, bool>> predicate)
         {
             return await _dbSet.CountAsync(predicate);
+        }
+
+        public async Task<IEnumerable<T>> GetAllWithIncludesAsync(params System.Linq.Expressions.Expression<System.Func<T, object>>[] includes)
+        {
+            IQueryable<T> query = _dbSet;
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+            return await query.ToListAsync();
+        }
+
+        public async Task<IEnumerable<T>> FindWithIncludesAsync(System.Linq.Expressions.Expression<System.Func<T, bool>> predicate, params System.Linq.Expressions.Expression<System.Func<T, object>>[] includes)
+        {
+            IQueryable<T> query = _dbSet.Where(predicate);
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+            return await query.ToListAsync();
         }
 
         /**

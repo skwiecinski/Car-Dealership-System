@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SalonSamochodowy.Repositories
@@ -54,12 +54,22 @@ namespace SalonSamochodowy.Repositories
         Task<IEnumerable<T>> GetTopOrderedDescAsync<TKey>(System.Linq.Expressions.Expression<System.Func<T, TKey>> orderByDesc, int take);
 
         /**
+         * Retrieves all records of a given entity from the database, including specified related entities.
+         */
+        Task<IEnumerable<T>> GetAllWithIncludesAsync(params System.Linq.Expressions.Expression<System.Func<T, object>>[] includes);
+
+        /**
          * Counts records matching the specified condition (filtering performed in the database).
          *
          * @param predicate the condition to filter the records.
          * @return the count of matching items.
          */
         Task<int> CountAsync(System.Linq.Expressions.Expression<System.Func<T, bool>> predicate);
+
+        /**
+         * Finds records that match the specified condition, including specified related entities.
+         */
+        Task<IEnumerable<T>> FindWithIncludesAsync(System.Linq.Expressions.Expression<System.Func<T, bool>> predicate, params System.Linq.Expressions.Expression<System.Func<T, object>>[] includes);
 
         /**
          * Updates an existing record in the database context.

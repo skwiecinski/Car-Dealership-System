@@ -161,9 +161,9 @@ namespace SalonSamochodowy.ViewModels
 
         private static (string bg, string bd, string fg) StatusColors(string status) => status switch
         {
-            "Zrealizowane" or "Sfinalizowane" => ("#112C1E", "#2D9A4A", "#44C767"),
-            "W realizacji" or "W trakcie"     => ("#332A12", "#D3A125", "#F0B82B"),
-            "Anulowane"                       => ("#3D1D1D", "#D34545", "#ED6262"),
+            OrderStatuses.Finished or OrderStatuses.FinishedAlt => ("#112C1E", "#2D9A4A", "#44C767"),
+            OrderStatuses.InProgress     => ("#332A12", "#D3A125", "#F0B82B"),
+            OrderStatuses.Canceled                       => ("#3D1D1D", "#D34545", "#ED6262"),
             _                                 => ("#1F2536", "#3B82F6", "#60A5FA"),
         };
     }

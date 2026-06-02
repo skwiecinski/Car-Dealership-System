@@ -18,21 +18,20 @@ namespace SalonSamochodowy.Services
 
         public async Task<IEnumerable<ClientDto>> GetAllClientsAsync()
         {
-            var clients = await _uow.Clients.GetAllAsync();
+            var clients = await _uow.Clients.GetAllWithIncludesAsync(c => c.User);
             var dtos = new List<ClientDto>();
 
             foreach (var c in clients)
             {
-                var user = await _uow.AppUsers.GetByIdAsync(c.UserID);
-                if (user != null)
+                if (c.User != null)
                 {
                     dtos.Add(new ClientDto
                     {
                         ClientID = c.ClientID,
-                        UserID = user.UserID,
-                        FirstName = user.FirstName,
-                        LastName = user.LastName,
-                        Email = user.Email,
+                        UserID = c.User.UserID,
+                        FirstName = c.User.FirstName,
+                        LastName = c.User.LastName,
+                        Email = c.User.Email,
                         Phone = c.Phone ?? "",
                         NIP = c.NIP
                     });
@@ -43,11 +42,10 @@ namespace SalonSamochodowy.Services
 
         public async Task<ClientDto?> GetClientByIdAsync(int clientId)
         {
-            var c = await _uow.Clients.GetByIdAsync(clientId);
-            if (c == null) return null;
-
-            var user = await _uow.AppUsers.GetByIdAsync(c.UserID);
-            if (user == null) return null;
+            var clients = await _uow.Clients.FindWithIncludesAsync(x => x.ClientID == clientId, x => x.User);
+            var c = clients.FirstOrDefault();
+            if (c == null || c.User == null) return null;
+            var user = c.User;
 
             return new ClientDto
             {
@@ -69,7 +67,7 @@ namespace SalonSamochodowy.Services
 
         public async Task<ClientDto> CreateClientAsync(string firstName, string lastName, string email, string phone, string? nip)
         {
-            var roleKlient = (await _uow.AppRoles.FindAsync(r => r.RoleName == "Klient")).FirstOrDefault();
+            var roleKlient = (await _uow.AppRoles.FindAsync(r => r.RoleName == RoleNames.Klient)).FirstOrDefault();
             if (roleKlient == null)
                 throw new Exception("Rola 'Klient' nie istnieje w bazie danych.");
 
