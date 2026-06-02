@@ -2,7 +2,7 @@
 using SalonSamochodowy.ViewModels;
 using Wpf.Ui.Controls;
 
-namespace SalonSamochodowy
+namespace SalonSamochodowy.Views
 {
     public partial class ServicesDetailsWindow : FluentWindow
     {

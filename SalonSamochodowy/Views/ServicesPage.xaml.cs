@@ -3,7 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using SalonSamochodowy.ViewModels;
 
-namespace SalonSamochodowy
+namespace SalonSamochodowy.Views
 {
     public partial class ServicesPage : Page
     {

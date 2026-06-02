@@ -1,7 +1,7 @@
 using System.Windows;
 using System.Windows.Controls;
 
-namespace SalonSamochodowy
+namespace SalonSamochodowy.Views
 {
     public partial class CreateOrder : Page
     {

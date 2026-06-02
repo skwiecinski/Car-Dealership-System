@@ -3,7 +3,7 @@ using SalonSamochodowy.Entities;
 using SalonSamochodowy.ViewModels;
 using Wpf.Ui.Controls;
 
-namespace SalonSamochodowy
+namespace SalonSamochodowy.Views
 {
     public partial class MainWindow : FluentWindow
     {

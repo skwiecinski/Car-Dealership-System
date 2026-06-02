@@ -2,7 +2,7 @@ using System.Windows;
 using System.Windows.Controls;
 using SalonSamochodowy.ViewModels;
 
-namespace SalonSamochodowy
+namespace SalonSamochodowy.Views
 {
     public partial class DashboardPage : Page
     {

@@ -1,6 +1,7 @@
 using System;
 using System.Windows;
 using SalonSamochodowy.Entities;
+using SalonSamochodowy.Views;
 
 namespace SalonSamochodowy
 {

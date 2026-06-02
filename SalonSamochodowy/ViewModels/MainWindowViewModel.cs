@@ -1,8 +1,10 @@
 using System;
 using System.Windows;
+using System.Windows.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SalonSamochodowy.Entities;
+using SalonSamochodowy.Views;
 
 namespace SalonSamochodowy.ViewModels
 {
