@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SalonSamochodowy.Entities;
 using SalonSamochodowy.Repositories;
+using SalonSamochodowy.Services;
 
 namespace SalonSamochodowy.ViewModels
 {
@@ -13,9 +14,11 @@ namespace SalonSamochodowy.ViewModels
     {
         private readonly IUnitOfWork _uow;
 
-        public AddClientWindowViewModel(IUnitOfWork uow)
+        private readonly IClientService _clientService;
+        public AddClientWindowViewModel(IUnitOfWork uow, IClientService clientService)
         {
             _uow = uow;
+            _clientService = clientService;
         }
         [ObservableProperty] private string fullName = "";
         [ObservableProperty] private string phone = "";
@@ -63,17 +66,9 @@ namespace SalonSamochodowy.ViewModels
             {
                 var uow = _uow;
 
-                var existingUsers = await uow.AppUsers.FindAsync(u => u.Email == em);
-                if (existingUsers.Any())
+                if (await _clientService.EmailExistsAsync(em))
                 {
                     ShowWarning?.Invoke("Użytkownik z takim adresem e-mail już istnieje.");
-                    return;
-                }
-
-                var roleKlient = (await uow.AppRoles.FindAsync(r => r.RoleName == "Klient")).FirstOrDefault();
-                if (roleKlient == null)
-                {
-                    ShowError?.Invoke("Rola 'Klient' nie istnieje w bazie. Zgłoś to backendowi.");
                     return;
                 }
 
@@ -90,26 +85,7 @@ namespace SalonSamochodowy.ViewModels
                     lastName  = parts.Length > 1 ? parts[1] : "";
                 }
 
-                var newUser = new AppUser
-                {
-                    FirstName    = firstName,
-                    LastName     = lastName,
-                    Email        = em,
-                    PasswordHash = "",
-                    RoleID       = roleKlient.RoleID,
-                    BirthDate    = DateTime.Today
-                };
-                await uow.AppUsers.AddAsync(newUser);
-                await uow.CompleteAsync();
-
-                var newClient = new Client
-                {
-                    UserID = newUser.UserID,
-                    NIP    = string.IsNullOrWhiteSpace(nip) ? null : nip,
-                    Phone  = string.IsNullOrWhiteSpace(ph) ? "" : ph
-                };
-                await uow.Clients.AddAsync(newClient);
-                await uow.CompleteAsync();
+                var newClientDto = await _clientService.CreateClientAsync(firstName, lastName, em, ph, nip);
 
                 Result = new ClientModel
                 {

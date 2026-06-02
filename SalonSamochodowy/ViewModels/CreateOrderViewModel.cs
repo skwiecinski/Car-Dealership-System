@@ -70,11 +70,13 @@ public partial class CreateOrderViewModel : ObservableObject
     private readonly IVehicleService _vehicleService;
     private readonly IOrderService _orderService;
 
-    public CreateOrderViewModel(IUnitOfWork uow, IVehicleService vehicleService, IOrderService orderService)
+    private readonly IClientService _clientService;
+    public CreateOrderViewModel(IUnitOfWork uow, IVehicleService vehicleService, IOrderService orderService, IClientService clientService)
     {
         _uow = uow;
         _vehicleService = vehicleService;
         _orderService = orderService;
+        _clientService = clientService;
     }
 
     public async Task LoadFromDbAsync()
@@ -84,20 +86,15 @@ public partial class CreateOrderViewModel : ObservableObject
             var uow = _uow;
 
             ListaKlientow.Clear();
-            var allClients = await uow.Clients.GetAllAsync();
-            foreach (var c in allClients)
+            var clients = await _clientService.GetAllClientsAsync();
+            foreach (var c in clients)
             {
-                var user = await uow.AppUsers.GetByIdAsync(c.UserID);
-                if (user == null) continue;
-                var fullName = string.IsNullOrWhiteSpace(user.LastName)
-                    ? user.FirstName
-                    : $"{user.FirstName} {user.LastName}";
                 ListaKlientow.Add(new KlientItem
                 {
                     ClientID = c.ClientID,
-                    UserID   = user.UserID,
-                    FullName = fullName,
-                    Email    = user.Email
+                    UserID   = c.UserID,
+                    FullName = c.FullName,
+                    Email    = c.Email
                 });
             }
 
@@ -257,42 +254,14 @@ public partial class CreateOrderViewModel : ObservableObject
                     return;
                 }
 
-                var existing = await uow.AppUsers.FindAsync(u => u.Email == NowyEmail.Trim());
-                if (existing.Any())
+                if (await _clientService.EmailExistsAsync(NowyEmail.Trim()))
                 {
                     ShowWarning?.Invoke("Użytkownik z takim e-mailem już istnieje. Wybierz go z listy istniejących klientów.");
                     return;
                 }
 
-                var roleKlient = (await uow.AppRoles.FindAsync(r => r.RoleName == "Klient")).FirstOrDefault();
-                if (roleKlient == null)
-                {
-                    ShowError?.Invoke("Rola 'Klient' nie istnieje w bazie.");
-                    return;
-                }
-
-                var newUser = new AppUser
-                {
-                    FirstName    = NowyImie.Trim(),
-                    LastName     = NowyNazwisko.Trim(),
-                    Email        = NowyEmail.Trim(),
-                    PasswordHash = "",
-                    RoleID       = roleKlient.RoleID,
-                    BirthDate    = DateTime.Today
-                };
-                await uow.AppUsers.AddAsync(newUser);
-                await uow.CompleteAsync();
-
-                var newClient = new Client
-                {
-                    UserID = newUser.UserID,
-                    NIP    = string.IsNullOrWhiteSpace(NowyNIP) ? null : NowyNIP.Trim(),
-                    Phone  = string.IsNullOrWhiteSpace(NowyTelefon) ? "" : NowyTelefon.Trim()
-                };
-                await uow.Clients.AddAsync(newClient);
-                await uow.CompleteAsync();
-
-                clientId = newClient.ClientID;
+                var newClientDto = await _clientService.CreateClientAsync(NowyImie.Trim(), NowyNazwisko.Trim(), NowyEmail.Trim(), NowyTelefon.Trim(), string.IsNullOrWhiteSpace(NowyNIP) ? null : NowyNIP.Trim());
+                clientId = newClientDto.ClientID;
             }
 
             var salon = (await uow.Dealerships.GetAllAsync()).First();
