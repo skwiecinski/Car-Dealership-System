@@ -20,12 +20,14 @@ namespace SalonSamochodowy.ViewModels
         private readonly IUnitOfWork _uow;
     private readonly IVehicleService _vehicleService;
     private readonly IOrderService _orderService;
+    private readonly IJobService _jobService;
 
-        public DashboardPageViewModel(IUnitOfWork uow, IVehicleService vehicleService, IOrderService orderService)
+        public DashboardPageViewModel(IUnitOfWork uow, IVehicleService vehicleService, IOrderService orderService, IJobService jobService)
         {
             _uow = uow;
         _vehicleService = vehicleService;
         _orderService = orderService;
+        _jobService = jobService;
         }
         [ObservableProperty] private string kpiOrders = "—";
         [ObservableProperty] private string kpiVehicles = "—";
@@ -53,7 +55,7 @@ namespace SalonSamochodowy.ViewModels
 
                 KpiOrders   = (await _orderService.GetOrdersCountSinceAsync(firstDayOfMonth)).ToString();
                 KpiVehicles = (await _vehicleService.GetAvailableVehiclesCountAsync()).ToString();
-                KpiJobs     = (await uow.Jobs.CountAsync(j => j.Status == "Oczekujące" || j.Status == "W trakcie")).ToString();
+                KpiJobs     = (await _jobService.GetActiveJobsCountAsync()).ToString();
 
                 var thisMonthOrders = (await _orderService.GetOrdersSinceAsync(firstDayOfMonth)).ToList();
 

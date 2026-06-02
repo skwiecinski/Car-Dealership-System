@@ -1,83 +1,67 @@
-﻿using System.Collections.ObjectModel;
+using System;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
-using SalonSamochodowy.Entities;
-using SalonSamochodowy.Repositories;
 using SalonSamochodowy.Services;
+using SalonSamochodowy.Repositories;
 
 namespace SalonSamochodowy.ViewModels
 {
     public partial class ServicesPageViewModel : ObservableObject
     {
-        private readonly IUnitOfWork _uow;
-    private readonly IVehicleService _vehicleService;
+        private readonly IJobService _jobService;
+        private readonly IUnitOfWork _uow; // Potrzebne do odświeżenia roli w SessionContext
 
-        public ServicesPageViewModel(IUnitOfWork uow, IVehicleService vehicleService)
+        public ServicesPageViewModel(IUnitOfWork uow, IJobService jobService)
         {
             _uow = uow;
-        _vehicleService = vehicleService;
+            _jobService = jobService;
         }
+
         public ObservableCollection<ServiceJob> PendingJobs { get; } = new();
         public ObservableCollection<ServiceJob> InProgressJobs { get; } = new();
         public ObservableCollection<ServiceJob> FinishedJobs { get; } = new();
+
         public async Task LoadFromDbAsync()
         {
             var loggedInUser = SessionContext.CurrentUser;
 
             if (loggedInUser.Role == null)
             {
-                var uowRole = _uow;
-                loggedInUser.Role = await uowRole.AppRoles.GetByIdAsync(loggedInUser.RoleID);
+                loggedInUser.Role = await _uow.AppRoles.GetByIdAsync(loggedInUser.RoleID);
             }
 
             try
             {
-                var uow = _uow;
-                IEnumerable<Job> allJobs = Enumerable.Empty<Job>();
-
-                if (loggedInUser.Role?.RoleName == "Kierownik")
-                {
-                    allJobs = await uow.Jobs.GetAllAsync(); 
-                }
-                else if (loggedInUser.Role?.RoleName == "Serwisant")
-                {
-                    var worker = await uow.Workers.FindAsync(w => w.UserID == loggedInUser.UserID);
-                    var workerObj = worker.FirstOrDefault();
-                    if (workerObj != null)
-                        allJobs = await uow.Jobs.FindAsync(j => j.WorkerID == workerObj.WorkerID);
-                }
+                var jobs = await _jobService.GetJobsForUserAsync(loggedInUser);
 
                 PendingJobs.Clear();
                 InProgressJobs.Clear();
                 FinishedJobs.Clear();
 
-                foreach (var job in allJobs)
+                foreach (var job in jobs)
                 {
-                    var vehicle = await _vehicleService.GetVehicleByIdAsync(job.VehicleID);
-                    var worker = await uow.Workers.GetByIdAsync(job.WorkerID);
-                    var workerUser = worker != null ? await uow.AppUsers.GetByIdAsync(worker.UserID) : null;
-
                     var serviceJob = new ServiceJob
                     {
                         JobID = job.JobID,
-                        TaskName = job.CreatedAt.ToString("dd.MM.yyyy"), // tutaj trzeba tuning zajebać
-                        CarModel = vehicle?.VIN ?? "Nieznany pojazd",
-                        WorkerName = workerUser != null ? $"{workerUser.FirstName} {workerUser.LastName}" : "—",
-                        Progress = 0 // klasa servicejob do poprawy
+                        TaskName = job.CreatedAt.ToString("dd.MM.yyyy"),
+                        CarModel = job.VehicleVin,
+                        WorkerName = job.WorkerName,
+                        Progress = job.Progress
                     };
-
 
                     switch (job.Status)
                     {
-                        case "Oczekujące" : // jako, że case wykonuje się aż do breaka, można ustawić ich kilka, bo jebaniec będzie jebał w dół, takżę zostaw to huju lepiej dla dobra ogółu
-                        case "PendingJob" :
+                        case "Oczekujące":
+                        case "PendingJob":
                             PendingJobs.Add(serviceJob);
                             break;
-                        case "W trakcie" :
-                        case "InProgressJob" :
+                        case "W trakcie":
+                        case "InProgressJob":
                             InProgressJobs.Add(serviceJob);
                             break;
                         case "Zakończone":
-                        case "FinishedJob" :
+                        case "FinishedJob":
                             FinishedJobs.Add(serviceJob);
                             break;
                     }
@@ -86,9 +70,9 @@ namespace SalonSamochodowy.ViewModels
             catch (Exception ex)
             {
             }
-
         }
     }
+
     public class ServiceJob
     {
         public int JobID { get; set; }

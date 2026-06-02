@@ -71,12 +71,14 @@ public partial class CreateOrderViewModel : ObservableObject
     private readonly IOrderService _orderService;
 
     private readonly IClientService _clientService;
-    public CreateOrderViewModel(IUnitOfWork uow, IVehicleService vehicleService, IOrderService orderService, IClientService clientService)
+    private readonly IJobService _jobService;
+    public CreateOrderViewModel(IUnitOfWork uow, IVehicleService vehicleService, IOrderService orderService, IClientService clientService, IJobService jobService)
     {
         _uow = uow;
         _vehicleService = vehicleService;
         _orderService = orderService;
         _clientService = clientService;
+        _jobService = jobService;
     }
 
     public async Task LoadFromDbAsync()
@@ -277,24 +279,10 @@ public partial class CreateOrderViewModel : ObservableObject
             };
             await _vehicleService.AddVehicleAsync(vehicle);
 
-            foreach (var opcja in DodatkoweOpcje.Where(o => o.Zaznaczona))
+            var selectedFeatures = DodatkoweOpcje.Where(o => o.Zaznaczona).Select(o => o.FeatureID).ToList();
+            if (selectedFeatures.Any())
             {
-                await uow.VehicleFeatures.AddAsync(new VehicleFeature
-                {
-                    VehicleID      = vehicle.VehicleID,
-                    FeatureID      = opcja.FeatureID,
-                    PurchasePrice  = 0m
-                });
-
-
-                await uow.Jobs.AddAsync(new Job
-                {
-                    VehicleID = vehicle.VehicleID,
-                    FeatureID = opcja.FeatureID, 
-                    WorkerID = WybranySerwisant.WorkerID,
-                    Status = "PendingJob",
-                    CreatedAt = DateTime.Now
-                });
+                await _jobService.AssignFeaturesAndCreateJobsAsync(vehicle.VehicleID, selectedFeatures, WybranySerwisant.WorkerID);
             }
 
             decimal cena = CenaFinalna > 0 ? CenaFinalna : WybranaWersja.BasePrice + WybranySilnik.Price;
