@@ -68,11 +68,13 @@ public partial class CreateOrderViewModel : ObservableObject
 
     private readonly IUnitOfWork _uow;
     private readonly IVehicleService _vehicleService;
+    private readonly IOrderService _orderService;
 
-    public CreateOrderViewModel(IUnitOfWork uow, IVehicleService vehicleService)
+    public CreateOrderViewModel(IUnitOfWork uow, IVehicleService vehicleService, IOrderService orderService)
     {
         _uow = uow;
         _vehicleService = vehicleService;
+        _orderService = orderService;
     }
 
     public async Task LoadFromDbAsync()
@@ -343,8 +345,7 @@ public partial class CreateOrderViewModel : ObservableObject
                 Dodać możliwość tworzenia nowych zleceń serwisowych dla serwisanta
              */
 
-            await uow.SalesOrders.AddAsync(order);
-            await uow.CompleteAsync();
+            await _orderService.CreateOrderAsync(order);
 
             ShowInfo?.Invoke($"Zamówienie zapisane.\nNumer: {order.OrderID}\nCena: {order.FinalPrice:N0} zł");
 

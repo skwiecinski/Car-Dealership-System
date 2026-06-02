@@ -19,11 +19,13 @@ namespace SalonSamochodowy.ViewModels
     {
         private readonly IUnitOfWork _uow;
     private readonly IVehicleService _vehicleService;
+    private readonly IOrderService _orderService;
 
-        public DashboardPageViewModel(IUnitOfWork uow, IVehicleService vehicleService)
+        public DashboardPageViewModel(IUnitOfWork uow, IVehicleService vehicleService, IOrderService orderService)
         {
             _uow = uow;
         _vehicleService = vehicleService;
+        _orderService = orderService;
         }
         [ObservableProperty] private string kpiOrders = "—";
         [ObservableProperty] private string kpiVehicles = "—";
@@ -49,11 +51,11 @@ namespace SalonSamochodowy.ViewModels
 
                 var firstDayOfMonth = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
 
-                KpiOrders   = (await uow.SalesOrders.CountAsync(o => o.OrderDate >= firstDayOfMonth)).ToString();
+                KpiOrders   = (await _orderService.GetOrdersCountSinceAsync(firstDayOfMonth)).ToString();
                 KpiVehicles = (await _vehicleService.GetAvailableVehiclesCountAsync()).ToString();
                 KpiJobs     = (await uow.Jobs.CountAsync(j => j.Status == "Oczekujące" || j.Status == "W trakcie")).ToString();
 
-                var thisMonthOrders = (await uow.SalesOrders.FindAsync(o => o.OrderDate >= firstDayOfMonth)).ToList();
+                var thisMonthOrders = (await _orderService.GetOrdersSinceAsync(firstDayOfMonth)).ToList();
 
                 await BuildEmployeeRankingAsync(uow, thisMonthOrders, firstDayOfMonth);
                 await BuildRecentOrdersAsync(uow);
@@ -122,7 +124,7 @@ namespace SalonSamochodowy.ViewModels
         {
             RecentOrders.Clear();
 
-            var latest = await uow.SalesOrders.GetTopOrderedDescAsync(o => o.OrderDate, 5);
+            var latest = await _orderService.GetRecentOrdersAsync(5);
 
             foreach (var o in latest)
             {

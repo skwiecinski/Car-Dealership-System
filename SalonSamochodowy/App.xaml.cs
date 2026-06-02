@@ -26,6 +26,7 @@ namespace SalonSamochodowy
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<SalonSamochodowy.Services.AuthService>();
             services.AddTransient<SalonSamochodowy.Services.IVehicleService, SalonSamochodowy.Services.VehicleService>();
+            services.AddTransient<SalonSamochodowy.Services.IOrderService, SalonSamochodowy.Services.OrderService>();
 
             // ViewModels
             services.AddTransient<AddClientWindowViewModel>();
