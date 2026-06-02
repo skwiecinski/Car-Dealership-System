@@ -17,14 +17,16 @@ namespace SalonSamochodowy.ViewModels
 {
     public partial class DashboardPageViewModel : ObservableObject
     {
-        private readonly IUnitOfWork _uow;
+        private readonly ICatalogService _catalogService;
+    private readonly IClientService _clientService;
     private readonly IVehicleService _vehicleService;
     private readonly IOrderService _orderService;
     private readonly IJobService _jobService;
 
-        public DashboardPageViewModel(IUnitOfWork uow, IVehicleService vehicleService, IOrderService orderService, IJobService jobService)
+        public DashboardPageViewModel(ICatalogService catalogService, IClientService clientService, IVehicleService vehicleService, IOrderService orderService, IJobService jobService)
         {
-            _uow = uow;
+            _catalogService = catalogService;
+            _clientService = clientService;
         _vehicleService = vehicleService;
         _orderService = orderService;
         _jobService = jobService;
@@ -49,7 +51,7 @@ namespace SalonSamochodowy.ViewModels
         {
             try
             {
-                var uow = _uow;
+                
 
                 var firstDayOfMonth = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
 
@@ -59,8 +61,8 @@ namespace SalonSamochodowy.ViewModels
 
                 var thisMonthOrders = (await _orderService.GetOrdersSinceAsync(firstDayOfMonth)).ToList();
 
-                await BuildEmployeeRankingAsync(uow, thisMonthOrders, firstDayOfMonth);
-                await BuildRecentOrdersAsync(uow);
+                await BuildEmployeeRankingAsync(thisMonthOrders, firstDayOfMonth);
+                await BuildRecentOrdersAsync();
             }
             catch (Exception ex)
             {
@@ -68,7 +70,7 @@ namespace SalonSamochodowy.ViewModels
             }
         }
 
-        private async Task BuildEmployeeRankingAsync(IUnitOfWork uow, IList<SalesOrder> thisMonthOrders, DateTime firstDay)
+        private async Task BuildEmployeeRankingAsync(IList<SalesOrder> thisMonthOrders, DateTime firstDay)
         {
             var accentColor = new SKColor(91, 89, 232);
             var axisTextColor = new SKColor(138, 141, 152);
@@ -85,11 +87,9 @@ namespace SalonSamochodowy.ViewModels
             var values = new List<int>();
             foreach (var g in grouped)
             {
-                var worker = await uow.Workers.GetByIdAsync(g.WorkerID);
-                if (worker == null) continue;
-                var user = await uow.AppUsers.GetByIdAsync(worker.UserID);
-                if (user == null) continue;
-                labels.Add($"{user.FirstName} {user.LastName.FirstOrDefault()}.".Trim());
+                var workerDto = await _catalogService.GetWorkerByIdAsync(g.WorkerID);
+                if (workerDto == null) continue;
+                labels.Add($"{workerDto.FullName.Split(' ')[0]} {workerDto.FullName.Split(' ').LastOrDefault()?.FirstOrDefault()}.".Trim());
                 values.Add(g.Count);
             }
 
@@ -122,7 +122,7 @@ namespace SalonSamochodowy.ViewModels
             SalesChartTitle = $"Sprzedaż w {monthName} (Top 5 Pracowników)";
         }
 
-        private async Task BuildRecentOrdersAsync(IUnitOfWork uow)
+        private async Task BuildRecentOrdersAsync()
         {
             RecentOrders.Clear();
 
@@ -131,20 +131,14 @@ namespace SalonSamochodowy.ViewModels
             foreach (var o in latest)
             {
                 var vehicle = await _vehicleService.GetVehicleByIdAsync(o.VehicleID);
-                var trim = vehicle != null ? await uow.TrimLevels.GetByIdAsync(vehicle.TrimID) : null;
-                var model = trim != null ? await uow.VehicleModels.GetByIdAsync(trim.ModelID) : null;
+                var trim = vehicle != null ? await _catalogService.GetTrimByIdAsync(vehicle.TrimID) : null;
+                var model = trim != null ? await _catalogService.GetModelByIdAsync(trim.ModelID) : null;
 
                 string clientName = "—";
-                var client = await uow.Clients.GetByIdAsync(o.ClientID);
+                var client = await _clientService.GetClientByIdAsync(o.ClientID);
                 if (client != null)
                 {
-                    var user = await uow.AppUsers.GetByIdAsync(client.UserID);
-                    if (user != null)
-                    {
-                        clientName = string.IsNullOrWhiteSpace(user.LastName)
-                            ? user.FirstName
-                            : $"{user.FirstName} {user.LastName}";
-                    }
+                    clientName = client.FullName;
                 }
 
                 var (bg, bd, fg) = StatusColors(o.Status);
