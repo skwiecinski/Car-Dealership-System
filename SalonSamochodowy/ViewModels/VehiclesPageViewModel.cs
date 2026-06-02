@@ -7,16 +7,19 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SalonSamochodowy.Entities;
 using SalonSamochodowy.Repositories;
+using SalonSamochodowy.Services;
 
 namespace SalonSamochodowy.ViewModels
 {
     public partial class VehiclesPageViewModel : ObservableObject
     {
         private readonly IUnitOfWork _uow;
+    private readonly IVehicleService _vehicleService;
 
-        public VehiclesPageViewModel(IUnitOfWork uow)
+        public VehiclesPageViewModel(IUnitOfWork uow, IVehicleService vehicleService)
         {
             _uow = uow;
+        _vehicleService = vehicleService;
         }
         public ObservableCollection<string> Brands { get; } = new() { "Wszystkie marki" };
         public ObservableCollection<string> Models { get; } = new() { "Wszystkie modele" };
@@ -106,11 +109,11 @@ namespace SalonSamochodowy.ViewModels
                 IEnumerable<Vehicle> vehicles;
                 if (!string.IsNullOrEmpty(SelectedStatus) && SelectedStatus != "Wszystkie")
                 {
-                    vehicles = await uow.Vehicles.FindAsync(v => v.Status == SelectedStatus);
+                    vehicles = await _vehicleService.GetVehiclesByStatusAsync(SelectedStatus);
                 }
                 else
                 {
-                    vehicles = await uow.Vehicles.GetAllAsync();
+                    vehicles = await _vehicleService.GetAllVehiclesAsync();
                 }
 
                 VehicleList.Clear();

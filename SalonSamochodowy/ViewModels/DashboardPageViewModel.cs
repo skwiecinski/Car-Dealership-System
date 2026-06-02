@@ -10,6 +10,7 @@ using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
 using SalonSamochodowy.Entities;
 using SalonSamochodowy.Repositories;
+using SalonSamochodowy.Services;
 using SkiaSharp;
 
 namespace SalonSamochodowy.ViewModels
@@ -17,10 +18,12 @@ namespace SalonSamochodowy.ViewModels
     public partial class DashboardPageViewModel : ObservableObject
     {
         private readonly IUnitOfWork _uow;
+    private readonly IVehicleService _vehicleService;
 
-        public DashboardPageViewModel(IUnitOfWork uow)
+        public DashboardPageViewModel(IUnitOfWork uow, IVehicleService vehicleService)
         {
             _uow = uow;
+        _vehicleService = vehicleService;
         }
         [ObservableProperty] private string kpiOrders = "—";
         [ObservableProperty] private string kpiVehicles = "—";
@@ -47,7 +50,7 @@ namespace SalonSamochodowy.ViewModels
                 var firstDayOfMonth = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
 
                 KpiOrders   = (await uow.SalesOrders.CountAsync(o => o.OrderDate >= firstDayOfMonth)).ToString();
-                KpiVehicles = (await uow.Vehicles.CountAsync(v => v.Status == "Dostępny")).ToString();
+                KpiVehicles = (await _vehicleService.GetAvailableVehiclesCountAsync()).ToString();
                 KpiJobs     = (await uow.Jobs.CountAsync(j => j.Status == "Oczekujące" || j.Status == "W trakcie")).ToString();
 
                 var thisMonthOrders = (await uow.SalesOrders.FindAsync(o => o.OrderDate >= firstDayOfMonth)).ToList();
@@ -123,7 +126,7 @@ namespace SalonSamochodowy.ViewModels
 
             foreach (var o in latest)
             {
-                var vehicle = await uow.Vehicles.GetByIdAsync(o.VehicleID);
+                var vehicle = await _vehicleService.GetVehicleByIdAsync(o.VehicleID);
                 var trim = vehicle != null ? await uow.TrimLevels.GetByIdAsync(vehicle.TrimID) : null;
                 var model = trim != null ? await uow.VehicleModels.GetByIdAsync(trim.ModelID) : null;
 

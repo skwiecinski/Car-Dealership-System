@@ -10,6 +10,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using SalonSamochodowy.Entities;
 using SalonSamochodowy.Repositories;
+using SalonSamochodowy.Services;
 
 public partial class CreateOrderViewModel : ObservableObject
 {
@@ -66,10 +67,12 @@ public partial class CreateOrderViewModel : ObservableObject
     [ObservableProperty] private SerwisantItem? wybranySerwisant;
 
     private readonly IUnitOfWork _uow;
+    private readonly IVehicleService _vehicleService;
 
-    public CreateOrderViewModel(IUnitOfWork uow)
+    public CreateOrderViewModel(IUnitOfWork uow, IVehicleService vehicleService)
     {
         _uow = uow;
+        _vehicleService = vehicleService;
     }
 
     public async Task LoadFromDbAsync()
@@ -301,8 +304,7 @@ public partial class CreateOrderViewModel : ObservableObject
                 DealershipID = salon.DealershipID,
                 Status       = "Zarezerwowany"
             };
-            await uow.Vehicles.AddAsync(vehicle);
-            await uow.CompleteAsync();
+            await _vehicleService.AddVehicleAsync(vehicle);
 
             foreach (var opcja in DodatkoweOpcje.Where(o => o.Zaznaczona))
             {

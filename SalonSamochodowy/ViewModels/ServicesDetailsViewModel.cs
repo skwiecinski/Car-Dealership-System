@@ -7,16 +7,19 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SalonSamochodowy.Entities;
 using SalonSamochodowy.Repositories;
+using SalonSamochodowy.Services;
 
 namespace SalonSamochodowy.ViewModels
 {
     public partial class ServicesDetailsViewModel : ObservableObject
     {
         private readonly IUnitOfWork _uow;
+    private readonly IVehicleService _vehicleService;
 
-        public ServicesDetailsViewModel(IUnitOfWork uow)
+        public ServicesDetailsViewModel(IUnitOfWork uow, IVehicleService vehicleService)
         {
             _uow = uow;
+        _vehicleService = vehicleService;
         }
         private int _jobId;
 
@@ -81,7 +84,7 @@ namespace SalonSamochodowy.ViewModels
                 FeatureCategory = feature?.Category ?? "—";
 
                 // pojazd
-                var vehicle = await uow.Vehicles.GetByIdAsync(job.VehicleID);
+                var vehicle = await _vehicleService.GetVehicleByIdAsync(job.VehicleID);
                 if (vehicle != null)
                 {
                     VehicleVin = vehicle.VIN;

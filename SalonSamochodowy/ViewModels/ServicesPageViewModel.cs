@@ -2,16 +2,19 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using SalonSamochodowy.Entities;
 using SalonSamochodowy.Repositories;
+using SalonSamochodowy.Services;
 
 namespace SalonSamochodowy.ViewModels
 {
     public partial class ServicesPageViewModel : ObservableObject
     {
         private readonly IUnitOfWork _uow;
+    private readonly IVehicleService _vehicleService;
 
-        public ServicesPageViewModel(IUnitOfWork uow)
+        public ServicesPageViewModel(IUnitOfWork uow, IVehicleService vehicleService)
         {
             _uow = uow;
+        _vehicleService = vehicleService;
         }
         public ObservableCollection<ServiceJob> PendingJobs { get; } = new();
         public ObservableCollection<ServiceJob> InProgressJobs { get; } = new();
@@ -49,7 +52,7 @@ namespace SalonSamochodowy.ViewModels
 
                 foreach (var job in allJobs)
                 {
-                    var vehicle = await uow.Vehicles.GetByIdAsync(job.VehicleID);
+                    var vehicle = await _vehicleService.GetVehicleByIdAsync(job.VehicleID);
                     var worker = await uow.Workers.GetByIdAsync(job.WorkerID);
                     var workerUser = worker != null ? await uow.AppUsers.GetByIdAsync(worker.UserID) : null;
 
