@@ -100,6 +100,11 @@ namespace SalonSamochodowy.ViewModels
             await LoadVehiclesAsync();
         }
 
+        public event Action? OpenAddVehicleRequested;
+
+        [RelayCommand]
+        private void OpenAddVehicle() => OpenAddVehicleRequested?.Invoke();
+
         public async Task LoadVehiclesAsync()
         {
             try

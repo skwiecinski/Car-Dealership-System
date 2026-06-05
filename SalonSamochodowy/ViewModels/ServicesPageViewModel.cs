@@ -22,6 +22,8 @@ namespace SalonSamochodowy.ViewModels
         public ObservableCollection<ServiceJob> InProgressJobs { get; } = new();
         public ObservableCollection<ServiceJob> FinishedJobs { get; } = new();
 
+        public event Action<string>? LoadFailed;
+
         public async Task LoadFromDbAsync()
         {
             var loggedInUser = SessionContext.CurrentUser;
@@ -69,6 +71,7 @@ namespace SalonSamochodowy.ViewModels
             }
             catch (Exception ex)
             {
+                LoadFailed?.Invoke($"Nie udało się pobrać zleceń: {ex.Message}");
             }
         }
     }
