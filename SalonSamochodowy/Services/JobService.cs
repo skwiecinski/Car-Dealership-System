@@ -42,6 +42,7 @@ namespace SalonSamochodowy.Services
                 var workers = await _uow.Workers.FindWithIncludesAsync(w => w.WorkerID == job.WorkerID, w => w.User);
                 var worker = workers.FirstOrDefault();
                 var workerUser = worker?.User;
+                var feature = await _uow.Features.GetByIdAsync(job.FeatureID);
 
                 dtos.Add(new JobDto
                 {
@@ -50,7 +51,8 @@ namespace SalonSamochodowy.Services
                     VehicleVin = vehicle?.VIN ?? "Nieznany pojazd",
                     WorkerName = workerUser != null ? $"{workerUser.FirstName} {workerUser.LastName}" : "—",
                     Status = job.Status,
-                    Progress = 0
+                    Progress = 0,
+                    FeatureName = feature?.FeatureName ?? "—"
                 });
             }
             return dtos;
@@ -106,6 +108,21 @@ namespace SalonSamochodowy.Services
             if (job == null) throw new Exception("Nie znaleziono zlecenia.");
 
             job.Status = newStatus;
+
+            if (newStatus == "FinishedJob" || newStatus == "Zakończone")
+            {
+                var existingFeatures = await _uow.VehicleFeatures.FindAsync(vf => vf.VehicleID == job.VehicleID && vf.FeatureID == job.FeatureID);
+                if (!existingFeatures.Any())
+                {
+                    await _uow.VehicleFeatures.AddAsync(new VehicleFeature
+                    {
+                        VehicleID = job.VehicleID,
+                        FeatureID = job.FeatureID,
+                        PurchasePrice = 0m
+                    });
+                }
+            }
+
             _uow.Jobs.Update(job);
             await _uow.CompleteAsync();
         }
@@ -114,13 +131,6 @@ namespace SalonSamochodowy.Services
         {
             foreach (var featureId in featureIds)
             {
-                await _uow.VehicleFeatures.AddAsync(new VehicleFeature
-                {
-                    VehicleID = vehicleId,
-                    FeatureID = featureId,
-                    PurchasePrice = 0m
-                });
-
                 await _uow.Jobs.AddAsync(new Job
                 {
                     VehicleID = vehicleId,

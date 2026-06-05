@@ -56,6 +56,14 @@ namespace SalonSamochodowy.Views
                 }
             };
 
+            _vm.OpenAddJobRequested += item =>
+            {
+                var owner = Window.GetWindow(this);
+                var addJobWindow = new AddJobWindow(item.VehicleID, owner);
+                addJobWindow.JobAdded += async () => await _vm.LoadVehiclesAsync();
+                addJobWindow.ShowDialog();
+            };
+
             Loaded += async (s, e) =>
             {
                 await _vm.LoadFiltersAsync();

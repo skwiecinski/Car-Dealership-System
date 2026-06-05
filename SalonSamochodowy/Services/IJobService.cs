@@ -13,11 +13,11 @@ namespace SalonSamochodowy.Services
         public string WorkerName { get; set; } = "";
         public string Status { get; set; } = "";
         public int Progress { get; set; }
+        public string FeatureName { get; set; } = "";
     }
 
     public class JobDetailsDto : JobDto
     {
-        public string FeatureName { get; set; } = "";
         public string FeatureCategory { get; set; } = "";
         public string VehicleStatus { get; set; } = "";
         public string VehicleModel { get; set; } = "";

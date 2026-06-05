@@ -109,6 +109,10 @@ namespace SalonSamochodowy.ViewModels
         [RelayCommand]
         private void EditVehicle(VehicleItem item) => EditVehicleRequested?.Invoke(item);
 
+        public event Action<VehicleItem>? OpenAddJobRequested;
+        [RelayCommand]
+        private void OpenAddJob(VehicleItem item) => OpenAddJobRequested?.Invoke(item);
+
         public event Action<VehicleItem>? DeleteVehicleRequested;
         [RelayCommand]
         private void DeleteVehicle(VehicleItem item) => DeleteVehicleRequested?.Invoke(item);
@@ -151,6 +155,15 @@ namespace SalonSamochodowy.ViewModels
                     var (bg, bd, fg) = StatusColors(v.Status);
                     var price = trim.BasePrice + (engine?.Price ?? 0m);
 
+                    var vehicleFeatures = await uow.VehicleFeatures.FindAsync(vf => vf.VehicleID == v.VehicleID);
+                    var featureNames = new List<string>();
+                    foreach (var vf in vehicleFeatures)
+                    {
+                        var f = await uow.Features.GetByIdAsync(vf.FeatureID);
+                        if (f != null) featureNames.Add(f.FeatureName);
+                    }
+                    var extraFeatures = featureNames.Any() ? string.Join(", ", featureNames) : "Brak";
+
                     VehicleList.Add(new VehicleItem
                     {
                         VehicleID             = v.VehicleID,
@@ -162,7 +175,8 @@ namespace SalonSamochodowy.ViewModels
                         StatusBackgroundColor = bg,
                         StatusBorderColor     = bd,
                         StatusTextColor       = fg,
-                        IsUsed                = v.IsUsed
+                        IsUsed                = v.IsUsed,
+                        ExtraFeatures         = extraFeatures
                     });
                 }
             }
@@ -193,5 +207,6 @@ namespace SalonSamochodowy.ViewModels
         public string StatusBackgroundColor { get; set; } = "";
         public string StatusBorderColor     { get; set; } = "";
         public bool IsUsed                  { get; set; }
+        public string ExtraFeatures         { get; set; } = "";
     }
 }

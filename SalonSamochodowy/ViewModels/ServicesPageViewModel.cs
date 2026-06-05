@@ -46,7 +46,7 @@ namespace SalonSamochodowy.ViewModels
                     var serviceJob = new ServiceJob
                     {
                         JobID = job.JobID,
-                        TaskName = job.CreatedAt.ToString("dd.MM.yyyy"),
+                        TaskName = job.FeatureName,
                         CarModel = job.VehicleVin,
                         WorkerName = job.WorkerName,
                         Progress = job.Progress

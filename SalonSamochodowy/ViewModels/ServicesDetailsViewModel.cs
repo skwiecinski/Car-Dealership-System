@@ -106,9 +106,9 @@ namespace SalonSamochodowy.ViewModels
                 _ => ("#1F2536", "#3B82F6", "#60A5FA"),
             };
 
-            CanMoveToPending = CurrentStatus != "Oczekujące";
-            CanMoveToInProgress = CurrentStatus != "W trakcie";
-            CanMoveToFinished = CurrentStatus != "Zakończone";
+            CanMoveToPending = false;
+            CanMoveToInProgress = CurrentStatus == "Oczekujące";
+            CanMoveToFinished = CurrentStatus == "W trakcie";
         }
 
         [RelayCommand]
