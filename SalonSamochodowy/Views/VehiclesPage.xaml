@@ -73,7 +73,7 @@
                            Appearance="Primary"
                            Icon="{ui:SymbolIcon Add24}"
                            VerticalAlignment="Center"
-                           Command="{Binding AddCommand}"/>
+                           Command="{Binding OpenAddVehicleCommand}"/>
             </Grid>
 
             <ScrollViewer x:Name="VehicleScrollViewer"

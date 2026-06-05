@@ -1,7 +1,8 @@
-﻿<ui:FluentWindow x:Class="SalonSamochodowy.AddVehicleWindow"
+<ui:FluentWindow x:Class="SalonSamochodowy.Views.AddVehicleWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:local="clr-namespace:SalonSamochodowy.Views"
     Title="Dodaj nowy pojazd" Width="500" Height="620"
     WindowStartupLocation="CenterOwner"
     ResizeMode="NoResize" ExtendsContentIntoTitleBar="True">

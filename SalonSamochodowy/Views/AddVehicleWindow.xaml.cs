@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.Windows;
 using SalonSamochodowy.ViewModels;
 using Wpf.Ui.Controls;
 
-namespace SalonSamochodowy
+namespace SalonSamochodowy.Views
 {
     public partial class AddVehicleWindow : FluentWindow
     {
