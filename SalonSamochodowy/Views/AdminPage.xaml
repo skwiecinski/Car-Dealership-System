@@ -188,6 +188,122 @@
                 </Border>
             </TabItem>
 
+            <!-- ====== TAB: SŁOWNIKI ====== -->
+            <TabItem Header="Słowniki">
+                <Border Background="#22242C" CornerRadius="0,10,10,10" Padding="20" BorderBrush="#2D3038" BorderThickness="1">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="350"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" Margin="0,0,20,0">
+                            <!-- DODAWANIE MODELU -->
+                            <TextBlock Text="Modele" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10" Foreground="#E2E2E2"/>
+                            <ui:TextBox Text="{Binding NewModelBrand, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Marka (np. BMW)" Margin="0,0,0,5"/>
+                            <ui:TextBox Text="{Binding NewModelName, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Nazwa modelu (np. X5)" Margin="0,0,0,5"/>
+                            <ui:Button Content="Dodaj model" Appearance="Primary" HorizontalAlignment="Stretch" Command="{Binding AddVehicleModelCommand}" Margin="0,0,0,20"/>
+
+                            <!-- DODAWANIE WERSJI WYPOSAŻENIA -->
+                            <TextBlock Text="Wersje wyposażenia (Trim Levels)" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10" Foreground="#E2E2E2"/>
+                            <ComboBox ItemsSource="{Binding DictModels}" SelectedItem="{Binding NewTrimSelectedModel, Mode=TwoWay}" DisplayMemberPath="ModelName" Margin="0,0,0,5"/>
+                            <ui:TextBox Text="{Binding NewTrimName, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Nazwa (np. M-Sport)" Margin="0,0,0,5"/>
+                            <ui:TextBox Text="{Binding NewTrimBasePrice, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Cena bazowa (PLN)" Margin="0,0,0,5"/>
+                            <ui:Button Content="Dodaj wersję" Appearance="Primary" HorizontalAlignment="Stretch" Command="{Binding AddTrimLevelCommand}" Margin="0,0,0,20"/>
+
+                            <!-- DODAWANIE SILNIKA -->
+                            <TextBlock Text="Silniki" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10" Foreground="#E2E2E2"/>
+                            <ui:TextBox Text="{Binding NewEngineBrand, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Marka silnika" Margin="0,0,0,5"/>
+                            <ui:TextBox Text="{Binding NewEngineName, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Nazwa (np. 2.0 TDI)" Margin="0,0,0,5"/>
+                            <ui:TextBox Text="{Binding NewEngineSize, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Pojemność (np. 2.0L)" Margin="0,0,0,5"/>
+                            <ui:TextBox Text="{Binding NewEnginePower, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Moc (KM)" Margin="0,0,0,5"/>
+                            <ui:TextBox Text="{Binding NewEnginePrice, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Cena (PLN)" Margin="0,0,0,5"/>
+                            <ui:Button Content="Dodaj silnik" Appearance="Primary" HorizontalAlignment="Stretch" Command="{Binding AddEngineCommand}" Margin="0,0,0,20"/>
+
+                            <!-- DODAWANIE OPCJI/USŁUGI -->
+                            <TextBlock Text="Opcje i Usługi" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10" Foreground="#E2E2E2"/>
+                            <ui:TextBox Text="{Binding NewFeatureName, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Nazwa opcji/usługi" Margin="0,0,0,5"/>
+                            <ComboBox ItemsSource="{Binding FeatureCategories}" SelectedItem="{Binding NewFeatureCategory, Mode=TwoWay}" Margin="0,0,0,5"/>
+                            <ui:Button Content="Dodaj opcję" Appearance="Primary" HorizontalAlignment="Stretch" Command="{Binding AddFeatureCommand}"/>
+                        </StackPanel>
+
+                        <!-- LISTY SŁOWNIKÓW -->
+                        <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
+                            <StackPanel>
+                                <!-- Modele -->
+                                <TextBlock Text="Modele pojazdów" FontWeight="SemiBold" FontSize="15" Margin="0,0,0,5"/>
+                                <DataGrid ItemsSource="{Binding DictModels}" AutoGenerateColumns="False" IsReadOnly="True" Background="#1C1E23" BorderThickness="0" Foreground="White" RowBackground="Transparent" AlternatingRowBackground="Transparent" HorizontalGridLinesBrush="#1AFFFFFF" MaxHeight="200" Margin="0,0,0,20">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Marka" Binding="{Binding Brand}" Width="100"/>
+                                        <DataGridTextColumn Header="Model" Binding="{Binding ModelName}" Width="*"/>
+                                        <DataGridTemplateColumn Width="70">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <ui:Button Content="Usuń" Appearance="Danger" Padding="5,2" Command="{Binding DataContext.DeleteVehicleModelCommand, RelativeSource={RelativeSource AncestorType=Page}}" CommandParameter="{Binding}"/>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+
+                                <!-- Trims -->
+                                <TextBlock Text="Wersje wyposażenia" FontWeight="SemiBold" FontSize="15" Margin="0,0,0,5"/>
+                                <DataGrid ItemsSource="{Binding DictTrims}" AutoGenerateColumns="False" IsReadOnly="True" Background="#1C1E23" BorderThickness="0" Foreground="White" RowBackground="Transparent" AlternatingRowBackground="Transparent" HorizontalGridLinesBrush="#1AFFFFFF" MaxHeight="200" Margin="0,0,0,20">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Marka" Binding="{Binding Model.Brand}" Width="100"/>
+                                        <DataGridTextColumn Header="Model" Binding="{Binding Model.ModelName}" Width="100"/>
+                                        <DataGridTextColumn Header="Wersja" Binding="{Binding TrimName}" Width="*"/>
+                                        <DataGridTextColumn Header="Cena bazowa" Binding="{Binding BasePrice}" Width="100"/>
+                                        <DataGridTemplateColumn Width="70">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <ui:Button Content="Usuń" Appearance="Danger" Padding="5,2" Command="{Binding DataContext.DeleteTrimLevelCommand, RelativeSource={RelativeSource AncestorType=Page}}" CommandParameter="{Binding}"/>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+
+                                <!-- Silniki -->
+                                <TextBlock Text="Silniki" FontWeight="SemiBold" FontSize="15" Margin="0,0,0,5"/>
+                                <DataGrid ItemsSource="{Binding DictEngines}" AutoGenerateColumns="False" IsReadOnly="True" Background="#1C1E23" BorderThickness="0" Foreground="White" RowBackground="Transparent" AlternatingRowBackground="Transparent" HorizontalGridLinesBrush="#1AFFFFFF" MaxHeight="200" Margin="0,0,0,20">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Marka" Binding="{Binding Brand}" Width="100"/>
+                                        <DataGridTextColumn Header="Silnik" Binding="{Binding EngineName}" Width="*"/>
+                                        <DataGridTextColumn Header="Pojemność" Binding="{Binding EngineSize}" Width="80"/>
+                                        <DataGridTextColumn Header="Moc" Binding="{Binding Power}" Width="80"/>
+                                        <DataGridTextColumn Header="Cena" Binding="{Binding Price}" Width="80"/>
+                                        <DataGridTemplateColumn Width="70">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <ui:Button Content="Usuń" Appearance="Danger" Padding="5,2" Command="{Binding DataContext.DeleteEngineCommand, RelativeSource={RelativeSource AncestorType=Page}}" CommandParameter="{Binding}"/>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+
+                                <!-- Opcje -->
+                                <TextBlock Text="Opcje i Usługi" FontWeight="SemiBold" FontSize="15" Margin="0,0,0,5"/>
+                                <DataGrid ItemsSource="{Binding DictFeatures}" AutoGenerateColumns="False" IsReadOnly="True" Background="#1C1E23" BorderThickness="0" Foreground="White" RowBackground="Transparent" AlternatingRowBackground="Transparent" HorizontalGridLinesBrush="#1AFFFFFF" MaxHeight="200">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Kategoria" Binding="{Binding Category}" Width="120"/>
+                                        <DataGridTextColumn Header="Nazwa opcji" Binding="{Binding FeatureName}" Width="*"/>
+                                        <DataGridTemplateColumn Width="70">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <ui:Button Content="Usuń" Appearance="Danger" Padding="5,2" Command="{Binding DataContext.DeleteFeatureCommand, RelativeSource={RelativeSource AncestorType=Page}}" CommandParameter="{Binding}"/>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Grid>
+                </Border>
+            </TabItem>
+
         </TabControl>
     </Grid>
 </Page>

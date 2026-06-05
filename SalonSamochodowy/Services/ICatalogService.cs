@@ -26,5 +26,17 @@ namespace SalonSamochodowy.Services
 
         Task<TrimLevel?> GetTrimByIdAsync(int trimId);
         Task<VehicleModel?> GetModelByIdAsync(int modelId);
+
+        Task CreateVehicleModelAsync(VehicleModel model);
+        Task DeleteVehicleModelAsync(int modelId);
+        
+        Task CreateFeatureAsync(Feature feature);
+        Task DeleteFeatureAsync(int featureId);
+        
+        Task CreateEngineAsync(Engine engine);
+        Task DeleteEngineAsync(int engineId);
+        
+        Task CreateTrimLevelAsync(TrimLevel trim);
+        Task DeleteTrimLevelAsync(int trimId);
     }
 }

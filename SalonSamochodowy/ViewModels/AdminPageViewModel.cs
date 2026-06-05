@@ -8,6 +8,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SalonSamochodowy.Entities;
 using SalonSamochodowy.Repositories;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace SalonSamochodowy.ViewModels
 {
@@ -46,6 +47,62 @@ namespace SalonSamochodowy.ViewModels
         {
             await LoadDealershipsAsync();
             await LoadAccountsAsync();
+            await LoadDictionariesAsync();
+        }
+
+        public ObservableCollection<VehicleModel> DictModels { get; } = new();
+        public ObservableCollection<Feature> DictFeatures { get; } = new();
+        public ObservableCollection<Engine> DictEngines { get; } = new();
+        public ObservableCollection<TrimLevel> DictTrims { get; } = new();
+
+        public string[] FeatureCategories { get; } = new[] { "Wygląd", "Akcesoria", "Bezpieczeństwo", "Komfort", "Wnętrze", "Multimedia", "Usługa" };
+
+        [ObservableProperty] private string newModelBrand = "";
+        [ObservableProperty] private string newModelName = "";
+
+        [ObservableProperty] private string newFeatureName = "";
+        [ObservableProperty] private string newFeatureCategory = "Akcesoria";
+
+        [ObservableProperty] private string newEngineBrand = "";
+        [ObservableProperty] private string newEngineName = "";
+        [ObservableProperty] private string newEngineSize = "";
+        [ObservableProperty] private int? newEnginePower;
+        [ObservableProperty] private decimal? newEnginePrice;
+
+        [ObservableProperty] private VehicleModel? newTrimSelectedModel;
+        [ObservableProperty] private string newTrimName = "";
+        [ObservableProperty] private decimal? newTrimBasePrice;
+
+        public async Task LoadDictionariesAsync()
+        {
+            try
+            {
+                var uow = _uow;
+
+                DictModels.Clear();
+                var models = await uow.VehicleModels.GetAllAsync();
+                foreach (var m in models.OrderBy(x => x.Brand).ThenBy(x => x.ModelName))
+                    DictModels.Add(m);
+
+                DictFeatures.Clear();
+                var features = await uow.Features.GetAllAsync();
+                foreach (var f in features.OrderBy(x => x.Category).ThenBy(x => x.FeatureName))
+                    DictFeatures.Add(f);
+
+                DictEngines.Clear();
+                var engines = await uow.Engines.GetAllAsync();
+                foreach (var e in engines.OrderBy(x => x.Brand).ThenBy(x => x.Power))
+                    DictEngines.Add(e);
+
+                DictTrims.Clear();
+                var trims = await uow.TrimLevels.GetAllWithIncludesAsync(t => t.Model);
+                foreach (var t in trims.OrderBy(x => x.Model.Brand).ThenBy(x => x.Model.ModelName).ThenBy(x => x.BasePrice))
+                    DictTrims.Add(t);
+            }
+            catch (Exception ex)
+            {
+                ShowMessage?.Invoke($"Nie udało się załadować słowników:\n{ex.Message}", MessageBoxImage.Error);
+            }
         }
 
         public async Task LoadAccountsAsync()
@@ -359,6 +416,189 @@ namespace SalonSamochodowy.ViewModels
                     $"Nie udało się usunąć salonu:\n{ex.Message}\n\n{ex.InnerException?.Message}\n\n" +
                     "Możliwa przyczyna: salon ma powiązane pojazdy lub zamówienia.",
                     MessageBoxImage.Error);
+            }
+        }
+
+        [RelayCommand]
+        private async Task AddVehicleModelAsync()
+        {
+            var brand = NewModelBrand.Trim();
+            var name = NewModelName.Trim();
+            if (string.IsNullOrWhiteSpace(brand) || string.IsNullOrWhiteSpace(name))
+            {
+                ShowMessage?.Invoke("Wypełnij markę i nazwę modelu.", MessageBoxImage.Warning);
+                return;
+            }
+            try
+            {
+                var catalogService = ((App)Application.Current).Services.GetRequiredService<SalonSamochodowy.Services.ICatalogService>();
+                await catalogService.CreateVehicleModelAsync(new VehicleModel { Brand = brand, ModelName = name });
+                NewModelBrand = "";
+                NewModelName = "";
+                await LoadDictionariesAsync();
+                ShowMessage?.Invoke("Model został dodany.", MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                ShowMessage?.Invoke($"Błąd:\n{ex.Message}", MessageBoxImage.Error);
+            }
+        }
+
+        [RelayCommand]
+        private async Task DeleteVehicleModelAsync(VehicleModel? model)
+        {
+            if (model == null) return;
+            if (ConfirmDelete?.Invoke($"Usunąć model {model.Brand} {model.ModelName}?") != true) return;
+            try
+            {
+                var catalogService = ((App)Application.Current).Services.GetRequiredService<SalonSamochodowy.Services.ICatalogService>();
+                await catalogService.DeleteVehicleModelAsync(model.ModelID);
+                await LoadDictionariesAsync();
+                ShowMessage?.Invoke("Model usunięty.", MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                ShowMessage?.Invoke($"Błąd:\n{ex.Message}", MessageBoxImage.Error);
+            }
+        }
+
+        [RelayCommand]
+        private async Task AddFeatureAsync()
+        {
+            var name = NewFeatureName.Trim();
+            var cat = NewFeatureCategory;
+            if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(cat))
+            {
+                ShowMessage?.Invoke("Wypełnij nazwę i kategorię opcji.", MessageBoxImage.Warning);
+                return;
+            }
+            try
+            {
+                var catalogService = ((App)Application.Current).Services.GetRequiredService<SalonSamochodowy.Services.ICatalogService>();
+                await catalogService.CreateFeatureAsync(new Feature { FeatureName = name, Category = cat });
+                NewFeatureName = "";
+                await LoadDictionariesAsync();
+                ShowMessage?.Invoke("Opcja dodana.", MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                ShowMessage?.Invoke($"Błąd:\n{ex.Message}", MessageBoxImage.Error);
+            }
+        }
+
+        [RelayCommand]
+        private async Task DeleteFeatureAsync(Feature? feature)
+        {
+            if (feature == null) return;
+            if (ConfirmDelete?.Invoke($"Usunąć opcję {feature.FeatureName}?") != true) return;
+            try
+            {
+                var catalogService = ((App)Application.Current).Services.GetRequiredService<SalonSamochodowy.Services.ICatalogService>();
+                await catalogService.DeleteFeatureAsync(feature.FeatureID);
+                await LoadDictionariesAsync();
+                ShowMessage?.Invoke("Opcja usunięta.", MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                ShowMessage?.Invoke($"Błąd:\n{ex.Message}", MessageBoxImage.Error);
+            }
+        }
+
+        [RelayCommand]
+        private async Task AddEngineAsync()
+        {
+            var brand = NewEngineBrand.Trim();
+            var name = NewEngineName.Trim();
+            var size = NewEngineSize.Trim();
+            if (string.IsNullOrWhiteSpace(brand) || string.IsNullOrWhiteSpace(name) || !NewEnginePower.HasValue || !NewEnginePrice.HasValue)
+            {
+                ShowMessage?.Invoke("Wypełnij markę, nazwę silnika, moc oraz cenę.", MessageBoxImage.Warning);
+                return;
+            }
+            try
+            {
+                var catalogService = ((App)Application.Current).Services.GetRequiredService<SalonSamochodowy.Services.ICatalogService>();
+                await catalogService.CreateEngineAsync(new Engine 
+                { 
+                    Brand = brand, EngineName = name, EngineSize = size, 
+                    Power = NewEnginePower.Value, Price = NewEnginePrice.Value 
+                });
+                NewEngineBrand = "";
+                NewEngineName = "";
+                NewEngineSize = "";
+                NewEnginePower = null;
+                NewEnginePrice = null;
+                await LoadDictionariesAsync();
+                ShowMessage?.Invoke("Silnik dodany.", MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                ShowMessage?.Invoke($"Błąd:\n{ex.Message}", MessageBoxImage.Error);
+            }
+        }
+
+        [RelayCommand]
+        private async Task DeleteEngineAsync(Engine? engine)
+        {
+            if (engine == null) return;
+            if (ConfirmDelete?.Invoke($"Usunąć silnik {engine.EngineName}?") != true) return;
+            try
+            {
+                var catalogService = ((App)Application.Current).Services.GetRequiredService<SalonSamochodowy.Services.ICatalogService>();
+                await catalogService.DeleteEngineAsync(engine.EngineID);
+                await LoadDictionariesAsync();
+                ShowMessage?.Invoke("Silnik usunięty.", MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                ShowMessage?.Invoke($"Błąd:\n{ex.Message}", MessageBoxImage.Error);
+            }
+        }
+
+        [RelayCommand]
+        private async Task AddTrimLevelAsync()
+        {
+            var name = NewTrimName.Trim();
+            if (NewTrimSelectedModel == null || string.IsNullOrWhiteSpace(name) || !NewTrimBasePrice.HasValue)
+            {
+                ShowMessage?.Invoke("Wybierz model, wpisz nazwę wersji i cenę bazową.", MessageBoxImage.Warning);
+                return;
+            }
+            try
+            {
+                var catalogService = ((App)Application.Current).Services.GetRequiredService<SalonSamochodowy.Services.ICatalogService>();
+                await catalogService.CreateTrimLevelAsync(new TrimLevel 
+                { 
+                    ModelID = NewTrimSelectedModel.ModelID, 
+                    TrimName = name, 
+                    BasePrice = NewTrimBasePrice.Value 
+                });
+                NewTrimName = "";
+                NewTrimBasePrice = null;
+                await LoadDictionariesAsync();
+                ShowMessage?.Invoke("Wersja wyposażenia dodana.", MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                ShowMessage?.Invoke($"Błąd:\n{ex.Message}", MessageBoxImage.Error);
+            }
+        }
+
+        [RelayCommand]
+        private async Task DeleteTrimLevelAsync(TrimLevel? trim)
+        {
+            if (trim == null) return;
+            if (ConfirmDelete?.Invoke($"Usunąć wersję {trim.TrimName} dla modelu {trim.Model?.ModelName}?") != true) return;
+            try
+            {
+                var catalogService = ((App)Application.Current).Services.GetRequiredService<SalonSamochodowy.Services.ICatalogService>();
+                await catalogService.DeleteTrimLevelAsync(trim.TrimID);
+                await LoadDictionariesAsync();
+                ShowMessage?.Invoke("Wersja usunięta.", MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                ShowMessage?.Invoke($"Błąd:\n{ex.Message}", MessageBoxImage.Error);
             }
         }
 

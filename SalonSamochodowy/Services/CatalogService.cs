@@ -116,5 +116,85 @@ namespace SalonSamochodowy.Services
         {
             return await _uow.VehicleModels.GetByIdAsync(modelId);
         }
+
+        public async Task CreateVehicleModelAsync(VehicleModel model)
+        {
+            await _uow.VehicleModels.AddAsync(model);
+            await _uow.CompleteAsync();
+        }
+
+        public async Task DeleteVehicleModelAsync(int modelId)
+        {
+            var model = await _uow.VehicleModels.GetByIdAsync(modelId);
+            if (model == null) return;
+
+            var trims = await _uow.TrimLevels.FindAsync(t => t.ModelID == modelId);
+            if (trims.Any())
+                throw new InvalidOperationException("Nie można usunąć modelu, ponieważ posiada przypisane wersje wyposażenia.");
+
+            _uow.VehicleModels.Delete(model);
+            await _uow.CompleteAsync();
+        }
+
+        public async Task CreateFeatureAsync(Feature feature)
+        {
+            await _uow.Features.AddAsync(feature);
+            await _uow.CompleteAsync();
+        }
+
+        public async Task DeleteFeatureAsync(int featureId)
+        {
+            var feature = await _uow.Features.GetByIdAsync(featureId);
+            if (feature == null) return;
+
+            var vehicleFeatures = await _uow.VehicleFeatures.FindAsync(vf => vf.FeatureID == featureId);
+            if (vehicleFeatures.Any())
+                throw new InvalidOperationException("Nie można usunąć opcji/usługi, ponieważ jest przypisana do pojazdu.");
+
+            var jobs = await _uow.Jobs.FindAsync(j => j.FeatureID == featureId);
+            if (jobs.Any())
+                throw new InvalidOperationException("Nie można usunąć opcji/usługi, ponieważ istnieją powiązane z nią zlecenia serwisowe.");
+
+            _uow.Features.Delete(feature);
+            await _uow.CompleteAsync();
+        }
+
+        public async Task CreateEngineAsync(Engine engine)
+        {
+            await _uow.Engines.AddAsync(engine);
+            await _uow.CompleteAsync();
+        }
+
+        public async Task DeleteEngineAsync(int engineId)
+        {
+            var engine = await _uow.Engines.GetByIdAsync(engineId);
+            if (engine == null) return;
+
+            var vehicles = await _uow.Vehicles.FindAsync(v => v.EngineID == engineId);
+            if (vehicles.Any())
+                throw new InvalidOperationException("Nie można usunąć silnika, ponieważ jest on używany przez pojazdy w bazie.");
+
+            _uow.Engines.Delete(engine);
+            await _uow.CompleteAsync();
+        }
+
+        public async Task CreateTrimLevelAsync(TrimLevel trim)
+        {
+            await _uow.TrimLevels.AddAsync(trim);
+            await _uow.CompleteAsync();
+        }
+
+        public async Task DeleteTrimLevelAsync(int trimId)
+        {
+            var trim = await _uow.TrimLevels.GetByIdAsync(trimId);
+            if (trim == null) return;
+
+            var vehicles = await _uow.Vehicles.FindAsync(v => v.TrimID == trimId);
+            if (vehicles.Any())
+                throw new InvalidOperationException("Nie można usunąć wersji wyposażenia, ponieważ jest przypisana do pojazdów.");
+
+            _uow.TrimLevels.Delete(trim);
+            await _uow.CompleteAsync();
+        }
     }
 }
