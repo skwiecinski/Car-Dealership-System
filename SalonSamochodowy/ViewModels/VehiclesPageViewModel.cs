@@ -105,6 +105,14 @@ namespace SalonSamochodowy.ViewModels
         [RelayCommand]
         private void OpenAddVehicle() => OpenAddVehicleRequested?.Invoke();
 
+        public event Action<VehicleItem>? EditVehicleRequested;
+        [RelayCommand]
+        private void EditVehicle(VehicleItem item) => EditVehicleRequested?.Invoke(item);
+
+        public event Action<VehicleItem>? DeleteVehicleRequested;
+        [RelayCommand]
+        private void DeleteVehicle(VehicleItem item) => DeleteVehicleRequested?.Invoke(item);
+
         public async Task LoadVehiclesAsync()
         {
             try
@@ -145,6 +153,7 @@ namespace SalonSamochodowy.ViewModels
 
                     VehicleList.Add(new VehicleItem
                     {
+                        VehicleID             = v.VehicleID,
                         FullName              = $"{model.Brand} {model.ModelName} {trim.TrimName}",
                         EngineInfo            = engine != null ? $"Silnik: {engine.EngineName} ({engine.Power} KM)" : "Silnik: —",
                         VIN                   = v.VIN,
@@ -152,7 +161,8 @@ namespace SalonSamochodowy.ViewModels
                         Status                = v.Status,
                         StatusBackgroundColor = bg,
                         StatusBorderColor     = bd,
-                        StatusTextColor       = fg
+                        StatusTextColor       = fg,
+                        IsUsed                = v.IsUsed
                     });
                 }
             }
@@ -173,6 +183,7 @@ namespace SalonSamochodowy.ViewModels
 
     public class VehicleItem
     {
+        public int VehicleID                { get; set; }
         public string FullName              { get; set; } = "";
         public string EngineInfo            { get; set; } = "";
         public string VIN                   { get; set; } = "";
@@ -181,5 +192,6 @@ namespace SalonSamochodowy.ViewModels
         public string StatusTextColor       { get; set; } = "";
         public string StatusBackgroundColor { get; set; } = "";
         public string StatusBorderColor     { get; set; } = "";
+        public bool IsUsed                  { get; set; }
     }
 }

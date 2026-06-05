@@ -12,5 +12,7 @@ namespace SalonSamochodowy.Services
         Task<Vehicle?> GetVehicleByIdAsync(int id);
         Task<IEnumerable<Vehicle>> GetVehiclesByStatusAsync(string status);
         Task<IEnumerable<Vehicle>> GetAllVehiclesAsync();
+        Task UpdateVehicleAsync(Vehicle vehicle);
+        Task DeleteVehicleAsync(Vehicle vehicle);
     }
 }

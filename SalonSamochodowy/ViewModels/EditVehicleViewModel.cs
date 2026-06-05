@@ -10,7 +10,7 @@ using SalonSamochodowy.Repositories;
 
 namespace SalonSamochodowy.ViewModels
 {
-    public partial class AddVehicleViewModel : ObservableObject
+    public partial class EditVehicleViewModel : ObservableObject
     {
         public Vehicle NewVehicle { get; set; }
 
@@ -21,7 +21,6 @@ namespace SalonSamochodowy.ViewModels
         private List<TrimLevel> _allTrims = new();
         private List<Engine> _allEngines = new();
 
-        // SelectedModel filtruje trims i silniki
         private VehicleModel? _selectedModel;
         public VehicleModel? SelectedModel
         {
@@ -49,17 +48,24 @@ namespace SalonSamochodowy.ViewModels
             set => SetProperty(ref _selectedEngine, value);
         }
 
-        // DealershipID wyznaczane z sesji — nie hardkodowane
-        private int _resolvedDealershipId = 1;
-
         public event Action? CloseRequested;
         public event Action<string>? ShowError;
         public event Action<string>? ShowSuccess;
-        public event Action? VehicleAdded;
+        public event Action? VehicleEdited;
 
-        public AddVehicleViewModel()
+        public EditVehicleViewModel(Vehicle vehicleToEdit)
         {
-            NewVehicle = new Vehicle { Status = "Dostępny", IsUsed = false };
+            NewVehicle = new Vehicle
+            {
+                VehicleID = vehicleToEdit.VehicleID,
+                VIN = vehicleToEdit.VIN,
+                Mileage = vehicleToEdit.Mileage,
+                IsUsed = vehicleToEdit.IsUsed,
+                Status = vehicleToEdit.Status,
+                TrimID = vehicleToEdit.TrimID,
+                EngineID = vehicleToEdit.EngineID,
+                DealershipID = vehicleToEdit.DealershipID
+            };
         }
 
         public async Task LoadAsync()
@@ -68,17 +74,6 @@ namespace SalonSamochodowy.ViewModels
             {
                 using var ctx = new AppDbContext();
                 using var uow = new UnitOfWork(ctx);
-
-                // --- wyznacz salon zalogowanego pracownika ---
-                var currentUser = SessionContext.CurrentUser;
-                if (currentUser != null)
-                {
-                    var workers = await uow.Workers.FindAsync(w => w.UserID == currentUser.UserID);
-                    var worker = workers.FirstOrDefault();
-                    if (worker != null)
-                        _resolvedDealershipId = worker.DealershipID;
-                    // Administrator nie ma wpisu Worker — zostaje domyślny salon 1
-                }
 
                 var models = (await uow.VehicleModels.GetAllAsync()).OrderBy(m => m.Brand).ThenBy(m => m.ModelName);
                 var engines = await uow.Engines.GetAllAsync();
@@ -90,12 +85,18 @@ namespace SalonSamochodowy.ViewModels
                 _allEngines = engines.ToList();
                 _allTrims = trims.ToList();
 
-                AvailableTrims.Clear();
-                AvailableEngines.Clear();
+                // Select existing values
+                var currentTrim = _allTrims.FirstOrDefault(t => t.TrimID == NewVehicle.TrimID);
+                if (currentTrim != null)
+                {
+                    SelectedModel = AvailableModels.FirstOrDefault(m => m.ModelID == currentTrim.ModelID);
+                    SelectedTrim = AvailableTrims.FirstOrDefault(t => t.TrimID == currentTrim.TrimID);
+                }
+                SelectedEngine = AvailableEngines.FirstOrDefault(e => e.EngineID == NewVehicle.EngineID);
             }
             catch (Exception ex)
             {
-                ShowError?.Invoke($"Nie udało się pobrać danych słownikowych:\n{ex.Message}");
+                ShowError?.Invoke($"Nie udało się pobrać danych:\n{ex.Message}");
             }
         }
 
@@ -103,8 +104,6 @@ namespace SalonSamochodowy.ViewModels
         {
             AvailableTrims.Clear();
             AvailableEngines.Clear();
-            SelectedTrim = null;
-            SelectedEngine = null;
 
             if (SelectedModel == null) return;
 
@@ -134,24 +133,35 @@ namespace SalonSamochodowy.ViewModels
                 using var ctx = new AppDbContext();
                 using var uow = new UnitOfWork(ctx);
 
-                // Sprawdź unikalność VIN
-                var existing = await uow.Vehicles.FindAsync(v => v.VIN == NewVehicle.VIN.Trim());
-                if (existing.Any())
+                var existingVehicle = await uow.Vehicles.GetByIdAsync(NewVehicle.VehicleID);
+                if (existingVehicle == null)
                 {
-                    ShowError?.Invoke($"Pojazd z VIN \"{NewVehicle.VIN}\" już istnieje w bazie.");
+                    ShowError?.Invoke("Nie znaleziono pojazdu.");
                     return;
                 }
 
-                NewVehicle.VIN = NewVehicle.VIN.Trim().ToUpper();
-                NewVehicle.EngineID = SelectedEngine.EngineID;
-                NewVehicle.TrimID = SelectedTrim.TrimID;
-                NewVehicle.DealershipID = _resolvedDealershipId;
+                // Check VIN uniqueness only if changed
+                if (existingVehicle.VIN != NewVehicle.VIN.Trim().ToUpper())
+                {
+                    var vinExists = await uow.Vehicles.FindAsync(v => v.VIN == NewVehicle.VIN.Trim());
+                    if (vinExists.Any())
+                    {
+                        ShowError?.Invoke($"Pojazd z VIN \"{NewVehicle.VIN}\" już istnieje w bazie.");
+                        return;
+                    }
+                }
 
-                await uow.Vehicles.AddAsync(NewVehicle);
+                existingVehicle.VIN = NewVehicle.VIN.Trim().ToUpper();
+                existingVehicle.EngineID = SelectedEngine.EngineID;
+                existingVehicle.TrimID = SelectedTrim.TrimID;
+                existingVehicle.Mileage = NewVehicle.Mileage;
+                existingVehicle.IsUsed = NewVehicle.IsUsed;
+
+                uow.Vehicles.Update(existingVehicle);
                 await uow.CompleteAsync();
 
-                ShowSuccess?.Invoke("Pojazd został poprawnie dodany do katalogu.");
-                VehicleAdded?.Invoke();
+                ShowSuccess?.Invoke("Zmiany zostały zapisane.");
+                VehicleEdited?.Invoke();
                 CloseRequested?.Invoke();
             }
             catch (Exception ex)

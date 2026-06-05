@@ -44,5 +44,17 @@ namespace SalonSamochodowy.Services
         {
             return await _uow.Vehicles.GetAllAsync();
         }
+
+        public async Task UpdateVehicleAsync(Vehicle vehicle)
+        {
+            _uow.Vehicles.Update(vehicle);
+            await _uow.CompleteAsync();
+        }
+
+        public async Task DeleteVehicleAsync(Vehicle vehicle)
+        {
+            _uow.Vehicles.Delete(vehicle);
+            await _uow.CompleteAsync();
+        }
     }
 }

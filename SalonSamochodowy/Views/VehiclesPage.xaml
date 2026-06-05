@@ -136,6 +136,22 @@
                                                        HorizontalAlignment="Right"/>
                                         </StackPanel>
                                     </Grid>
+
+                                    <Grid Margin="0,15,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="5"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <ui:Button Grid.Column="0" Content="Edytuj" Appearance="Secondary"
+                                                   HorizontalAlignment="Stretch" Icon="{ui:SymbolIcon Edit24}"
+                                                   Command="{Binding DataContext.EditVehicleCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                                   CommandParameter="{Binding}"/>
+                                        <ui:Button Grid.Column="2" Content="Usuń" Appearance="Danger"
+                                                   HorizontalAlignment="Stretch" Icon="{ui:SymbolIcon Delete24}"
+                                                   Command="{Binding DataContext.DeleteVehicleCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                                   CommandParameter="{Binding}"/>
+                                    </Grid>
                                 </StackPanel>
                             </Border>
                         </DataTemplate>

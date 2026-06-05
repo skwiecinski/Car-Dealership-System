@@ -23,6 +23,39 @@ namespace SalonSamochodowy.Views
 
             _vm.OpenAddVehicleRequested += OpenAddVehicleWindow;
 
+            _vm.DeleteVehicleRequested += async item =>
+            {
+                var result = System.Windows.MessageBox.Show(
+                    $"Czy na pewno chcesz usunąć pojazd {item.FullName} ({item.VIN})?", 
+                    "Usuń pojazd", 
+                    System.Windows.MessageBoxButton.YesNo, 
+                    System.Windows.MessageBoxImage.Warning);
+                    
+                if (result == System.Windows.MessageBoxResult.Yes)
+                {
+                    var vehicleService = ((App)Application.Current).Services.GetRequiredService<SalonSamochodowy.Services.IVehicleService>();
+                    var v = await vehicleService.GetVehicleByIdAsync(item.VehicleID);
+                    if (v != null)
+                    {
+                        await vehicleService.DeleteVehicleAsync(v);
+                        await _vm.LoadVehiclesAsync();
+                    }
+                }
+            };
+
+            _vm.EditVehicleRequested += async item =>
+            {
+                var owner = Window.GetWindow(this);
+                var vehicleService = ((App)Application.Current).Services.GetRequiredService<SalonSamochodowy.Services.IVehicleService>();
+                var v = await vehicleService.GetVehicleByIdAsync(item.VehicleID);
+                if (v != null)
+                {
+                    var editWindow = new EditVehicleWindow(v, owner);
+                    editWindow.VehicleEdited += async () => await _vm.LoadVehiclesAsync();
+                    editWindow.ShowDialog();
+                }
+            };
+
             Loaded += async (s, e) =>
             {
                 await _vm.LoadFiltersAsync();
