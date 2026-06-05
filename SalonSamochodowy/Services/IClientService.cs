@@ -23,5 +23,6 @@ namespace SalonSamochodowy.Services
         Task<ClientDto?> GetClientByIdAsync(int clientId);
         Task<bool> EmailExistsAsync(string email);
         Task<ClientDto> CreateClientAsync(string firstName, string lastName, string email, string phone, string? nip);
+        Task DeleteClientAsync(int clientId);
     }
 }

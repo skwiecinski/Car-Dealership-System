@@ -54,7 +54,8 @@
                         <Separator Background="#2D3038" Margin="0,0,0,20"/>
 
                         <ui:Button Content="Nowe Zamówienie" Appearance="Primary"  HorizontalAlignment="Stretch" Margin="0,0,0,10" Command="{Binding NewOrderCommand}"/>
-                        <ui:Button Content="Edytuj dane"     Appearance="Secondary" HorizontalAlignment="Stretch" Command="{Binding EditClientCommand}"/>
+                        <ui:Button Content="Edytuj dane"     Appearance="Secondary" HorizontalAlignment="Stretch" Margin="0,0,0,10" Command="{Binding EditClientCommand}"/>
+                        <ui:Button Content="Usuń klienta"    Appearance="Danger" HorizontalAlignment="Stretch" Command="{Binding DeleteClientCommand}"/>
                     </StackPanel>
                 </Border>
             </StackPanel>

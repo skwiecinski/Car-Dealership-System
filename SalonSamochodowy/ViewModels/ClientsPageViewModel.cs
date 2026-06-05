@@ -29,6 +29,7 @@ namespace SalonSamochodowy.ViewModels
 
         public event Action? NewClientRequested;
         public event Action<ClientModel>? EditClientRequested;
+        public event Action<ClientModel>? DeleteClientRequested;
         public event Action<ClientModel>? NewOrderRequested;
         public event Action<string>? LoadFailed;
 
@@ -87,6 +88,13 @@ namespace SalonSamochodowy.ViewModels
         {
             if (SelectedClient != null)
                 EditClientRequested?.Invoke(SelectedClient);
+        }
+
+        [RelayCommand]
+        private void DeleteClient()
+        {
+            if (SelectedClient != null)
+                DeleteClientRequested?.Invoke(SelectedClient);
         }
     }
 

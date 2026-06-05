@@ -43,6 +43,22 @@ namespace SalonSamochodowy.Views
                     await _vm.LoadFromDbAsync();
             };
 
+            _vm.DeleteClientRequested += async selected =>
+            {
+                var result = System.Windows.MessageBox.Show(
+                    $"Czy na pewno chcesz usunąć klienta {selected.FullName}?", 
+                    "Usuń klienta", 
+                    System.Windows.MessageBoxButton.YesNo, 
+                    System.Windows.MessageBoxImage.Warning);
+                    
+                if (result == System.Windows.MessageBoxResult.Yes)
+                {
+                    var clientService = ((App)Application.Current).Services.GetRequiredService<SalonSamochodowy.Services.IClientService>();
+                    await clientService.DeleteClientAsync(selected.ClientId);
+                    await _vm.LoadFromDbAsync();
+                }
+            };
+
             Loaded += async (s, e) => await _vm.LoadFromDbAsync();
         }
     }

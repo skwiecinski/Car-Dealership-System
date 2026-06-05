@@ -105,5 +105,20 @@ namespace SalonSamochodowy.Services
                 NIP = newClient.NIP
             };
         }
+
+        public async Task DeleteClientAsync(int clientId)
+        {
+            var clients = await _uow.Clients.FindWithIncludesAsync(x => x.ClientID == clientId, x => x.User);
+            var client = clients.FirstOrDefault();
+            if (client == null) return;
+
+            var user = client.User;
+            _uow.Clients.Delete(client);
+            if (user != null)
+            {
+                _uow.AppUsers.Delete(user);
+            }
+            await _uow.CompleteAsync();
+        }
     }
 }
