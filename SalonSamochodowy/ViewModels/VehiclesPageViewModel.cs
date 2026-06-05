@@ -7,11 +7,20 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SalonSamochodowy.Entities;
 using SalonSamochodowy.Repositories;
+using SalonSamochodowy.Services;
 
 namespace SalonSamochodowy.ViewModels
 {
     public partial class VehiclesPageViewModel : ObservableObject
     {
+        private readonly IUnitOfWork _uow;
+    private readonly IVehicleService _vehicleService;
+
+        public VehiclesPageViewModel(IUnitOfWork uow, IVehicleService vehicleService)
+        {
+            _uow = uow;
+        _vehicleService = vehicleService;
+        }
         public ObservableCollection<string> Brands { get; } = new() { "Wszystkie marki" };
         public ObservableCollection<string> Models { get; } = new() { "Wszystkie modele" };
         public ObservableCollection<string> Engines { get; } = new() { "Dowolny" };
@@ -23,22 +32,13 @@ namespace SalonSamochodowy.ViewModels
 
         public ObservableCollection<VehicleItem> VehicleList { get; } = new();
 
-        // View subskrybuje ten event i otwiera okno z właściwym ownerem
-        public event Action? OpenAddVehicleRequested;
         public event Action<string>? LoadFailed;
-
-        [RelayCommand]
-        private void Add() => OpenAddVehicleRequested?.Invoke();
-
-        [RelayCommand]
-        private async Task SearchAsync() => await LoadVehiclesAsync();
 
         public async Task LoadFiltersAsync()
         {
             try
             {
-                using var ctx = new AppDbContext();
-                using var uow = new UnitOfWork(ctx);
+                var uow = _uow;
 
                 var models = (await uow.VehicleModels.GetAllAsync()).ToList();
 
@@ -72,8 +72,7 @@ namespace SalonSamochodowy.ViewModels
         {
             try
             {
-                using var ctx = new AppDbContext();
-                using var uow = new UnitOfWork(ctx);
+                var uow = _uow;
                 var models = (await uow.VehicleModels.GetAllAsync()).ToList();
                 ReloadModelCombo(models);
             }
@@ -95,18 +94,32 @@ namespace SalonSamochodowy.ViewModels
             SelectedModel = Models[0];
         }
 
+        [RelayCommand]
+        private async Task SearchAsync()
+        {
+            await LoadVehiclesAsync();
+        }
+
+        public event Action? OpenAddVehicleRequested;
+
+        [RelayCommand]
+        private void OpenAddVehicle() => OpenAddVehicleRequested?.Invoke();
+
         public async Task LoadVehiclesAsync()
         {
             try
             {
-                using var ctx = new AppDbContext();
-                using var uow = new UnitOfWork(ctx);
+                var uow = _uow;
 
                 IEnumerable<Vehicle> vehicles;
                 if (!string.IsNullOrEmpty(SelectedStatus) && SelectedStatus != "Wszystkie")
-                    vehicles = await uow.Vehicles.FindAsync(v => v.Status == SelectedStatus);
+                {
+                    vehicles = await _vehicleService.GetVehiclesByStatusAsync(SelectedStatus);
+                }
                 else
-                    vehicles = await uow.Vehicles.GetAllAsync();
+                {
+                    vehicles = await _vehicleService.GetAllVehiclesAsync();
+                }
 
                 VehicleList.Clear();
 
@@ -132,16 +145,14 @@ namespace SalonSamochodowy.ViewModels
 
                     VehicleList.Add(new VehicleItem
                     {
-                        FullName = $"{model.Brand} {model.ModelName} {trim.TrimName}",
-                        EngineInfo = engine != null
-                            ? $"Silnik: {engine.EngineName} ({engine.Power} KM)"
-                            : "Silnik: —",
-                        VIN = v.VIN,
-                        Price = $"{price:N0} PLN",
-                        Status = v.Status,
+                        FullName              = $"{model.Brand} {model.ModelName} {trim.TrimName}",
+                        EngineInfo            = engine != null ? $"Silnik: {engine.EngineName} ({engine.Power} KM)" : "Silnik: —",
+                        VIN                   = v.VIN,
+                        Price                 = $"{price:N0} PLN",
+                        Status                = v.Status,
                         StatusBackgroundColor = bg,
-                        StatusBorderColor = bd,
-                        StatusTextColor = fg
+                        StatusBorderColor     = bd,
+                        StatusTextColor       = fg
                     });
                 }
             }
@@ -153,22 +164,22 @@ namespace SalonSamochodowy.ViewModels
 
         private static (string bg, string bd, string fg) StatusColors(string status) => status switch
         {
-            "Dostępny" => ("#112C1E", "#2D9A4A", "#44C767"),
+            "Dostępny"      => ("#112C1E", "#2D9A4A", "#44C767"),
             "Zarezerwowany" => ("#332A12", "#D3A125", "#F0B82B"),
-            "Sprzedany" => ("#3D1D1D", "#D34545", "#ED6262"),
-            _ => ("#2D3038", "#4F5466", "#8A8D98"),
+            "Sprzedany"     => ("#3D1D1D", "#D34545", "#ED6262"),
+            _               => ("#2D3038", "#4F5466", "#8A8D98"),
         };
     }
 
     public class VehicleItem
     {
-        public string FullName { get; set; } = "";
-        public string EngineInfo { get; set; } = "";
-        public string VIN { get; set; } = "";
-        public string Price { get; set; } = "";
-        public string Status { get; set; } = "";
-        public string StatusTextColor { get; set; } = "";
+        public string FullName              { get; set; } = "";
+        public string EngineInfo            { get; set; } = "";
+        public string VIN                   { get; set; } = "";
+        public string Price                 { get; set; } = "";
+        public string Status                { get; set; } = "";
+        public string StatusTextColor       { get; set; } = "";
         public string StatusBackgroundColor { get; set; } = "";
-        public string StatusBorderColor { get; set; } = "";
+        public string StatusBorderColor     { get; set; } = "";
     }
 }

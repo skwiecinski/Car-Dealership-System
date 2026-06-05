@@ -6,11 +6,20 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SalonSamochodowy.Entities;
 using SalonSamochodowy.Repositories;
+using SalonSamochodowy.Services;
 
 namespace SalonSamochodowy.ViewModels
 {
     public partial class ClientsPageViewModel : ObservableObject
     {
+        private readonly IUnitOfWork _uow;
+
+        private readonly IClientService _clientService;
+        public ClientsPageViewModel(IUnitOfWork uow, IClientService clientService)
+        {
+            _uow = uow;
+            _clientService = clientService;
+        }
         public ObservableCollection<ClientModel> ClientsList { get; } = new();
 
         [ObservableProperty] private ClientModel? selectedClient;
@@ -39,32 +48,21 @@ namespace SalonSamochodowy.ViewModels
         {
             try
             {
-                using var ctx = new AppDbContext();
-                using var uow = new UnitOfWork(ctx);
+                var uow = _uow;
 
-                var clients = await uow.Clients.GetAllAsync();
-
+                var clients = await _clientService.GetAllClientsAsync();
                 ClientsList.Clear();
                 foreach (var c in clients)
                 {
-                    var user = await uow.AppUsers.GetByIdAsync(c.UserID);
-                    if (user == null) continue;
-
-                    var fullName = string.IsNullOrWhiteSpace(user.LastName)
-                        ? user.FirstName
-                        : $"{user.FirstName} {user.LastName}";
-
-                    var isCompany = !string.IsNullOrWhiteSpace(c.NIP);
-
                     ClientsList.Add(new ClientModel
                     {
-                        ClientId = c.ClientID,
-                        UserId = user.UserID,
-                        FullName = fullName,
-                        TaxId = string.IsNullOrWhiteSpace(c.NIP) ? "-" : c.NIP!,
-                        PhoneNumber = c.Phone ?? "",
-                        Email = user.Email,
-                        IsCompany = isCompany
+                        ClientId    = c.ClientID,
+                        UserId      = c.UserID,
+                        FullName    = c.FullName,
+                        TaxId       = string.IsNullOrWhiteSpace(c.NIP) ? "-" : c.NIP,
+                        PhoneNumber = c.Phone,
+                        Email       = c.Email,
+                        IsCompany   = c.IsCompany
                     });
                 }
             }

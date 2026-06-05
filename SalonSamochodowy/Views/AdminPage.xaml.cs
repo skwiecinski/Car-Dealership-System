@@ -1,17 +1,19 @@
+using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using SalonSamochodowy.ViewModels;
 
-namespace SalonSamochodowy
+namespace SalonSamochodowy.Views
 {
     public partial class AdminPage : Page
     {
-        private readonly AdminPageViewModel _vm = new AdminPageViewModel();
+        private readonly AdminPageViewModel _vm;
 
         public AdminPage()
         {
             InitializeComponent();
+            _vm = ((App)Application.Current).Services.GetRequiredService<AdminPageViewModel>();
             DataContext = _vm;
 
             _vm.ShowMessage += (msg, img) => System.Windows.MessageBox.Show(

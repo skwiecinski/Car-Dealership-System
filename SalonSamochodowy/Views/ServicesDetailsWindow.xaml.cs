@@ -1,9 +1,9 @@
-﻿using System;
-using System.Windows;
+using Microsoft.Extensions.DependencyInjection;
+﻿using System.Windows;
 using SalonSamochodowy.ViewModels;
 using Wpf.Ui.Controls;
 
-namespace SalonSamochodowy
+namespace SalonSamochodowy.Views
 {
     public partial class ServicesDetailsWindow : FluentWindow
     {
@@ -13,26 +13,20 @@ namespace SalonSamochodowy
         {
             InitializeComponent();
 
-            _vm = new ServicesDetailsViewModel(jobId);
+            _vm = ((App)Application.Current).Services.GetRequiredService<ServicesDetailsViewModel>();
+            _vm.Initialize(jobId);
             DataContext = _vm;
 
             if (owner != null)
-            {
                 Owner = owner;
-                WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            }
-            else
-            {
-                WindowStartupLocation = WindowStartupLocation.CenterScreen;
-            }
 
-            _vm.ShowError += msg => System.Windows.MessageBox.Show(
+            _vm.ShowError += msg => System.Windows.MessageBox.Show( // do poprawy, nie chcemy takich okienek
                 msg, "Błąd",
                 System.Windows.MessageBoxButton.OK,
                 MessageBoxImage.Error);
 
             _vm.ShowSuccess += msg => System.Windows.MessageBox.Show(
-                msg, "Zlecenie serwisowe",
+                msg, "Zlecenie",
                 System.Windows.MessageBoxButton.OK,
                 MessageBoxImage.Information);
 

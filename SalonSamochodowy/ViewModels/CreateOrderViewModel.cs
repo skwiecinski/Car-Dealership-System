@@ -7,8 +7,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 using SalonSamochodowy.Entities;
 using SalonSamochodowy.Repositories;
+using SalonSamochodowy.Services;
 
 public partial class CreateOrderViewModel : ObservableObject
 {
@@ -64,89 +66,68 @@ public partial class CreateOrderViewModel : ObservableObject
     public ObservableCollection<SerwisantItem> ListaSerwisantow { get; } = new();
     [ObservableProperty] private SerwisantItem? wybranySerwisant;
 
-    public CreateOrderViewModel() { }
+    private readonly IVehicleService _vehicleService;
+    private readonly ICatalogService _catalogService;
+    private readonly IOrderService _orderService;
+
+    private readonly IClientService _clientService;
+    private readonly IJobService _jobService;
+    public CreateOrderViewModel(IVehicleService vehicleService, IOrderService orderService, IClientService clientService, IJobService jobService, ICatalogService catalogService)
+    {
+        _vehicleService = vehicleService;
+        _catalogService = catalogService;
+        _orderService = orderService;
+        _clientService = clientService;
+        _jobService = jobService;
+    }
 
     public async Task LoadFromDbAsync()
     {
         try
         {
-            using var ctx = new AppDbContext();
-            using var uow = new UnitOfWork(ctx);
-
             ListaKlientow.Clear();
-            var allClients = await uow.Clients.GetAllAsync();
-            foreach (var c in allClients)
+            var clients = await _clientService.GetAllClientsAsync();
+            foreach (var c in clients)
             {
-                var user = await uow.AppUsers.GetByIdAsync(c.UserID);
-                if (user == null) continue;
-                var fullName = string.IsNullOrWhiteSpace(user.LastName)
-                    ? user.FirstName
-                    : $"{user.FirstName} {user.LastName}";
                 ListaKlientow.Add(new KlientItem
                 {
                     ClientID = c.ClientID,
-                    UserID = user.UserID,
-                    FullName = fullName,
-                    Email = user.Email
+                    UserID   = c.UserID,
+                    FullName = c.FullName,
+                    Email    = c.Email
                 });
             }
 
             Marki.Clear();
-            var allModels = (await uow.VehicleModels.GetAllAsync()).ToList();
-            foreach (var brand in allModels.Select(m => m.Brand).Distinct().OrderBy(b => b))
+            var brands = await _catalogService.GetBrandsAsync();
+            foreach (var brand in brands)
                 Marki.Add(brand);
 
             Silniki.Clear();
-
             ListaSprzedawcow.Clear();
             ListaSerwisantow.Clear();
-
-            var rSprzedawca = (await uow.AppRoles.FindAsync(r => r.RoleName == "Sprzedawca")).FirstOrDefault();
-            var rKierownik = (await uow.AppRoles.FindAsync(r => r.RoleName == "Kierownik")).FirstOrDefault();
-            var rSerwisant = (await uow.AppRoles.FindAsync(r => r.RoleName == "Serwisant")).FirstOrDefault();
-
-            var sprzedawcaId = rSprzedawca?.RoleID ?? -1;
-            var kierownikId = rKierownik?.RoleID ?? -1;
-            var serwisantId = rSerwisant?.RoleID ?? -1;
-
-            var validUsers = (await uow.AppUsers.FindAsync(
-                u => u.RoleID == sprzedawcaId || u.RoleID == kierownikId || u.RoleID == serwisantId)).ToList();
-            var userIds = validUsers.Select(u => u.UserID).ToList();
-            var validWorkers = await uow.Workers.FindAsync(w => userIds.Contains(w.UserID));
-
-            foreach (var w in validWorkers)
+            
+            var workers = await _catalogService.GetWorkersByRolesAsync("Sprzedawca", "Kierownik", "Serwisant");
+            foreach (var w in workers)
             {
-                var user = validUsers.FirstOrDefault(u => u.UserID == w.UserID);
-                if (user == null) continue;
-
-                if (user.RoleID == sprzedawcaId || user.RoleID == kierownikId)
+                if (w.RoleName == "Sprzedawca" || w.RoleName == "Kierownik")
                 {
-                    ListaSprzedawcow.Add(new SprzedawcaItem
-                    {
-                        WorkerID = w.WorkerID,
-                        UserID = user.UserID,
-                        FullName = $"{user.FirstName} {user.LastName}".Trim()
-                    });
+                    ListaSprzedawcow.Add(new SprzedawcaItem { WorkerID = w.WorkerID, UserID = w.UserID, FullName = w.FullName });
                 }
-                else if (user.RoleID == serwisantId)
+                else if (w.RoleName == "Serwisant")
                 {
-                    ListaSerwisantow.Add(new SerwisantItem
-                    {
-                        WorkerID = w.WorkerID,
-                        UserID = user.UserID,
-                        FullName = $"{user.FirstName} {user.LastName}".Trim()
-                    });
+                    ListaSerwisantow.Add(new SerwisantItem { WorkerID = w.WorkerID, UserID = w.UserID, FullName = w.FullName });
                 }
             }
 
             DodatkoweOpcje.Clear();
-            var features = await uow.Features.GetAllAsync();
-            foreach (var f in features.OrderBy(f => f.Category).ThenBy(f => f.FeatureName))
+            var features = await _catalogService.GetAllFeaturesAsync();
+            foreach (var f in features)
             {
                 DodatkoweOpcje.Add(new DodatkowaOpcja
                 {
                     FeatureID = f.FeatureID,
-                    Nazwa = $"{f.FeatureName} ({f.Category})",
+                    Nazwa     = $"{f.FeatureName} ({f.Category})",
                     Kategoria = f.Category
                 });
             }
@@ -176,15 +157,12 @@ public partial class CreateOrderViewModel : ObservableObject
 
         try
         {
-            using var ctx = new AppDbContext();
-            using var uow = new UnitOfWork(ctx);
-
-            var models = await uow.VehicleModels.FindAsync(m => m.Brand == brand);
-            foreach (var m in models.OrderBy(m => m.ModelName))
+            var models = await _catalogService.GetModelsByBrandAsync(brand);
+            foreach (var m in models)
                 Modele.Add(new ModelItem { ModelID = m.ModelID, Brand = m.Brand, ModelName = m.ModelName });
 
-            var engines = await uow.Engines.FindAsync(en => en.Brand == brand);
-            foreach (var en in engines.OrderBy(en => en.Power))
+            var engines = await _catalogService.GetEnginesByBrandAsync(brand);
+            foreach (var en in engines)
                 Silniki.Add(new EngineItem { EngineID = en.EngineID, EngineName = en.EngineName, Power = en.Power, Price = en.Price });
         }
         catch (Exception ex)
@@ -200,10 +178,8 @@ public partial class CreateOrderViewModel : ObservableObject
 
         try
         {
-            using var ctx = new AppDbContext();
-            using var uow = new UnitOfWork(ctx);
-            var trims = await uow.TrimLevels.FindAsync(t => t.ModelID == model.ModelID);
-            foreach (var t in trims.OrderBy(t => t.BasePrice))
+            var trims = await _catalogService.GetTrimsByModelAsync(model.ModelID);
+            foreach (var t in trims)
                 Wersje.Add(new TrimItem { TrimID = t.TrimID, ModelID = t.ModelID, TrimName = t.TrimName, BasePrice = t.BasePrice });
         }
         catch (Exception ex)
@@ -217,9 +193,6 @@ public partial class CreateOrderViewModel : ObservableObject
     {
         try
         {
-            using var ctx = new AppDbContext();
-            using var uow = new UnitOfWork(ctx);
-
             if (WybranaWersja == null || WybranySilnik == null)
             {
                 ShowWarning?.Invoke("Wybierz model, wersję i silnik pojazdu.");
@@ -230,7 +203,7 @@ public partial class CreateOrderViewModel : ObservableObject
                 ShowWarning?.Invoke("Wybierz sprzedawcę.");
                 return;
             }
-            if (WybranySerwisant == null)
+            if(WybranySerwisant == null)
             {
                 ShowWarning?.Invoke("Wybierz serwisanta.");
                 return;
@@ -254,95 +227,54 @@ public partial class CreateOrderViewModel : ObservableObject
                     return;
                 }
 
-                var existing = await uow.AppUsers.FindAsync(u => u.Email == NowyEmail.Trim());
-                if (existing.Any())
+                if (await _clientService.EmailExistsAsync(NowyEmail.Trim()))
                 {
                     ShowWarning?.Invoke("Użytkownik z takim e-mailem już istnieje. Wybierz go z listy istniejących klientów.");
                     return;
                 }
 
-                var roleKlient = (await uow.AppRoles.FindAsync(r => r.RoleName == "Klient")).FirstOrDefault();
-                if (roleKlient == null)
-                {
-                    ShowError?.Invoke("Rola 'Klient' nie istnieje w bazie.");
-                    return;
-                }
-
-                var newUser = new AppUser
-                {
-                    FirstName = NowyImie.Trim(),
-                    LastName = NowyNazwisko.Trim(),
-                    Email = NowyEmail.Trim(),
-                    PasswordHash = "",
-                    RoleID = roleKlient.RoleID,
-                    BirthDate = DateTime.Today
-                };
-                await uow.AppUsers.AddAsync(newUser);
-                await uow.CompleteAsync();
-
-                var newClient = new Client
-                {
-                    UserID = newUser.UserID,
-                    NIP = string.IsNullOrWhiteSpace(NowyNIP) ? null : NowyNIP.Trim(),
-                    Phone = string.IsNullOrWhiteSpace(NowyTelefon) ? "" : NowyTelefon.Trim()
-                };
-                await uow.Clients.AddAsync(newClient);
-                await uow.CompleteAsync();
-
-                clientId = newClient.ClientID;
+                var newClientDto = await _clientService.CreateClientAsync(NowyImie.Trim(), NowyNazwisko.Trim(), NowyEmail.Trim(), NowyTelefon.Trim(), string.IsNullOrWhiteSpace(NowyNIP) ? null : NowyNIP.Trim());
+                clientId = newClientDto.ClientID;
             }
 
-            var salon = (await uow.Dealerships.GetAllAsync()).First();
-
+            var salon = await _catalogService.GetMainDealershipAsync();
+            if (salon == null) throw new Exception("Brak salonu w bazie.");
             var vehicle = new Vehicle
             {
-                VIN = string.IsNullOrWhiteSpace(VIN) ? GenerateVin() : VIN.Trim(),
-                TrimID = WybranaWersja.TrimID,
-                EngineID = WybranySilnik.EngineID,
-                Mileage = CzyUzywany ? Przebieg : 0,
-                IsUsed = CzyUzywany,
+                VIN          = string.IsNullOrWhiteSpace(VIN) ? GenerateVin() : VIN.Trim(),
+                TrimID       = WybranaWersja.TrimID,
+                EngineID     = WybranySilnik.EngineID,
+                Mileage      = CzyUzywany ? Przebieg : 0,
+                IsUsed       = CzyUzywany,
                 DealershipID = salon.DealershipID,
-                Status = "Zarezerwowany"
+                Status       = "Zarezerwowany"
             };
-            await uow.Vehicles.AddAsync(vehicle);
-            await uow.CompleteAsync();
+            await _vehicleService.AddVehicleAsync(vehicle);
 
-            foreach (var opcja in DodatkoweOpcje.Where(o => o.Zaznaczona))
+            var selectedFeatures = DodatkoweOpcje.Where(o => o.Zaznaczona).Select(o => o.FeatureID).ToList();
+            if (selectedFeatures.Any())
             {
-                await uow.VehicleFeatures.AddAsync(new VehicleFeature
-                {
-                    VehicleID = vehicle.VehicleID,
-                    FeatureID = opcja.FeatureID,
-                    PurchasePrice = 0m
-                });
-
-                // Status "Oczekujące" — spójny z resztą systemu
-                await uow.Jobs.AddAsync(new Job
-                {
-                    VehicleID = vehicle.VehicleID,
-                    FeatureID = opcja.FeatureID,
-                    WorkerID = WybranySerwisant.WorkerID,
-                    Status = "Oczekujące",
-                    CreatedAt = DateTime.Now
-                });
+                await _jobService.AssignFeaturesAndCreateJobsAsync(vehicle.VehicleID, selectedFeatures, WybranySerwisant.WorkerID);
             }
 
-            decimal cena = CenaFinalna > 0
-                ? CenaFinalna
-                : WybranaWersja.BasePrice + WybranySilnik.Price;
-
+            decimal cena = CenaFinalna > 0 ? CenaFinalna : WybranaWersja.BasePrice + WybranySilnik.Price;
             var order = new SalesOrder
             {
-                VehicleID = vehicle.VehicleID,
-                ClientID = clientId,
-                WorkerID = WybranySprzedawca.WorkerID,
-                OrderDate = DataZamowienia == default ? DateTime.Now : DataZamowienia,
-                FinalPrice = cena,
-                Status = WybranyStatus,
+                VehicleID    = vehicle.VehicleID,
+                ClientID     = clientId,
+                WorkerID     = WybranySprzedawca.WorkerID,
+                OrderDate    = DataZamowienia == default ? DateTime.Now : DataZamowienia,
+                FinalPrice   = cena,
+                Status       = WybranyStatus,
                 DealershipID = salon.DealershipID
             };
-            await uow.SalesOrders.AddAsync(order);
-            await uow.CompleteAsync();
+
+            /*
+             Dodać opcję że gdy przy zamówieniu wybrane zostanie wyposażenie dodatkowe to jednocześnie tworzy się zlecenie serwisowe dla serwisanta.
+                Dodać możliwość tworzenia nowych zleceń serwisowych dla serwisanta
+             */
+
+            await _orderService.CreateOrderAsync(order);
 
             ShowInfo?.Invoke($"Zamówienie zapisane.\nNumer: {order.OrderID}\nCena: {order.FinalPrice:N0} zł");
 

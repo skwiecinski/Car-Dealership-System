@@ -1,14 +1,23 @@
 using System;
 using System.Windows;
+using System.Windows.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SalonSamochodowy.Entities;
+using SalonSamochodowy.Repositories;
+using SalonSamochodowy.Views;
 
 namespace SalonSamochodowy.ViewModels
 {
     public partial class MainWindowViewModel : ObservableObject
     {
-        public AppUser LoggedInUser { get; }
+        private readonly IUnitOfWork _uow;
+
+        public MainWindowViewModel(IUnitOfWork uow)
+        {
+            _uow = uow;
+        }
+        public AppUser LoggedInUser { get; private set; }
 
         [ObservableProperty] private string userFullName = "";
         [ObservableProperty] private string roleName = "";
@@ -26,7 +35,7 @@ namespace SalonSamochodowy.ViewModels
         public event Action? LogoutRequested;
         public event Action<string>? ShowProfileRequested;
 
-        public MainWindowViewModel(AppUser loggedIn)
+        public void Initialize(AppUser loggedIn)
         {
             LoggedInUser = loggedIn;
             UserFullName = $"{loggedIn.FirstName} {loggedIn.LastName}";

@@ -1,18 +1,20 @@
+using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 using SalonSamochodowy.ViewModels;
 using Wpf.Ui.Controls;
 
-namespace SalonSamochodowy
+namespace SalonSamochodowy.Views
 {
     public partial class AddClientWindow : FluentWindow
     {
-        private readonly AddClientViewModel _vm = new AddClientViewModel();
+        private readonly AddClientWindowViewModel _vm;
 
         public ClientModel? Result => _vm.Result;
 
         public AddClientWindow()
         {
             InitializeComponent();
+            _vm = ((App)Application.Current).Services.GetRequiredService<AddClientWindowViewModel>();
             DataContext = _vm;
 
             _vm.ShowWarning += msg => System.Windows.MessageBox.Show(

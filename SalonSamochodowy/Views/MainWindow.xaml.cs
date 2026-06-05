@@ -1,9 +1,10 @@
+using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 using SalonSamochodowy.Entities;
 using SalonSamochodowy.ViewModels;
 using Wpf.Ui.Controls;
 
-namespace SalonSamochodowy
+namespace SalonSamochodowy.Views
 {
     public partial class MainWindow : FluentWindow
     {
@@ -15,7 +16,8 @@ namespace SalonSamochodowy
         {
             InitializeComponent();
 
-            _vm = new MainWindowViewModel(loggedIn);
+            _vm = ((App)Application.Current).Services.GetRequiredService<MainWindowViewModel>();
+            _vm.Initialize(loggedIn);
             DataContext = _vm;
 
             if (_vm.AccessDeniedMessage != null)
