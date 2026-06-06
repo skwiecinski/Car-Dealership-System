@@ -37,7 +37,8 @@ public partial class CreateOrderViewModel : ObservableObject
     public ObservableCollection<EngineItem> Silniki { get; } = new();
     [ObservableProperty] private EngineItem? wybranySilnik;
 
-    [ObservableProperty] private string kolor = "";
+    public ObservableCollection<Feature> DostępneKolory { get; } = new();
+    [ObservableProperty] private Feature? wybranyKolor;
     [ObservableProperty] private string vIN = "";
     [ObservableProperty] private bool czyUzywany = false;
     [ObservableProperty] private int przebieg = 0;
@@ -107,6 +108,14 @@ public partial class CreateOrderViewModel : ObservableObject
             ListaSprzedawcow.Clear();
             ListaSerwisantow.Clear();
             
+            DostępneKolory.Clear();
+            var allFeatures = await _catalogService.GetAllFeaturesAsync();
+            var colors = allFeatures.Where(f => f.Category == "Kolor");
+            foreach (var col in colors.OrderBy(col => col.FeatureName))
+            {
+                DostępneKolory.Add(col);
+            }
+
             var workers = await _catalogService.GetWorkersByRolesAsync("Sprzedawca", "Kierownik", "Serwisant");
             foreach (var w in workers)
             {
@@ -203,9 +212,14 @@ public partial class CreateOrderViewModel : ObservableObject
                 ShowWarning?.Invoke("Wybierz sprzedawcę.");
                 return;
             }
-            if(WybranySerwisant == null)
+            if (WybranySerwisant == null)
             {
                 ShowWarning?.Invoke("Wybierz serwisanta.");
+                return;
+            }
+            if (WybranyKolor == null)
+            {
+                ShowWarning?.Invoke("Wybierz kolor pojazdu.");
                 return;
             }
 
@@ -251,13 +265,22 @@ public partial class CreateOrderViewModel : ObservableObject
             };
             await _vehicleService.AddVehicleAsync(vehicle);
 
+            var isBaseColor = WybranyKolor.FeatureName.Contains("bazowy");
+            var colorPrice = isBaseColor ? 0m : 2500m;
+            await _vehicleService.AddVehicleFeatureAsync(new VehicleFeature
+            {
+                VehicleID = vehicle.VehicleID,
+                FeatureID = WybranyKolor.FeatureID,
+                PurchasePrice = colorPrice
+            });
+
             var selectedFeatures = DodatkoweOpcje.Where(o => o.Zaznaczona).Select(o => o.FeatureID).ToList();
             if (selectedFeatures.Any())
             {
                 await _jobService.AssignFeaturesAndCreateJobsAsync(vehicle.VehicleID, selectedFeatures, WybranySerwisant.WorkerID);
             }
 
-            decimal cena = CenaFinalna > 0 ? CenaFinalna : WybranaWersja.BasePrice + WybranySilnik.Price;
+            decimal cena = CenaFinalna > 0 ? CenaFinalna : WybranaWersja.BasePrice + WybranySilnik.Price + colorPrice;
             var order = new SalesOrder
             {
                 VehicleID    = vehicle.VehicleID,
@@ -298,7 +321,7 @@ public partial class CreateOrderViewModel : ObservableObject
         Modele.Clear();
         Wersje.Clear();
         WybranySilnik = null;
-        Kolor = "";
+        WybranyKolor = null;
         VIN = "";
         CzyUzywany = false;
         Przebieg = 0;

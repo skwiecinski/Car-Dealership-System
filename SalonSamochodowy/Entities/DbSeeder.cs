@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using SalonSamochodowy.Entities;
 
@@ -190,6 +190,36 @@ namespace SalonSamochodowy
                     CreatedAt = DateTime.Now
                 });
 
+                context.SaveChanges();
+            }
+
+            if (!context.Features.Any(f => f.Category == "Kolor"))
+            {
+                context.Features.AddRange(
+                    new Feature { FeatureName = "Alpejska Biel (bazowy)", Category = "Kolor" },
+                    new Feature { FeatureName = "Czarny Szafir metalik",   Category = "Kolor" },
+                    new Feature { FeatureName = "Szary Melbourne metalik",Category = "Kolor" },
+                    new Feature { FeatureName = "Niebieski Phytonic metalik", Category = "Kolor" }
+                );
+                context.SaveChanges();
+            }
+
+            var baseColor = context.Features.FirstOrDefault(f => f.FeatureName == "Alpejska Biel (bazowy)");
+            if (baseColor != null)
+            {
+                var vehiclesWithoutColor = context.Vehicles
+                    .Where(v => !context.VehicleFeatures.Any(vf => vf.VehicleID == v.VehicleID && vf.Feature.Category == "Kolor"))
+                    .ToList();
+
+                foreach (var v in vehiclesWithoutColor)
+                {
+                    context.VehicleFeatures.Add(new VehicleFeature
+                    {
+                        VehicleID = v.VehicleID,
+                        FeatureID = baseColor.FeatureID,
+                        PurchasePrice = 0m
+                    });
+                }
                 context.SaveChanges();
             }
         }

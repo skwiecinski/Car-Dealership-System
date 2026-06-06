@@ -56,5 +56,11 @@ namespace SalonSamochodowy.Services
             _uow.Vehicles.Delete(vehicle);
             await _uow.CompleteAsync();
         }
+
+        public async Task AddVehicleFeatureAsync(VehicleFeature vf)
+        {
+            await _uow.VehicleFeatures.AddAsync(vf);
+            await _uow.CompleteAsync();
+        }
     }
 }

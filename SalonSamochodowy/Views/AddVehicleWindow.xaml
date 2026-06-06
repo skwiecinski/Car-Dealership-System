@@ -134,6 +134,14 @@
                                 </DataTemplate>
                             </ComboBox.ItemTemplate>
                         </ComboBox>
+
+                        <TextBlock Text="Kolor lakieru"
+                                   Foreground="{StaticResource TextMuted}" FontSize="12" Margin="0,15,0,5"/>
+                        <ComboBox ItemsSource="{Binding AvailableColors}"
+                                  SelectedItem="{Binding SelectedColor}"
+                                  DisplayMemberPath="FeatureName"
+                                  HorizontalAlignment="Stretch"
+                                  IsEnabled="{Binding AvailableColors.Count}"/>
                     </StackPanel>
                 </Border>
 
