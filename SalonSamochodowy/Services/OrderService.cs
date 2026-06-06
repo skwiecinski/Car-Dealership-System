@@ -50,5 +50,29 @@ namespace SalonSamochodowy.Services
         {
             return await _uow.SalesOrders.FindAsync(o => o.OrderDate >= since);
         }
+
+        public async Task UpdateOrderStatusAsync(int orderId, string newStatus)
+        {
+            var order = await _uow.SalesOrders.GetByIdAsync(orderId);
+            if (order == null) throw new Exception("Nie znaleziono zamówienia.");
+
+            order.Status = newStatus;
+            _uow.SalesOrders.Update(order);
+
+            var vehicle = await _uow.Vehicles.GetByIdAsync(order.VehicleID);
+            if (vehicle != null)
+            {
+                if (newStatus == "Zrealizowane" || newStatus == "Sfinalizowane")
+                    vehicle.Status = "Sprzedany";
+                else if (newStatus == "Anulowane")
+                    vehicle.Status = "Dostępny";
+                else
+                    vehicle.Status = "Zarezerwowany";
+
+                _uow.Vehicles.Update(vehicle);
+            }
+
+            await _uow.CompleteAsync();
+        }
     }
 }

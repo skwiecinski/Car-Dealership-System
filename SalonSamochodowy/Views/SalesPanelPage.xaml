@@ -1,0 +1,315 @@
+<Page x:Class="SalonSamochodowy.Views.SalesPanelPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      xmlns:local="clr-namespace:SalonSamochodowy.Views"
+      xmlns:vm="clr-namespace:SalonSamochodowy.ViewModels"
+      Title="Panel Sprzedaży" Foreground="White" Background="#1A1C23">
+
+    <Page.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </Page.Resources>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Grid Grid.Row="0" Margin="0,0,0,20">
+            <StackPanel>
+                <TextBlock Text="Aktywne Procesy Sprzedaży" FontSize="24" FontWeight="Bold" Foreground="#E2E2E2"/>
+                <TextBlock Text="Zarządzanie trwającymi zamówieniami, postępem przygotowania pojazdów i finalizacja transakcji" Foreground="#8A8D98" Margin="0,4,0,0"/>
+            </StackPanel>
+            
+            <!-- Refresh Indicator / Progress -->
+            <ProgressBar IsIndeterminate="True" 
+                         HorizontalAlignment="Right" 
+                         VerticalAlignment="Center" 
+                         Width="100" Height="4"
+                         Foreground="#5B59E8" Background="Transparent" BorderThickness="0"
+                         Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+        </Grid>
+
+        <!-- Board Layout (3 Columns) -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- ================= COLUMN 1: ZAREZERWOWANE ================= -->
+            <Border Grid.Column="0" Background="#22242C" CornerRadius="10" BorderBrush="#2D3038" BorderThickness="1" Margin="0,0,10,0" Padding="15">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Margin="0,0,0,15">
+                        <Grid>
+                            <StackPanel Orientation="Horizontal">
+                                <ui:SymbolIcon Symbol="Bookmark24" Foreground="#F0B82B" FontSize="18" VerticalAlignment="Center"/>
+                                <TextBlock Text="Zarezerwowane" FontSize="16" FontWeight="SemiBold" Foreground="White" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <Border Background="#332A12" CornerRadius="10" Padding="8,2" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding ReservedSales.Count, StringFormat='{}{0}'}" Foreground="#F0B82B" FontSize="11" FontWeight="Bold"/>
+                            </Border>
+                        </Grid>
+                        <TextBlock Text="Pojazdy oczekujące na podjęcie dalszych kroków" FontSize="11" Foreground="#8A8D98" Margin="0,4,0,0"/>
+                        <Separator Background="#2D3038" Margin="0,10,0,0"/>
+                    </StackPanel>
+
+                    <!-- List of items -->
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <Grid>
+                            <!-- Empty message -->
+                            <TextBlock Text="Brak rezerwacji" Foreground="#8A8D98" FontSize="13" FontStyle="Italic" 
+                                       HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,40,0,0"
+                                       Visibility="{Binding ReservedEmptyVisibility}"/>
+
+                            <ItemsControl ItemsSource="{Binding ReservedSales}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate DataType="{x:Type vm:SalesOrderModel}">
+                                        <Border Background="#1C1E23" CornerRadius="8" Margin="0,0,0,12" Padding="12" BorderBrush="#2D3038" BorderThickness="1">
+                                            <StackPanel>
+                                                <!-- Brand & Model -->
+                                                <TextBlock Text="{Binding VehicleName}" FontSize="14" FontWeight="Bold" Foreground="White"/>
+                                                
+                                                <!-- VIN & Engine -->
+                                                <TextBlock Text="{Binding VehicleVin}" FontFamily="Consolas" FontSize="11" Foreground="#8A8D98" Margin="0,2,0,0"/>
+                                                <TextBlock Text="{Binding EngineInfo}" FontSize="11" Foreground="#8A8D98" Margin="0,2,0,0"/>
+
+                                                <Separator Background="#2D3038" Margin="0,8"/>
+
+                                                <!-- Client Details -->
+                                                <StackPanel Margin="0,0,0,8">
+                                                    <TextBlock Text="Klient:" FontSize="10" Foreground="#8A8D98" FontWeight="SemiBold"/>
+                                                    <TextBlock Text="{Binding ClientName}" FontSize="12" FontWeight="SemiBold" Foreground="#E2E2E2"/>
+                                                    <TextBlock Text="{Binding ClientContact}" FontSize="11" Foreground="#8A8D98"/>
+                                                </StackPanel>
+
+                                                <!-- Date and Price -->
+                                                <Grid Margin="0,0,0,12">
+                                                    <StackPanel HorizontalAlignment="Left">
+                                                        <TextBlock Text="Data zamówienia:" FontSize="10" Foreground="#8A8D98"/>
+                                                        <TextBlock Text="{Binding OrderDateText}" FontSize="11" Foreground="#E2E2E2"/>
+                                                    </StackPanel>
+                                                    <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center">
+                                                        <TextBlock Text="{Binding FinalPriceText}" FontSize="15" FontWeight="Bold" Foreground="#44C767"/>
+                                                    </StackPanel>
+                                                </Grid>
+
+                                                <!-- Actions -->
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <ui:Button Content="Sfinalizuj" Appearance="Primary" Grid.Column="0" Margin="0,0,4,0" HorizontalAlignment="Stretch"
+                                                               Command="{Binding DataContext.CloseSuccessCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                                               CommandParameter="{Binding}"/>
+                                                    <ui:Button Content="Anuluj" Appearance="Danger" Grid.Column="1" Margin="4,0,0,0" HorizontalAlignment="Stretch"
+                                                               Command="{Binding DataContext.CloseFailCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                                               CommandParameter="{Binding}"/>
+                                                </Grid>
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Grid>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+
+            <!-- ================= COLUMN 2: W TRAKCIE SERWISU ================= -->
+            <Border Grid.Column="1" Background="#22242C" CornerRadius="10" BorderBrush="#2D3038" BorderThickness="1" Margin="5,0,5,0" Padding="15">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Margin="0,0,0,15">
+                        <Grid>
+                            <StackPanel Orientation="Horizontal">
+                                <ui:SymbolIcon Symbol="Wrench24" Foreground="#5B59E8" FontSize="18" VerticalAlignment="Center"/>
+                                <TextBlock Text="Serwis i Przygotowanie" FontSize="16" FontWeight="SemiBold" Foreground="White" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <Border Background="#1A1833" CornerRadius="10" Padding="8,2" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding ServicingSales.Count, StringFormat='{}{0}'}" Foreground="#5B59E8" FontSize="11" FontWeight="Bold"/>
+                            </Border>
+                        </Grid>
+                        <TextBlock Text="Pojazdy w trakcie montażu dodatkowego wyposażenia" FontSize="11" Foreground="#8A8D98" Margin="0,4,0,0"/>
+                        <Separator Background="#2D3038" Margin="0,10,0,0"/>
+                    </StackPanel>
+
+                    <!-- List of items -->
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <Grid>
+                            <!-- Empty message -->
+                            <TextBlock Text="Brak pojazdów w serwisie" Foreground="#8A8D98" FontSize="13" FontStyle="Italic" 
+                                       HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,40,0,0"
+                                       Visibility="{Binding ServicingEmptyVisibility}"/>
+
+                            <ItemsControl ItemsSource="{Binding ServicingSales}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate DataType="{x:Type vm:SalesOrderModel}">
+                                        <Border Background="#1C1E23" CornerRadius="8" Margin="0,0,0,12" Padding="12" BorderBrush="#2D3038" BorderThickness="1">
+                                            <StackPanel>
+                                                <!-- Brand & Model -->
+                                                <TextBlock Text="{Binding VehicleName}" FontSize="14" FontWeight="Bold" Foreground="White"/>
+                                                
+                                                <!-- VIN & Engine -->
+                                                <TextBlock Text="{Binding VehicleVin}" FontFamily="Consolas" FontSize="11" Foreground="#8A8D98" Margin="0,2,0,0"/>
+                                                <TextBlock Text="{Binding EngineInfo}" FontSize="11" Foreground="#8A8D98" Margin="0,2,0,0"/>
+
+                                                <!-- Job Progress Badge -->
+                                                <Border Background="#331A1A" BorderBrush="#8E2D2D" BorderThickness="1" CornerRadius="6" Padding="8,6" Margin="0,8,0,0">
+                                                    <StackPanel>
+                                                        <TextBlock Text="{Binding JobsStatus}" FontWeight="SemiBold" FontSize="11" Foreground="#ED6262"/>
+                                                        <TextBlock Text="{Binding JobsDescription}" FontSize="10" Foreground="#8A8D98" Margin="0,4,0,0"/>
+                                                    </StackPanel>
+                                                </Border>
+
+                                                <Separator Background="#2D3038" Margin="0,8"/>
+
+                                                <!-- Client Details -->
+                                                <StackPanel Margin="0,0,0,8">
+                                                    <TextBlock Text="Klient:" FontSize="10" Foreground="#8A8D98" FontWeight="SemiBold"/>
+                                                    <TextBlock Text="{Binding ClientName}" FontSize="12" FontWeight="SemiBold" Foreground="#E2E2E2"/>
+                                                    <TextBlock Text="{Binding ClientContact}" FontSize="11" Foreground="#8A8D98"/>
+                                                </StackPanel>
+
+                                                <!-- Date and Price -->
+                                                <Grid Margin="0,0,0,12">
+                                                    <StackPanel HorizontalAlignment="Left">
+                                                        <TextBlock Text="Data zamówienia:" FontSize="10" Foreground="#8A8D98"/>
+                                                        <TextBlock Text="{Binding OrderDateText}" FontSize="11" Foreground="#E2E2E2"/>
+                                                    </StackPanel>
+                                                    <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center">
+                                                        <TextBlock Text="{Binding FinalPriceText}" FontSize="15" FontWeight="Bold" Foreground="#44C767"/>
+                                                    </StackPanel>
+                                                </Grid>
+
+                                                <!-- Actions -->
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <ui:Button Content="Sfinalizuj" Appearance="Primary" Grid.Column="0" Margin="0,0,4,0" HorizontalAlignment="Stretch"
+                                                               Command="{Binding DataContext.CloseSuccessCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                                               CommandParameter="{Binding}"/>
+                                                    <ui:Button Content="Anuluj" Appearance="Danger" Grid.Column="1" Margin="4,0,0,0" HorizontalAlignment="Stretch"
+                                                               Command="{Binding DataContext.CloseFailCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                                               CommandParameter="{Binding}"/>
+                                                </Grid>
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Grid>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+
+            <!-- ================= COLUMN 3: GOTOWE DO ODDANIA ================= -->
+            <Border Grid.Column="2" Background="#22242C" CornerRadius="10" BorderBrush="#2D3038" BorderThickness="1" Margin="10,0,0,0" Padding="15">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Margin="0,0,0,15">
+                        <Grid>
+                            <StackPanel Orientation="Horizontal">
+                                <ui:SymbolIcon Symbol="CheckmarkCircle24" Foreground="#44C767" FontSize="18" VerticalAlignment="Center"/>
+                                <TextBlock Text="Gotowe do Oddania" FontSize="16" FontWeight="SemiBold" Foreground="White" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <Border Background="#112C1E" CornerRadius="10" Padding="8,2" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding ReadySales.Count, StringFormat='{}{0}'}" Foreground="#44C767" FontSize="11" FontWeight="Bold"/>
+                            </Border>
+                        </Grid>
+                        <TextBlock Text="Pojazdy w pełni gotowe do odbioru przez klienta" FontSize="11" Foreground="#8A8D98" Margin="0,4,0,0"/>
+                        <Separator Background="#2D3038" Margin="0,10,0,0"/>
+                    </StackPanel>
+
+                    <!-- List of items -->
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <Grid>
+                            <!-- Empty message -->
+                            <TextBlock Text="Brak pojazdów gotowych do odbioru" Foreground="#8A8D98" FontSize="13" FontStyle="Italic" 
+                                       HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,40,0,0"
+                                       Visibility="{Binding ReadyEmptyVisibility}"/>
+
+                            <ItemsControl ItemsSource="{Binding ReadySales}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate DataType="{x:Type vm:SalesOrderModel}">
+                                        <Border Background="#1C1E23" CornerRadius="8" Margin="0,0,0,12" Padding="12" BorderBrush="#2D3038" BorderThickness="1">
+                                            <StackPanel>
+                                                <!-- Brand & Model -->
+                                                <TextBlock Text="{Binding VehicleName}" FontSize="14" FontWeight="Bold" Foreground="White"/>
+                                                
+                                                <!-- VIN & Engine -->
+                                                <TextBlock Text="{Binding VehicleVin}" FontFamily="Consolas" FontSize="11" Foreground="#8A8D98" Margin="0,2,0,0"/>
+                                                <TextBlock Text="{Binding EngineInfo}" FontSize="11" Foreground="#8A8D98" Margin="0,2,0,0"/>
+
+                                                <!-- Job Progress Badge -->
+                                                <Border Background="#112C1E" BorderBrush="#2D9A4A" BorderThickness="1" CornerRadius="6" Padding="8,6" Margin="0,8,0,0">
+                                                    <StackPanel>
+                                                        <TextBlock Text="{Binding JobsStatus}" FontWeight="SemiBold" FontSize="11" Foreground="#44C767"/>
+                                                        <TextBlock Text="{Binding JobsDescription}" FontSize="10" Foreground="#8A8D98" Margin="0,4,0,0"/>
+                                                    </StackPanel>
+                                                </Border>
+
+                                                <Separator Background="#2D3038" Margin="0,8"/>
+
+                                                <!-- Client Details -->
+                                                <StackPanel Margin="0,0,0,8">
+                                                    <TextBlock Text="Klient:" FontSize="10" Foreground="#8A8D98" FontWeight="SemiBold"/>
+                                                    <TextBlock Text="{Binding ClientName}" FontSize="12" FontWeight="SemiBold" Foreground="#E2E2E2"/>
+                                                    <TextBlock Text="{Binding ClientContact}" FontSize="11" Foreground="#8A8D98"/>
+                                                </StackPanel>
+
+                                                <!-- Date and Price -->
+                                                <Grid Margin="0,0,0,12">
+                                                    <StackPanel HorizontalAlignment="Left">
+                                                        <TextBlock Text="Data zamówienia:" FontSize="10" Foreground="#8A8D98"/>
+                                                        <TextBlock Text="{Binding OrderDateText}" FontSize="11" Foreground="#E2E2E2"/>
+                                                    </StackPanel>
+                                                    <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center">
+                                                        <TextBlock Text="{Binding FinalPriceText}" FontSize="15" FontWeight="Bold" Foreground="#44C767"/>
+                                                    </StackPanel>
+                                                </Grid>
+
+                                                <!-- Actions -->
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <ui:Button Content="Sfinalizuj" Appearance="Primary" Grid.Column="0" Margin="0,0,4,0" HorizontalAlignment="Stretch"
+                                                               Command="{Binding DataContext.CloseSuccessCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                                               CommandParameter="{Binding}"/>
+                                                    <ui:Button Content="Anuluj" Appearance="Danger" Grid.Column="1" Margin="4,0,0,0" HorizontalAlignment="Stretch"
+                                                               Command="{Binding DataContext.CloseFailCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                                               CommandParameter="{Binding}"/>
+                                                </Grid>
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Grid>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</Page>
