@@ -29,6 +29,7 @@ namespace SalonSamochodowy.ViewModels
         [ObservableProperty] private Visibility servicesVisibility    = Visibility.Collapsed;
         [ObservableProperty] private Visibility adminVisibility       = Visibility.Collapsed;
         [ObservableProperty] private Visibility customerPanelVisibility = Visibility.Collapsed;
+        [ObservableProperty] private Visibility salesPanelVisibility    = Visibility.Collapsed;
 
         public Type? StartupPageType { get; private set; }
         public string? AccessDeniedMessage { get; private set; }
@@ -61,6 +62,7 @@ namespace SalonSamochodowy.ViewModels
                     VehiclesVisibility    = Visibility.Visible;
                     ServicesVisibility    = Visibility.Visible;
                     AdminVisibility       = Visibility.Visible;
+                    SalesPanelVisibility  = Visibility.Visible;
                     StartupPageType       = typeof(DashboardPage);
                     break;
 
@@ -68,6 +70,7 @@ namespace SalonSamochodowy.ViewModels
                     ClientsVisibility     = Visibility.Visible;
                     CreateOrderVisibility = Visibility.Visible;
                     VehiclesVisibility    = Visibility.Visible;
+                    SalesPanelVisibility  = Visibility.Visible;
                     StartupPageType       = typeof(VehiclesPage);
                     break;
 

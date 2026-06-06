@@ -11,5 +11,6 @@ namespace SalonSamochodowy.Services
         Task<IEnumerable<SalesOrder>> GetRecentOrdersAsync(int count);
         Task<int> GetOrdersCountSinceAsync(DateTime since);
         Task<IEnumerable<SalesOrder>> GetOrdersSinceAsync(DateTime since);
+        Task UpdateOrderStatusAsync(int orderId, string newStatus);
     }
 }
