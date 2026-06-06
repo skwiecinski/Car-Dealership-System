@@ -1,0 +1,208 @@
+<Page x:Class="SalonSamochodowy.Views.CustomerPanelPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      Title="CustomerPanelPage" Foreground="White" Background="#1A1C23">
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Background="#22242C" CornerRadius="10" BorderBrush="#2D3038" BorderThickness="1" Padding="20" Margin="0,0,0,20">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Border Width="56" Height="56" CornerRadius="12" Background="#5B59E8" VerticalAlignment="Center">
+                    <ui:SymbolIcon Symbol="Person24" Foreground="White" FontSize="28"/>
+                </Border>
+                <StackPanel Grid.Column="1" Margin="20,0,0,0" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding WelcomeText}" FontSize="24" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock Text="{Binding ClientDetailsText}" FontSize="13" Foreground="#8A8D98" Margin="0,4,0,0"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Tabs for Ongoing and Completed Orders -->
+        <TabControl Grid.Row="1" Background="Transparent" BorderThickness="0" Foreground="White">
+            
+            <!-- ====== TAB: ONGOING ====== -->
+            <TabItem Header="{Binding OngoingCountText}">
+                <Border Background="#22242C" CornerRadius="0,10,10,10" Padding="20" BorderBrush="#2D3038" BorderThickness="1">
+                    <Grid>
+                        <!-- No ongoing orders message -->
+                        <TextBlock Text="Brak trwających zamówień"
+                                   Foreground="#8A8D98" FontSize="14" FontStyle="Italic"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,40,0,40"
+                                   Visibility="{Binding EmptyOngoingVisibility}"/>
+
+                        <!-- Ongoing orders list -->
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Visibility="{Binding OngoingListVisibility}">
+                            <StackPanel>
+                                <!-- Table Header -->
+                                <Grid Margin="10,0,10,10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="1.5*"/>
+                                        <ColumnDefinition Width="2.5*"/>
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="1.5*"/>
+                                        <ColumnDefinition Width="1.5*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="KOD I DATA" Foreground="#8A8D98" FontWeight="SemiBold" FontSize="11" Grid.Column="0"/>
+                                    <TextBlock Text="POJAZD" Foreground="#8A8D98" FontWeight="SemiBold" FontSize="11" Grid.Column="1"/>
+                                    <TextBlock Text="SALON I SPRZEDAWCA" Foreground="#8A8D98" FontWeight="SemiBold" FontSize="11" Grid.Column="2"/>
+                                    <TextBlock Text="CENA" Foreground="#8A8D98" FontWeight="SemiBold" FontSize="11" Grid.Column="3"/>
+                                    <TextBlock Text="STATUS" Foreground="#8A8D98" FontWeight="SemiBold" FontSize="11" Grid.Column="4"/>
+                                </Grid>
+                                
+                                <Separator Background="#2D3038" Margin="0,0,0,10"/>
+
+                                <ItemsControl ItemsSource="{Binding OngoingOrders}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Background="#1C1E23" CornerRadius="8" Margin="0,4" Padding="12,15" BorderBrush="#2D3038" BorderThickness="1">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="1.5*"/>
+                                                        <ColumnDefinition Width="2.5*"/>
+                                                        <ColumnDefinition Width="2*"/>
+                                                        <ColumnDefinition Width="1.5*"/>
+                                                        <ColumnDefinition Width="1.5*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    
+                                                    <!-- Code & Date -->
+                                                    <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                                        <TextBlock Text="{Binding OrderCode}" FontWeight="Bold" Foreground="White" FontSize="14"/>
+                                                        <TextBlock Text="{Binding Date}" Foreground="#8A8D98" FontSize="12" Margin="0,4,0,0"/>
+                                                    </StackPanel>
+                                                    
+                                                    <!-- Vehicle -->
+                                                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,0,10,0">
+                                                        <TextBlock Text="{Binding VehicleInfo}" FontWeight="SemiBold" Foreground="#E2E2E2" FontSize="14" TextWrapping="Wrap"/>
+                                                        <TextBlock Text="{Binding EngineInfo}" Foreground="#8A8D98" FontSize="12" Margin="0,4,0,0" TextWrapping="Wrap"/>
+                                                    </StackPanel>
+                                                    
+                                                    <!-- Dealership & Worker -->
+                                                    <StackPanel Grid.Column="2" VerticalAlignment="Center" Margin="0,0,10,0">
+                                                        <TextBlock Text="{Binding DealershipName}" FontWeight="SemiBold" Foreground="#E2E2E2" FontSize="14" TextWrapping="Wrap"/>
+                                                        <TextBlock Text="{Binding WorkerName}" Foreground="#8A8D98" FontSize="12" Margin="0,4,0,0" TextWrapping="Wrap"/>
+                                                    </StackPanel>
+                                                    
+                                                    <!-- Price -->
+                                                    <TextBlock Grid.Column="3" Text="{Binding Price}" FontWeight="Bold" Foreground="#5B59E8" FontSize="16" VerticalAlignment="Center"/>
+                                                    
+                                                    <!-- Status Badge -->
+                                                    <Border Grid.Column="4"
+                                                            Background="{Binding StatusBackground}"
+                                                            BorderBrush="{Binding StatusBorder}"
+                                                            BorderThickness="1"
+                                                            CornerRadius="4"
+                                                            Padding="10,6"
+                                                            HorizontalAlignment="Left"
+                                                            VerticalAlignment="Center">
+                                                        <TextBlock Text="{Binding Status}" Foreground="{Binding StatusForeground}" FontSize="12" FontWeight="Bold"/>
+                                                    </Border>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Grid>
+                </Border>
+            </TabItem>
+
+            <!-- ====== TAB: COMPLETED ====== -->
+            <TabItem Header="{Binding CompletedCountText}">
+                <Border Background="#22242C" CornerRadius="0,10,10,10" Padding="20" BorderBrush="#2D3038" BorderThickness="1">
+                    <Grid>
+                        <!-- No completed orders message -->
+                        <TextBlock Text="Brak zakończonych zamówień"
+                                   Foreground="#8A8D98" FontSize="14" FontStyle="Italic"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,40,0,40"
+                                   Visibility="{Binding EmptyCompletedVisibility}"/>
+
+                        <!-- Completed orders list -->
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Visibility="{Binding CompletedListVisibility}">
+                            <StackPanel>
+                                <!-- Table Header -->
+                                <Grid Margin="10,0,10,10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="1.5*"/>
+                                        <ColumnDefinition Width="2.5*"/>
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="1.5*"/>
+                                        <ColumnDefinition Width="1.5*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="KOD I DATA" Foreground="#8A8D98" FontWeight="SemiBold" FontSize="11" Grid.Column="0"/>
+                                    <TextBlock Text="POJAZD" Foreground="#8A8D98" FontWeight="SemiBold" FontSize="11" Grid.Column="1"/>
+                                    <TextBlock Text="SALON I SPRZEDAWCA" Foreground="#8A8D98" FontWeight="SemiBold" FontSize="11" Grid.Column="2"/>
+                                    <TextBlock Text="CENA" Foreground="#8A8D98" FontWeight="SemiBold" FontSize="11" Grid.Column="3"/>
+                                    <TextBlock Text="STATUS" Foreground="#8A8D98" FontWeight="SemiBold" FontSize="11" Grid.Column="4"/>
+                                </Grid>
+                                
+                                <Separator Background="#2D3038" Margin="0,0,0,10"/>
+
+                                <ItemsControl ItemsSource="{Binding CompletedOrders}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Background="#1C1E23" CornerRadius="8" Margin="0,4" Padding="12,15" BorderBrush="#2D3038" BorderThickness="1">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="1.5*"/>
+                                                        <ColumnDefinition Width="2.5*"/>
+                                                        <ColumnDefinition Width="2*"/>
+                                                        <ColumnDefinition Width="1.5*"/>
+                                                        <ColumnDefinition Width="1.5*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    
+                                                    <!-- Code & Date -->
+                                                    <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                                        <TextBlock Text="{Binding OrderCode}" FontWeight="Bold" Foreground="White" FontSize="14"/>
+                                                        <TextBlock Text="{Binding Date}" Foreground="#8A8D98" FontSize="12" Margin="0,4,0,0"/>
+                                                    </StackPanel>
+                                                    
+                                                    <!-- Vehicle -->
+                                                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,0,10,0">
+                                                        <TextBlock Text="{Binding VehicleInfo}" FontWeight="SemiBold" Foreground="#E2E2E2" FontSize="14" TextWrapping="Wrap"/>
+                                                        <TextBlock Text="{Binding EngineInfo}" Foreground="#8A8D98" FontSize="12" Margin="0,4,0,0" TextWrapping="Wrap"/>
+                                                    </StackPanel>
+                                                    
+                                                    <!-- Dealership & Worker -->
+                                                    <StackPanel Grid.Column="2" VerticalAlignment="Center" Margin="0,0,10,0">
+                                                        <TextBlock Text="{Binding DealershipName}" FontWeight="SemiBold" Foreground="#E2E2E2" FontSize="14" TextWrapping="Wrap"/>
+                                                        <TextBlock Text="{Binding WorkerName}" Foreground="#8A8D98" FontSize="12" Margin="0,4,0,0" TextWrapping="Wrap"/>
+                                                    </StackPanel>
+                                                    
+                                                    <!-- Price -->
+                                                    <TextBlock Grid.Column="3" Text="{Binding Price}" FontWeight="Bold" Foreground="#5B59E8" FontSize="16" VerticalAlignment="Center"/>
+                                                    
+                                                    <!-- Status Badge -->
+                                                    <Border Grid.Column="4"
+                                                            Background="{Binding StatusBackground}"
+                                                            BorderBrush="{Binding StatusBorder}"
+                                                            BorderThickness="1"
+                                                            CornerRadius="4"
+                                                            Padding="10,6"
+                                                            HorizontalAlignment="Left"
+                                                            VerticalAlignment="Center">
+                                                        <TextBlock Text="{Binding Status}" Foreground="{Binding StatusForeground}" FontSize="12" FontWeight="Bold"/>
+                                                    </Border>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Grid>
+                </Border>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Page>

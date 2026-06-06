@@ -28,6 +28,7 @@ namespace SalonSamochodowy.ViewModels
         [ObservableProperty] private Visibility vehiclesVisibility    = Visibility.Collapsed;
         [ObservableProperty] private Visibility servicesVisibility    = Visibility.Collapsed;
         [ObservableProperty] private Visibility adminVisibility       = Visibility.Collapsed;
+        [ObservableProperty] private Visibility customerPanelVisibility = Visibility.Collapsed;
 
         public Type? StartupPageType { get; private set; }
         public string? AccessDeniedMessage { get; private set; }
@@ -76,7 +77,8 @@ namespace SalonSamochodowy.ViewModels
                     break;
 
                 case "Klient":
-                    AccessDeniedMessage = "Klienci nie mają dostępu do panelu pracowniczego.";
+                    CustomerPanelVisibility = Visibility.Visible;
+                    StartupPageType = typeof(CustomerPanelPage);
                     break;
 
                 default:
