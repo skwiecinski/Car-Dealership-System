@@ -24,10 +24,12 @@ namespace SalonSamochodowy.ViewModels
         public ObservableCollection<string> Brands { get; } = new() { "Wszystkie marki" };
         public ObservableCollection<string> Models { get; } = new() { "Wszystkie modele" };
         public ObservableCollection<string> Engines { get; } = new() { "Dowolny" };
+        public ObservableCollection<string> Colors { get; } = new() { "Dowolny" };
 
         [ObservableProperty] private string? selectedBrand;
         [ObservableProperty] private string? selectedModel;
         [ObservableProperty] private string? selectedEngine;
+        [ObservableProperty] private string? selectedColor;
         [ObservableProperty] private string? selectedStatus;
 
         public ObservableCollection<VehicleItem> VehicleList { get; } = new();
@@ -56,6 +58,15 @@ namespace SalonSamochodowy.ViewModels
                 foreach (var en in engines)
                     Engines.Add($"{en.EngineName} • {en.Power} KM");
                 SelectedEngine = Engines[0];
+
+                Colors.Clear();
+                Colors.Add("Dowolny");
+                var colors = (await uow.Features.FindAsync(f => f.Category == "Kolor"))
+                    .Select(f => f.FeatureName)
+                    .Distinct();
+                foreach (var c in colors.OrderBy(c => c))
+                    Colors.Add(c);
+                SelectedColor = Colors[0];
             }
             catch (Exception ex)
             {
@@ -157,11 +168,22 @@ namespace SalonSamochodowy.ViewModels
 
                     var vehicleFeatures = await uow.VehicleFeatures.FindAsync(vf => vf.VehicleID == v.VehicleID);
                     var featureNames = new List<string>();
+                    string colorVal = "Brak";
                     foreach (var vf in vehicleFeatures)
                     {
                         var f = await uow.Features.GetByIdAsync(vf.FeatureID);
-                        if (f != null) featureNames.Add(f.FeatureName);
+                        if (f != null)
+                        {
+                            if (f.Category == "Kolor")
+                                colorVal = f.FeatureName;
+                            else
+                                featureNames.Add(f.FeatureName);
+                        }
                     }
+
+                    if (!string.IsNullOrEmpty(SelectedColor) && SelectedColor != "Dowolny"
+                        && colorVal != SelectedColor) continue;
+
                     var extraFeatures = featureNames.Any() ? string.Join(", ", featureNames) : "Brak";
 
                     VehicleList.Add(new VehicleItem
@@ -176,7 +198,8 @@ namespace SalonSamochodowy.ViewModels
                         StatusBorderColor     = bd,
                         StatusTextColor       = fg,
                         IsUsed                = v.IsUsed,
-                        ExtraFeatures         = extraFeatures
+                        ExtraFeatures         = extraFeatures,
+                        Color                 = colorVal
                     });
                 }
             }
@@ -208,5 +231,6 @@ namespace SalonSamochodowy.ViewModels
         public string StatusBorderColor     { get; set; } = "";
         public bool IsUsed                  { get; set; }
         public string ExtraFeatures         { get; set; } = "";
+        public string Color                 { get; set; } = "";
     }
 }

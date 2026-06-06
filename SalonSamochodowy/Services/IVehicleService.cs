@@ -14,5 +14,6 @@ namespace SalonSamochodowy.Services
         Task<IEnumerable<Vehicle>> GetAllVehiclesAsync();
         Task UpdateVehicleAsync(Vehicle vehicle);
         Task DeleteVehicleAsync(Vehicle vehicle);
+        Task AddVehicleFeatureAsync(VehicleFeature vf);
     }
 }

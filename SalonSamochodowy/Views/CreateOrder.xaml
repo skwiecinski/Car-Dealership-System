@@ -201,8 +201,10 @@
                                 </Grid.ColumnDefinitions>
                                 <StackPanel Grid.Column="0">
                                     <TextBlock Text="Kolor" Margin="0,0,0,4"/>
-                                    <ui:TextBox Text="{Binding Kolor, UpdateSourceTrigger=PropertyChanged}"
-                                                PlaceholderText="np. Alpine White"/>
+                                    <ComboBox ItemsSource="{Binding DostępneKolory}"
+                                              SelectedItem="{Binding WybranyKolor}"
+                                              DisplayMemberPath="FeatureName"
+                                              HorizontalAlignment="Stretch"/>
                                 </StackPanel>
                                 <StackPanel Grid.Column="2">
                                     <TextBlock Text="VIN" Margin="0,0,0,4"/>

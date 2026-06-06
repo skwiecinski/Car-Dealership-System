@@ -34,6 +34,11 @@
                           SelectedItem="{Binding SelectedEngine, Mode=TwoWay}"
                           Margin="0,0,0,15" HorizontalAlignment="Stretch"/>
 
+                <TextBlock Text="Kolor lakieru" Foreground="#8A8D98" Margin="0,0,0,5" FontSize="12"/>
+                <ComboBox ItemsSource="{Binding Colors}"
+                          SelectedItem="{Binding SelectedColor, Mode=TwoWay}"
+                          Margin="0,0,0,15" HorizontalAlignment="Stretch"/>
+
                 <TextBlock Text="Status pojazdu" Foreground="#8A8D98" Margin="0,0,0,5" FontSize="12"/>
                 <ComboBox SelectedValue="{Binding SelectedStatus, Mode=TwoWay}"
                           SelectedValuePath="Content"
@@ -114,6 +119,9 @@
                                                FontWeight="Bold" FontSize="16"
                                                Foreground="#E2E2E2" TextWrapping="Wrap"/>
                                     <TextBlock Text="{Binding EngineInfo}"
+                                               Foreground="#8A8D98" FontSize="13" Margin="0,4,0,0"/>
+
+                                    <TextBlock Text="{Binding Color, StringFormat='Kolor: {0}'}"
                                                Foreground="#8A8D98" FontSize="13" Margin="0,4,0,0"/>
 
                                     <TextBlock Text="{Binding ExtraFeatures}"

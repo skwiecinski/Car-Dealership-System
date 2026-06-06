@@ -17,6 +17,14 @@ namespace SalonSamochodowy.ViewModels
         public ObservableCollection<VehicleModel> AvailableModels { get; } = new();
         public ObservableCollection<TrimLevel> AvailableTrims { get; } = new();
         public ObservableCollection<Engine> AvailableEngines { get; } = new();
+        public ObservableCollection<Feature> AvailableColors { get; } = new();
+
+        private Feature? _selectedColor;
+        public Feature? SelectedColor
+        {
+            get => _selectedColor;
+            set => SetProperty(ref _selectedColor, value);
+        }
 
         private List<TrimLevel> _allTrims = new();
         private List<Engine> _allEngines = new();
@@ -92,6 +100,11 @@ namespace SalonSamochodowy.ViewModels
 
                 AvailableTrims.Clear();
                 AvailableEngines.Clear();
+
+                var colors = await uow.Features.FindAsync(f => f.Category == "Kolor");
+                AvailableColors.Clear();
+                foreach (var c in colors.OrderBy(c => c.FeatureName))
+                    AvailableColors.Add(c);
             }
             catch (Exception ex)
             {
@@ -123,9 +136,9 @@ namespace SalonSamochodowy.ViewModels
                 ShowError?.Invoke("Uzupełnij numer VIN.");
                 return;
             }
-            if (SelectedModel == null || SelectedTrim == null || SelectedEngine == null)
+            if (SelectedModel == null || SelectedTrim == null || SelectedEngine == null || SelectedColor == null)
             {
-                ShowError?.Invoke("Wybierz model, wersję wyposażenia i silnik.");
+                ShowError?.Invoke("Wybierz model, wersję wyposażenia, silnik i kolor.");
                 return;
             }
 
@@ -148,6 +161,17 @@ namespace SalonSamochodowy.ViewModels
                 NewVehicle.DealershipID = _resolvedDealershipId;
 
                 await uow.Vehicles.AddAsync(NewVehicle);
+
+                var isBaseColor = SelectedColor.FeatureName.Contains("bazowy");
+                var purchasePrice = isBaseColor ? 0m : 2500m;
+
+                await uow.VehicleFeatures.AddAsync(new VehicleFeature
+                {
+                    Vehicle = NewVehicle,
+                    FeatureID = SelectedColor.FeatureID,
+                    PurchasePrice = purchasePrice
+                });
+
                 await uow.CompleteAsync();
 
                 ShowSuccess?.Invoke("Pojazd został poprawnie dodany do katalogu.");
