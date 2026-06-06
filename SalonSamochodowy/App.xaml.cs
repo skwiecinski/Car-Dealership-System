@@ -37,6 +37,7 @@ namespace SalonSamochodowy
             services.AddTransient<AdminPageViewModel>();
             services.AddTransient<ClientsPageViewModel>();
             services.AddTransient<CreateOrderViewModel>();
+            services.AddTransient<CustomerPanelViewModel>();
             services.AddTransient<DashboardPageViewModel>();
             services.AddTransient<LoginViewModel>();
             services.AddTransient<MainWindowViewModel>();
