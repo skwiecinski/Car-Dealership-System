@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -26,7 +26,7 @@ namespace SalonSamochodowy.Entities
             if (!optionsBuilder.IsConfigured)
             {
                 // sciezka wzgledna (zeby nie korzystac z pliku .db w folderze debug)
-                optionsBuilder.UseSqlite(@"Data Source=..\..\..\SalonSamochodowy.db");
+                optionsBuilder.UseSqlite(@"Data Source=..\..\..\SalonSamochodowy_v2.db");
             }
         }
         

@@ -30,6 +30,7 @@ namespace SalonSamochodowy
             services.AddTransient<SalonSamochodowy.Services.IClientService, SalonSamochodowy.Services.ClientService>();
             services.AddTransient<SalonSamochodowy.Services.IJobService, SalonSamochodowy.Services.JobService>();
             services.AddTransient<SalonSamochodowy.Services.ICatalogService, SalonSamochodowy.Services.CatalogService>();
+            services.AddTransient<SalonSamochodowy.Services.ReportGeneratorService>();
 
             // ViewModels
             services.AddTransient<AddClientWindowViewModel>();
@@ -45,6 +46,7 @@ namespace SalonSamochodowy
             services.AddTransient<ServicesDetailsViewModel>();
             services.AddTransient<ServicesPageViewModel>();
             services.AddTransient<VehiclesPageViewModel>();
+            services.AddTransient<ReportsPageViewModel>();
 
             return services.BuildServiceProvider();
         }

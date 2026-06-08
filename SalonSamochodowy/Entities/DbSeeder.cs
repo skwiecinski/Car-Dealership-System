@@ -47,16 +47,42 @@ namespace SalonSamochodowy
 
             if (!context.Workers.Any() && !context.Clients.Any())
             {
+                var rKierownik = context.AppRoles.First(r => r.RoleName == "Kierownik");
+                var rSprzedawca = context.AppRoles.First(r => r.RoleName == "Sprzedawca");
+                var rSerwisant = context.AppRoles.First(r => r.RoleName == "Serwisant");
+
+                // Nowi fikcyjni pracownicy
+                context.AppUsers.AddRange(
+                    new AppUser { FirstName = "Robert", LastName = "Nowy-Kierownik", Email = "kierownik2@salon.pl", PasswordHash = AuthService.HashPassword("123"), RoleID = rKierownik.RoleID, BirthDate = new DateTime(1982, 4, 11) },
+                    new AppUser { FirstName = "Karolina", LastName = "Bystra", Email = "sprzedawca2@salon.pl", PasswordHash = AuthService.HashPassword("123"), RoleID = rSprzedawca.RoleID, BirthDate = new DateTime(1993, 7, 22) },
+                    new AppUser { FirstName = "Michał", LastName = "Dobry", Email = "sprzedawca3@salon.pl", PasswordHash = AuthService.HashPassword("123"), RoleID = rSprzedawca.RoleID, BirthDate = new DateTime(1995, 11, 5) },
+                    new AppUser { FirstName = "Dawid", LastName = "Klucz", Email = "serwis2@salon.pl", PasswordHash = AuthService.HashPassword("123"), RoleID = rSerwisant.RoleID, BirthDate = new DateTime(1988, 1, 30) },
+                    new AppUser { FirstName = "Krzysztof", LastName = "Smar", Email = "serwis3@salon.pl", PasswordHash = AuthService.HashPassword("123"), RoleID = rSerwisant.RoleID, BirthDate = new DateTime(1991, 9, 15) }
+                );
+                context.SaveChanges();
+
                 var uKierownik = context.AppUsers.First(u => u.Email == "kierownik@salon.pl");
                 var uSprzedawca = context.AppUsers.First(u => u.Email == "sprzedawca@salon.pl");
                 var uSerwisant = context.AppUsers.First(u => u.Email == "serwis@salon.pl");
                 var uKlient = context.AppUsers.First(u => u.Email == "klient@wp.pl");
+                
+                var newKierownik = context.AppUsers.First(u => u.Email == "kierownik2@salon.pl");
+                var newSprzedawca1 = context.AppUsers.First(u => u.Email == "sprzedawca2@salon.pl");
+                var newSprzedawca2 = context.AppUsers.First(u => u.Email == "sprzedawca3@salon.pl");
+                var newSerwisant1 = context.AppUsers.First(u => u.Email == "serwis2@salon.pl");
+                var newSerwisant2 = context.AppUsers.First(u => u.Email == "serwis3@salon.pl");
+
                 var salon = context.Dealerships.First();
 
                 context.Workers.AddRange(
                     new Worker { UserID = uKierownik.UserID,  Payroll = 9000m, EndOfContractDate = new DateTime(2028, 12, 31), DealershipID = salon.DealershipID },
                     new Worker { UserID = uSprzedawca.UserID, Payroll = 6000m, EndOfContractDate = new DateTime(2027, 12, 31), DealershipID = salon.DealershipID },
-                    new Worker { UserID = uSerwisant.UserID,  Payroll = 5500m, EndOfContractDate = new DateTime(2026, 12, 31), DealershipID = salon.DealershipID }
+                    new Worker { UserID = uSerwisant.UserID,  Payroll = 5500m, EndOfContractDate = new DateTime(2026, 12, 31), DealershipID = salon.DealershipID },
+                    new Worker { UserID = newKierownik.UserID, Payroll = 8500m, EndOfContractDate = new DateTime(2028, 12, 31), DealershipID = salon.DealershipID },
+                    new Worker { UserID = newSprzedawca1.UserID, Payroll = 5800m, EndOfContractDate = new DateTime(2027, 12, 31), DealershipID = salon.DealershipID },
+                    new Worker { UserID = newSprzedawca2.UserID, Payroll = 5900m, EndOfContractDate = new DateTime(2027, 12, 31), DealershipID = salon.DealershipID },
+                    new Worker { UserID = newSerwisant1.UserID, Payroll = 5200m, EndOfContractDate = new DateTime(2026, 12, 31), DealershipID = salon.DealershipID },
+                    new Worker { UserID = newSerwisant2.UserID, Payroll = 5400m, EndOfContractDate = new DateTime(2026, 12, 31), DealershipID = salon.DealershipID }
                 );
 
                 context.Clients.Add(new Client { UserID = uKlient.UserID, NIP = "1234567890", Phone = "987-654-321" });
@@ -220,6 +246,88 @@ namespace SalonSamochodowy
                         FeatureID = baseColor.FeatureID,
                         PurchasePrice = 0m
                     });
+                }
+                context.SaveChanges();
+            }
+
+            if (context.SalesOrders.Count() < 10)
+            {
+                var rKlient = context.AppRoles.First(r => r.RoleName == "Klient");
+                var uSprzedawca = context.AppUsers.First(u => u.Email == "sprzedawca@salon.pl");
+                var uSerwisant = context.AppUsers.First(u => u.Email == "serwis@salon.pl");
+                var wSprzedawca = context.Workers.First(w => w.UserID == uSprzedawca.UserID);
+                var wSerwisant = context.Workers.First(w => w.UserID == uSerwisant.UserID);
+
+                var salon = context.Dealerships.First();
+                var trims = context.TrimLevels.ToList();
+                var engines = context.Engines.ToList();
+                var features = context.Features.ToList();
+
+                var klienciUsers = new List<AppUser>
+                {
+                    new AppUser { FirstName = "Marek", LastName = "Nowak", Email = "m.nowak@gmail.com", PasswordHash = AuthService.HashPassword("klient123"), RoleID = rKlient.RoleID, BirthDate = new DateTime(1980, 5, 5) },
+                    new AppUser { FirstName = "Ewa", LastName = "Wiśniewska", Email = "ewa.w@wp.pl", PasswordHash = AuthService.HashPassword("klient123"), RoleID = rKlient.RoleID, BirthDate = new DateTime(1992, 11, 10) },
+                    new AppUser { FirstName = "Piotr", LastName = "Zieliński", Email = "piotrz@onet.pl", PasswordHash = AuthService.HashPassword("klient123"), RoleID = rKlient.RoleID, BirthDate = new DateTime(1975, 2, 20) }
+                };
+                context.AppUsers.AddRange(klienciUsers);
+                context.SaveChanges();
+
+                var klienci = new List<Client>
+                {
+                    new Client { UserID = klienciUsers[0].UserID, Phone = "111-222-333" },
+                    new Client { UserID = klienciUsers[1].UserID, Phone = "444-555-666" },
+                    new Client { UserID = klienciUsers[2].UserID, Phone = "777-888-999" }
+                };
+                context.Clients.AddRange(klienci);
+                context.SaveChanges();
+
+                var allClients = context.Clients.ToList();
+                Random rand = new Random(1234); // stałe ziarno dla powtarzalności
+
+                for (int i = 1; i <= 30; i++)
+                {
+                    var trim = trims[rand.Next(trims.Count)];
+                    var engine = engines[rand.Next(engines.Count)];
+
+                    var auto = new Vehicle
+                    {
+                        VIN = $"WBA{rand.Next(10000, 99999)}A{rand.Next(1000000, 9999999)}",
+                        TrimID = trim.TrimID,
+                        EngineID = engine.EngineID,
+                        Mileage = rand.Next(0, 150000),
+                        IsUsed = rand.NextDouble() > 0.5,
+                        DealershipID = salon.DealershipID,
+                        Status = "Sprzedany"
+                    };
+                    context.Vehicles.Add(auto);
+                    context.SaveChanges();
+
+                    var date = DateTime.Now.AddMonths(-rand.Next(0, 12)).AddDays(-rand.Next(1, 28));
+
+                    var order = new SalesOrder
+                    {
+                        VehicleID = auto.VehicleID,
+                        ClientID = allClients[rand.Next(allClients.Count)].ClientID,
+                        WorkerID = wSprzedawca.WorkerID,
+                        OrderDate = date,
+                        FinalPrice = trim.BasePrice + engine.Price + rand.Next(5000, 20000),
+                        Status = OrderStatuses.Finished,
+                        DealershipID = salon.DealershipID
+                    };
+                    context.SalesOrders.Add(order);
+
+                    var numJobs = rand.Next(1, 4);
+                    for (int j = 0; j < numJobs; j++)
+                    {
+                        context.Jobs.Add(new Job
+                        {
+                            VehicleID = auto.VehicleID,
+                            WorkerID = wSerwisant.WorkerID,
+                            FeatureID = features[rand.Next(features.Count)].FeatureID,
+                            Status = JobStatuses.Finished,
+                            CreatedAt = date.AddDays(-rand.Next(1, 5))
+                        });
+                    }
                 }
                 context.SaveChanges();
             }

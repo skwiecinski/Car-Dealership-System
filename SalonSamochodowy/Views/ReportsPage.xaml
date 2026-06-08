@@ -1,0 +1,104 @@
+<Page x:Class="SalonSamochodowy.Views.ReportsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      Title="ReportsPage" Foreground="White" Background="#1A1C23">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="0,0,0,20">
+            <TextBlock Text="Raporty i statystyki" FontSize="24" FontWeight="Bold" Foreground="#E2E2E2"/>
+            <TextBlock Text="Generuj kompleksowe raporty w formacie PDF" Foreground="#8A8D98" Margin="0,5,0,0"/>
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <WrapPanel Orientation="Horizontal" ItemWidth="300">
+                <!-- Raport statusów zamówień -->
+                <Border Background="#22242C" CornerRadius="10" Padding="20" Margin="0,0,20,20" BorderBrush="#2D3038" BorderThickness="1">
+                    <StackPanel>
+                        <ui:SymbolIcon Symbol="DocumentBulletList24" FontSize="32" Foreground="#5B59E8" Margin="0,0,0,10" HorizontalAlignment="Left"/>
+                        <TextBlock Text="Statusy zamówień" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                        <TextBlock Text="Generuje raport wszystkich zamówień, pogrupowanych według ich obecnego statusu operacyjnego." 
+                                   Foreground="#8A8D98" TextWrapping="Wrap" Margin="0,0,0,20"/>
+                        <ui:Button Content="Generuj PDF" Appearance="Primary" HorizontalAlignment="Stretch" Command="{Binding GenerateOrdersReportCommand}"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Raport klienta -->
+                <Border Background="#22242C" CornerRadius="10" Padding="20" Margin="0,0,20,20" BorderBrush="#2D3038" BorderThickness="1">
+                    <StackPanel>
+                        <ui:SymbolIcon Symbol="Person24" FontSize="32" Foreground="#ED6262" Margin="0,0,0,10" HorizontalAlignment="Left"/>
+                        <TextBlock Text="Zakupy klienta" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                        <TextBlock Text="Wybierz klienta z bazy i wygeneruj imienny wykaz jego wszystkich zakupów (zamówienia i zlecenia)." 
+                                   Foreground="#8A8D98" TextWrapping="Wrap" Margin="0,0,0,10"/>
+                        
+                        <ComboBox ItemsSource="{Binding AvailableClients}" 
+                                  SelectedItem="{Binding SelectedClient, Mode=TwoWay}"
+                                  DisplayMemberPath="Display"
+                                  Margin="0,0,0,15" />
+
+                        <ui:Button Content="Generuj PDF" Appearance="Primary" HorizontalAlignment="Stretch" Command="{Binding GenerateClientReportCommand}"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Rankingi sprzedaży -->
+                <Border Background="#22242C" CornerRadius="10" Padding="20" Margin="0,0,20,20" BorderBrush="#2D3038" BorderThickness="1">
+                    <StackPanel>
+                        <ui:SymbolIcon Symbol="DataBarHorizontal24" FontSize="32" Foreground="#4CAF50" Margin="0,0,0,10" HorizontalAlignment="Left"/>
+                        <TextBlock Text="Rankingi sprzedaży" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                        <TextBlock Text="Porównawczy raport sprzedaży ze statystykami: najlepsi pracownicy, najlepiej prosperujące salony i wykresy." 
+                                   Foreground="#8A8D98" TextWrapping="Wrap" Margin="0,0,0,20"/>
+                        <ui:Button Content="Generuj PDF" Appearance="Primary" HorizontalAlignment="Stretch" Command="{Binding GenerateRankingsReportCommand}"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Pełny zrzut bazy -->
+                <Border Background="#22242C" CornerRadius="10" Padding="20" Margin="0,0,20,20" BorderBrush="#2D3038" BorderThickness="1">
+                    <StackPanel>
+                        <ui:SymbolIcon Symbol="Database24" FontSize="32" Foreground="#FF9800" Margin="0,0,0,10" HorizontalAlignment="Left"/>
+                        <TextBlock Text="Kompleksowy raport" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                        <TextBlock Text="Pełny, szczegółowy wykaz wszystkich salonów, pracowników, dostępnych pojazdów i historii klientów." 
+                                   Foreground="#8A8D98" TextWrapping="Wrap" Margin="0,0,0,20"/>
+                        <ui:Button Content="Generuj PDF" Appearance="Primary" HorizontalAlignment="Stretch" Command="{Binding GenerateFullDumpReportCommand}"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Raport Finansowy -->
+                <Border Background="#22242C" CornerRadius="10" Padding="20" Margin="0,0,20,20" BorderBrush="#2D3038" BorderThickness="1">
+                    <StackPanel>
+                        <ui:SymbolIcon Symbol="Money24" FontSize="32" Foreground="#8BC34A" Margin="0,0,0,10" HorizontalAlignment="Left"/>
+                        <TextBlock Text="Przychody miesięczne" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                        <TextBlock Text="Zestawienie słupkowe obrazujące przychody salonów z podziałem na poszczególne miesiące sprzedaży." 
+                                   Foreground="#8A8D98" TextWrapping="Wrap" Margin="0,0,0,20"/>
+                        <ui:Button Content="Generuj PDF" Appearance="Primary" HorizontalAlignment="Stretch" Command="{Binding GenerateFinancialReportCommand}"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Raport Trendów -->
+                <Border Background="#22242C" CornerRadius="10" Padding="20" Margin="0,0,20,20" BorderBrush="#2D3038" BorderThickness="1">
+                    <StackPanel>
+                        <ui:SymbolIcon Symbol="VehicleCar24" FontSize="32" Foreground="#03A9F4" Margin="0,0,0,10" HorizontalAlignment="Left"/>
+                        <TextBlock Text="Popularność modeli" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                        <TextBlock Text="Wykres prezentujący modele i marki samochodów, które cieszą się największym zainteresowaniem wśród klientów." 
+                                   Foreground="#8A8D98" TextWrapping="Wrap" Margin="0,0,0,20"/>
+                        <ui:Button Content="Generuj PDF" Appearance="Primary" HorizontalAlignment="Stretch" Command="{Binding GenerateTrendsReportCommand}"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Raport Serwisu -->
+                <Border Background="#22242C" CornerRadius="10" Padding="20" Margin="0,0,20,20" BorderBrush="#2D3038" BorderThickness="1">
+                    <StackPanel>
+                        <ui:SymbolIcon Symbol="Wrench24" FontSize="32" Foreground="#9C27B0" Margin="0,0,0,10" HorizontalAlignment="Left"/>
+                        <TextBlock Text="Wydajność serwisu" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                        <TextBlock Text="Analiza wykonanych zleceń oraz graficzne zestawienie pracowników, którzy ukończyli najwięcej napraw i modyfikacji." 
+                                   Foreground="#8A8D98" TextWrapping="Wrap" Margin="0,0,0,20"/>
+                        <ui:Button Content="Generuj PDF" Appearance="Primary" HorizontalAlignment="Stretch" Command="{Binding GenerateServiceReportCommand}"/>
+                    </StackPanel>
+                </Border>
+            </WrapPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>

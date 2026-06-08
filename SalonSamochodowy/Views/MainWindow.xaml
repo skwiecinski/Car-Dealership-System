@@ -65,6 +65,7 @@
                 <ui:NavigationViewItem Content="Dodaj zamówienie"      Icon="{ui:SymbolIcon DocumentAdd24}"         TargetPageType="{x:Type local:CreateOrder}"   Visibility="{Binding CreateOrderVisibility}"/>
                 <ui:NavigationViewItem Content="Zarządzanie Pojazdami" Icon="{ui:SymbolIcon VehicleCar24}"          TargetPageType="{x:Type local:VehiclesPage}"  Visibility="{Binding VehiclesVisibility}"/>
                 <ui:NavigationViewItem Content="Usługi Serwisowe"      Icon="{ui:SymbolIcon Wrench24}"              TargetPageType="{x:Type local:ServicesPage}"  Visibility="{Binding ServicesVisibility}"/>
+                <ui:NavigationViewItem Content="Raporty"               Icon="{ui:SymbolIcon DocumentPdf24}"         TargetPageType="{x:Type local:ReportsPage}"   Visibility="{Binding ReportsVisibility}"/>
             </ui:NavigationView.MenuItems>
             <ui:NavigationView.FooterMenuItems>
                 <ui:NavigationViewItem Content="Mój profil"   Icon="{ui:SymbolIcon Person24}"        Command="{Binding ProfileCommand}"/>
