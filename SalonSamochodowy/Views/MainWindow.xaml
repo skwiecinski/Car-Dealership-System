@@ -68,6 +68,7 @@
                 <ui:NavigationViewItem Content="Raporty"               Icon="{ui:SymbolIcon DocumentPdf24}"         TargetPageType="{x:Type local:ReportsPage}"   Visibility="{Binding ReportsVisibility}"/>
             </ui:NavigationView.MenuItems>
             <ui:NavigationView.FooterMenuItems>
+                <ui:NavigationViewItem Content="Pomoc"        Icon="{ui:SymbolIcon QuestionCircle24}" Click="HelpButton_Click"/>
                 <ui:NavigationViewItem Content="Mój profil"   Icon="{ui:SymbolIcon Person24}"        Command="{Binding ProfileCommand}"/>
                 <ui:NavigationViewItem Content="Administracja" Icon="{ui:SymbolIcon ShieldKeyhole24}" TargetPageType="{x:Type local:AdminPage}" Visibility="{Binding AdminVisibility}"/>
                 <ui:NavigationViewItem Content="Wyloguj"      Icon="{ui:SymbolIcon ArrowExit20}"     Command="{Binding LogoutCommand}"/>

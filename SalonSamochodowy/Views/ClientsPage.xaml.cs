@@ -1,6 +1,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 using System.Windows.Controls;
+using CommunityToolkit.Mvvm.Messaging;
+using SalonSamochodowy.Messages;
 using SalonSamochodowy.ViewModels;
 
 namespace SalonSamochodowy.Views
@@ -8,6 +10,7 @@ namespace SalonSamochodowy.Views
     public partial class ClientsPage : Page
     {
         private readonly ClientsPageViewModel _vm;
+        private int _currentTourStep = 0;
 
         public ClientsPage()
         {
@@ -60,6 +63,48 @@ namespace SalonSamochodowy.Views
             };
 
             Loaded += async (s, e) => await _vm.LoadFromDbAsync();
+
+            WeakReferenceMessenger.Default.Register<StartTourRequestMessage>(this, (r, m) =>
+            {
+                if (m.PageName == "Klienci i Sprzedaż" && this.IsVisible)
+                {
+                    m.Reply(true);
+                    StartTour();
+                }
+            });
+        }
+
+        private void StartTour()
+        {
+            _currentTourStep = 0;
+            ShowTourStep();
+        }
+
+        private void ShowTourStep()
+        {
+            TourPopup.IsOpen = false;
+            switch (_currentTourStep)
+            {
+                case 0:
+                    TourPopup.PlacementTarget = BtnNewClient;
+                    TourText.Text = "Krok 1/2: Kliknij tutaj, aby dodać nowego klienta do bazy.";
+                    TourNextBtn.Content = "Dalej";
+                    break;
+                case 1:
+                    TourPopup.PlacementTarget = ClientsTable;
+                    TourText.Text = "Krok 2/2: W tej tabeli znajdziesz wszystkich zapisanych klientów. Po kliknięciu na wiersz zobaczysz opcje zarządzania po prawej stronie.";
+                    TourNextBtn.Content = "Zakończ";
+                    break;
+                default:
+                    return;
+            }
+            TourPopup.IsOpen = true;
+        }
+
+        private void TourNext_Click(object sender, RoutedEventArgs e)
+        {
+            _currentTourStep++;
+            ShowTourStep();
         }
     }
 }

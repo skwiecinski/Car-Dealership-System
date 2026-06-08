@@ -10,7 +10,7 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <Border Grid.Column="0" Background="#22242C" CornerRadius="10"
+        <Border x:Name="FilterPanel" Grid.Column="0" Background="#22242C" CornerRadius="10"
                 BorderBrush="#2D3038" BorderThickness="1"
                 Padding="20" Margin="0,0,20,0" VerticalAlignment="Top">
             <StackPanel>
@@ -176,5 +176,16 @@
                 </ItemsControl>
             </ScrollViewer>
         </Grid>
+
+        <Popup x:Name="TourPopup" AllowsTransparency="True" StaysOpen="True" Placement="Bottom">
+            <Border Background="#2D3038" BorderBrush="#5B59E8" BorderThickness="2" CornerRadius="8" Padding="15" Width="280">
+                <StackPanel>
+                    <TextBlock x:Name="TourText" Text="Tekst samouczka" TextWrapping="Wrap" Foreground="White" FontSize="14" Margin="0,0,0,10"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <ui:Button x:Name="TourNextBtn" Content="Dalej" Appearance="Primary" Click="TourNext_Click"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Popup>
     </Grid>
 </Page>

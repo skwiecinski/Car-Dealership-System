@@ -15,7 +15,7 @@
                 <TextBlock Text="Baza Klientów" FontSize="24" FontWeight="Bold" Foreground="#E2E2E2"/>
                 <TextBlock Text="Zarządzanie danymi nabywców i firm" Foreground="#8A8D98"/>
             </StackPanel>
-            <ui:Button Appearance="Primary" Icon="{ui:SymbolIcon PersonAdd24}" Content="Nowy Klient"
+            <ui:Button x:Name="BtnNewClient" Appearance="Primary" Icon="{ui:SymbolIcon PersonAdd24}" Content="Nowy Klient"
                        HorizontalAlignment="Right" VerticalAlignment="Bottom"
                        Command="{Binding NewClientCommand}"/>
         </Grid>
@@ -26,8 +26,8 @@
                 <ColumnDefinition Width="320"/>
             </Grid.ColumnDefinitions>
 
-            <Border Grid.Column="0" Background="#22242C" CornerRadius="10" BorderBrush="#2D3038" BorderThickness="1">
-                <DataGrid ItemsSource="{Binding ClientsList}"
+            <Border Background="#22242C" CornerRadius="10" BorderBrush="#2D3038" BorderThickness="1">
+                <DataGrid x:Name="ClientsTable" ItemsSource="{Binding ClientsList}"
                           SelectedItem="{Binding SelectedClient, Mode=TwoWay}"
                           AutoGenerateColumns="False"
                           IsReadOnly="True"
@@ -60,5 +60,16 @@
                 </Border>
             </StackPanel>
         </Grid>
+
+        <Popup x:Name="TourPopup" AllowsTransparency="True" StaysOpen="True" Placement="Bottom">
+            <Border Background="#2D3038" BorderBrush="#5B59E8" BorderThickness="2" CornerRadius="8" Padding="15" Width="280">
+                <StackPanel>
+                    <TextBlock x:Name="TourText" Text="Tekst samouczka" TextWrapping="Wrap" Foreground="White" FontSize="14" Margin="0,0,0,10"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <ui:Button x:Name="TourNextBtn" Content="Dalej" Appearance="Primary" Click="TourNext_Click"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Popup>
     </Grid>
 </Page>

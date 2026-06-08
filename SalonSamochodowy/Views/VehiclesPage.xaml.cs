@@ -2,6 +2,8 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using SalonSamochodowy.Messages;
 using SalonSamochodowy.ViewModels;
 
 namespace SalonSamochodowy.Views
@@ -9,6 +11,7 @@ namespace SalonSamochodowy.Views
     public partial class VehiclesPage : Page
     {
         private readonly VehiclesPageViewModel _vm;
+        private int _currentTourStep = 0;
 
         public VehiclesPage()
         {
@@ -69,6 +72,48 @@ namespace SalonSamochodowy.Views
                 await _vm.LoadFiltersAsync();
                 await _vm.LoadVehiclesAsync();
             };
+
+            WeakReferenceMessenger.Default.Register<StartTourRequestMessage>(this, (r, m) =>
+            {
+                if (m.PageName == "Zarządzanie Pojazdami" && this.IsVisible)
+                {
+                    m.Reply(true);
+                    StartTour();
+                }
+            });
+        }
+
+        private void StartTour()
+        {
+            _currentTourStep = 0;
+            ShowTourStep();
+        }
+
+        private void ShowTourStep()
+        {
+            TourPopup.IsOpen = false;
+            switch (_currentTourStep)
+            {
+                case 0:
+                    TourPopup.PlacementTarget = FilterPanel;
+                    TourText.Text = "Krok 1/2: Użyj tego panelu, aby szybko przefiltrować dostępne i sprzedane pojazdy.";
+                    TourNextBtn.Content = "Dalej";
+                    break;
+                case 1:
+                    TourPopup.PlacementTarget = VehicleScrollViewer;
+                    TourText.Text = "Krok 2/2: Tutaj przeglądasz karty pojazdów. Możesz dodawać nowe lub zlecać usługi dla konkretnego auta.";
+                    TourNextBtn.Content = "Zakończ";
+                    break;
+                default:
+                    return;
+            }
+            TourPopup.IsOpen = true;
+        }
+
+        private void TourNext_Click(object sender, RoutedEventArgs e)
+        {
+            _currentTourStep++;
+            ShowTourStep();
         }
 
         private async void OpenAddVehicleWindow()
