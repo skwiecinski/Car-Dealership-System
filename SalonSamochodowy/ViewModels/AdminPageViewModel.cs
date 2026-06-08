@@ -123,6 +123,8 @@ namespace SalonSamochodowy.ViewModels
 
                     Accounts.Add(new AccountRow
                     {
+                        UserID         = u.UserID,
+                        DealershipID   = dealership?.DealershipID,
                         FullName       = $"{u.FirstName} {u.LastName}".Trim(),
                         Email          = u.Email,
                         RoleName       = role?.RoleName ?? "—",
@@ -323,6 +325,84 @@ namespace SalonSamochodowy.ViewModels
                     $"Nie udało się usunąć konta:\n{ex.Message}\n\n{ex.InnerException?.Message}\n\n" +
                     "Możliwa przyczyna: użytkownik ma w bazie powiązane zamówienia lub zlecenia serwisowe.",
                     MessageBoxImage.Error);
+            }
+        }
+
+        [RelayCommand]
+        private async Task EditEmployeeAsync(AccountRow? row)
+        {
+            if (row == null) return;
+
+            var window = new SalonSamochodowy.Views.EditEmployeeWindow(row, AvailableDealerships, Application.Current.MainWindow);
+            if (window.ShowDialog() == true)
+            {
+                var vm = window.ViewModel;
+                try
+                {
+                    var uow = _uow;
+
+                    var user = (await uow.AppUsers.FindAsync(u => u.UserID == row.UserID)).FirstOrDefault();
+                    if (user == null)
+                    {
+                        ShowMessage?.Invoke("Konto nie istnieje w bazie.", MessageBoxImage.Warning);
+                        return;
+                    }
+
+                    var newRole = (await uow.AppRoles.FindAsync(r => r.RoleName == vm.RoleName)).FirstOrDefault();
+                    if (newRole == null)
+                    {
+                        ShowMessage?.Invoke($"Rola '{vm.RoleName}' nie istnieje.", MessageBoxImage.Error);
+                        return;
+                    }
+
+                    user.FirstName = vm.FirstName;
+                    user.LastName = vm.LastName;
+                    user.Email = vm.Email;
+                    user.RoleID = newRole.RoleID;
+
+                    if (!string.IsNullOrWhiteSpace(vm.NewPassword))
+                    {
+                        user.PasswordHash = AuthService.HashPassword(vm.NewPassword);
+                    }
+
+                    bool isNewRoleWorker = vm.RoleName == RoleNames.Sprzedawca || vm.RoleName == RoleNames.Serwisant || vm.RoleName == RoleNames.Kierownik;
+
+                    var existingWorkers = await uow.Workers.FindAsync(w => w.UserID == user.UserID);
+                    var worker = existingWorkers.FirstOrDefault();
+
+                    if (isNewRoleWorker)
+                    {
+                        if (worker == null)
+                        {
+                            await uow.Workers.AddAsync(new Worker
+                            {
+                                UserID = user.UserID,
+                                Payroll = 0m,
+                                EndOfContractDate = DateTime.Today.AddYears(2),
+                                DealershipID = vm.SelectedDealership!.DealershipID
+                            });
+                        }
+                        else
+                        {
+                            worker.DealershipID = vm.SelectedDealership!.DealershipID;
+                        }
+                    }
+                    else
+                    {
+                        if (worker != null)
+                        {
+                            uow.Workers.Delete(worker);
+                        }
+                    }
+
+                    await uow.CompleteAsync();
+                    await LoadAccountsAsync();
+                    ShowMessage?.Invoke($"Konto '{user.FirstName} {user.LastName}' zostało zaktualizowane.", MessageBoxImage.Information);
+                }
+                catch (Exception ex)
+                {
+                    ShowMessage?.Invoke($"Nie udało się zaktualizować konta:\n{ex.Message}", MessageBoxImage.Error);
+                }
             }
         }
 
@@ -616,6 +696,8 @@ namespace SalonSamochodowy.ViewModels
 
     public class AccountRow
     {
+        public int UserID            { get; set; }
+        public int? DealershipID     { get; set; }
         public string FullName       { get; set; } = "";
         public string Email          { get; set; } = "";
         public string RoleName       { get; set; } = "";
