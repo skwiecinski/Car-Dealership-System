@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using SalonSamochodowy.Entities;
+using SalonSamochodowy.Services;
 
 namespace SalonSamochodowy
 {
@@ -29,11 +30,11 @@ namespace SalonSamochodowy
                 var rKlient = context.AppRoles.First(r => r.RoleName == "Klient");
 
                 context.AppUsers.AddRange(
-                    new AppUser { FirstName = "Anna", LastName = "Adminowa", Email = "admin@salon.pl", PasswordHash = "admin123", RoleID = rAdmin.RoleID, BirthDate = new DateTime(1980, 1, 15) },
-                    new AppUser { FirstName = "Wiesław", LastName = "Kierowniczy", Email = "kierownik@salon.pl", PasswordHash = "kierownik123", RoleID = rKierownik.RoleID, BirthDate = new DateTime(1977, 12, 3) },
-                    new AppUser { FirstName = "Tomasz", LastName = "Sprzedażowy", Email = "sprzedawca@salon.pl", PasswordHash = "sprzedawca123", RoleID = rSprzedawca.RoleID, BirthDate = new DateTime(1990, 5, 10) },
-                    new AppUser { FirstName = "Piotr", LastName = "Serwisowy", Email = "serwis@salon.pl", PasswordHash = "serwis123", RoleID = rSerwisant.RoleID, BirthDate = new DateTime(1985, 8, 20) },
-                    new AppUser { FirstName = "Jan", LastName = "Kowalski", Email = "klient@wp.pl", PasswordHash = "klient123", RoleID = rKlient.RoleID, BirthDate = new DateTime(1995, 2, 14) }
+                    new AppUser { FirstName = "Anna", LastName = "Adminowa", Email = "admin@salon.pl", PasswordHash = AuthService.HashPassword("admin123"), RoleID = rAdmin.RoleID, BirthDate = new DateTime(1980, 1, 15) },
+                    new AppUser { FirstName = "Wiesław", LastName = "Kierowniczy", Email = "kierownik@salon.pl", PasswordHash = AuthService.HashPassword("kierownik123"), RoleID = rKierownik.RoleID, BirthDate = new DateTime(1977, 12, 3) },
+                    new AppUser { FirstName = "Tomasz", LastName = "Sprzedażowy", Email = "sprzedawca@salon.pl", PasswordHash = AuthService.HashPassword("sprzedawca123"), RoleID = rSprzedawca.RoleID, BirthDate = new DateTime(1990, 5, 10) },
+                    new AppUser { FirstName = "Piotr", LastName = "Serwisowy", Email = "serwis@salon.pl", PasswordHash = AuthService.HashPassword("serwis123"), RoleID = rSerwisant.RoleID, BirthDate = new DateTime(1985, 8, 20) },
+                    new AppUser { FirstName = "Jan", LastName = "Kowalski", Email = "klient@wp.pl", PasswordHash = AuthService.HashPassword("klient123"), RoleID = rKlient.RoleID, BirthDate = new DateTime(1995, 2, 14) }
                 );
                 context.SaveChanges();
             }

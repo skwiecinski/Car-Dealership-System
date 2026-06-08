@@ -8,6 +8,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SalonSamochodowy.Entities;
 using SalonSamochodowy.Repositories;
+using SalonSamochodowy.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace SalonSamochodowy.ViewModels
@@ -237,7 +238,7 @@ namespace SalonSamochodowy.ViewModels
                     FirstName    = fn,
                     LastName     = ln,
                     Email        = em,
-                    PasswordHash = pw,
+                    PasswordHash = AuthService.HashPassword(pw),
                     RoleID       = role.RoleID,
                     BirthDate    = DateTime.Today
                 };
