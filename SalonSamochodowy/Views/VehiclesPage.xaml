@@ -69,7 +69,7 @@
                 </Grid.ColumnDefinitions>
 
                 <TextBlock Grid.Column="0"
-                           Text="Katalog dostępnych pojazdów"
+                           Text="Katalog pojazdów"
                            FontSize="24" FontWeight="Bold"
                            VerticalAlignment="Center"/>
 
