@@ -218,7 +218,7 @@ namespace SalonSamochodowy
                 context.SaveChanges();
             }
 
-            // 8. Seeding Vehicles, Orders and Jobs
+
             if (!context.Vehicles.Any())
             {
                 var trims = context.TrimLevels.ToList();
@@ -235,7 +235,6 @@ namespace SalonSamochodowy
                 var ordersToInsert = new List<SalesOrder>();
                 var jobsToInsert = new List<Job>();
                 
-                // Generate 250 vehicles (some sold, some available, some in progress)
                 for (int i = 0; i < 250; i++)
                 {
                     var ds = dealerships[rnd.Next(dealerships.Count)];
@@ -244,7 +243,6 @@ namespace SalonSamochodowy
                     var compatibleEngines = engines.Where(e => e.Brand == context.VehicleModels.First(m => m.ModelID == trim.ModelID).Brand).ToList();
                     var engine = compatibleEngines[rnd.Next(compatibleEngines.Count)];
 
-                    // Status distribution: ~60% Sold (orders finished), ~20% Available, ~10% InProgress, ~10% Pending
                     int randStat = rnd.Next(100);
                     string vehicleStatus = "Dostępny";
                     string? orderStatus = null;
