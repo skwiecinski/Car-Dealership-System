@@ -42,7 +42,7 @@ namespace SalonSamochodowy.ViewModels
             }
             DetailsVisibility = Visibility.Visible;
             SelectedClientName = value.FullName;
-            SelectedClientType = value.IsCompany ? "Klient Biznesowy" : "Klient Indywidualny";
+            SelectedClientType = value.IsCompany ? SalonSamochodowy.Services.LocalizationHelper.GetString("Clients_TypeBusiness") : SalonSamochodowy.Services.LocalizationHelper.GetString("Clients_TypeIndividual");
         }
 
         public async Task LoadFromDbAsync()
@@ -69,7 +69,7 @@ namespace SalonSamochodowy.ViewModels
             }
             catch (Exception ex)
             {
-                LoadFailed?.Invoke($"Nie udało się załadować klientów z bazy:\n{ex.Message}");
+                LoadFailed?.Invoke(string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Msg_LoadClientsError"), ex.Message));
             }
         }
 

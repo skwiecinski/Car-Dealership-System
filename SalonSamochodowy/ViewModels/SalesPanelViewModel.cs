@@ -68,7 +68,7 @@ namespace SalonSamochodowy.ViewModels
                     
                     var modelName = vehicle?.Trim?.Model != null 
                         ? $"{vehicle.Trim.Model.Brand} {vehicle.Trim.Model.ModelName}" 
-                        : "Nieznany model";
+                        : SalonSamochodowy.Services.LocalizationHelper.GetString("SalesPanel_UnknownModel");
                     
                     var trimName = vehicle?.Trim?.TrimName ?? "—";
                     var engineInfo = vehicle?.Engine != null 
@@ -81,20 +81,20 @@ namespace SalonSamochodowy.ViewModels
                     bool allJobsFinished = hasJobs && vehicleJobs.All(j => j.Status == JobStatuses.Finished || j.Status == "FinishedJob");
                     bool hasActiveJobs = hasJobs && vehicleJobs.Any(j => j.Status == JobStatuses.Pending || j.Status == JobStatuses.InProgress || j.Status == "PendingJob" || j.Status == "InProgressJob");
 
-                    string jobsStatusText = "Brak dodatkowych zleceń";
+                    string jobsStatusText = SalonSamochodowy.Services.LocalizationHelper.GetString("SalesPanel_NoJobs");
                     string jobsDescription = "";
                     if (hasJobs)
                     {
                         var finishedCount = vehicleJobs.Count(j => j.Status == JobStatuses.Finished || j.Status == "FinishedJob");
-                        jobsStatusText = $"{finishedCount} z {vehicleJobs.Count} zleceń ukończone";
+                        jobsStatusText = string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("SalesPanel_JobsCompleted"), finishedCount, vehicleJobs.Count);
                         jobsDescription = string.Join("\n", vehicleJobs.Select(j => $"• {j.Feature.FeatureName} ({j.Status})"));
                     }
 
                     var model = new SalesOrderModel
                     {
                         OrderID = order.OrderID,
-                        ClientName = (client != null && client.User != null) ? $"{client.User.FirstName} {client.User.LastName}" : "Nieznany klient",
-                        ClientContact = (client != null && client.User != null) ? $"Tel: {client.Phone} | Email: {client.User.Email}" : (client != null ? $"Tel: {client.Phone}" : "—"),
+                        ClientName = (client != null && client.User != null) ? $"{client.User.FirstName} {client.User.LastName}" : SalonSamochodowy.Services.LocalizationHelper.GetString("SalesPanel_UnknownClient"),
+                        ClientContact = (client != null && client.User != null) ? $"{SalonSamochodowy.Services.LocalizationHelper.GetString("SalesPanel_Tel")} {client.Phone} | {SalonSamochodowy.Services.LocalizationHelper.GetString("SalesPanel_Email")} {client.User.Email}" : (client != null ? $"{SalonSamochodowy.Services.LocalizationHelper.GetString("SalesPanel_Tel")} {client.Phone}" : "—"),
                         VehicleName = $"{modelName} {trimName}",
                         VehicleVin = vehicle?.VIN ?? "—",
                         EngineInfo = engineInfo,
@@ -130,7 +130,7 @@ namespace SalonSamochodowy.ViewModels
             }
             catch (Exception ex)
             {
-                LoadFailed?.Invoke($"Błąd podczas ładowania danych sprzedaży:\n{ex.Message}");
+                LoadFailed?.Invoke(string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("SalesPanel_LoadError"), ex.Message));
             }
             finally
             {
@@ -144,8 +144,8 @@ namespace SalonSamochodowy.ViewModels
             if (order == null) return;
 
             var result = MessageBox.Show(
-                $"Czy na pewno chcesz sfinalizować sprzedaż pojazdu {order.VehicleName} (VIN: {order.VehicleVin}) za kwotę {order.FinalPriceText}?",
-                "Potwierdzenie sfinalizowania sprzedaży",
+                string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("SalesPanel_ConfirmSuccess"), order.VehicleName, order.VehicleVin, order.FinalPriceText),
+                SalonSamochodowy.Services.LocalizationHelper.GetString("SalesPanel_ConfirmSuccessTitle"),
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Question);
 
@@ -155,12 +155,12 @@ namespace SalonSamochodowy.ViewModels
             try
             {
                 await _orderService.UpdateOrderStatusAsync(order.OrderID, OrderStatuses.Finished);
-                OperationCompleted?.Invoke("Sprzedaż została pomyślnie sfinalizowana!");
+                OperationCompleted?.Invoke(SalonSamochodowy.Services.LocalizationHelper.GetString("SalesPanel_MsgSuccess"));
                 await LoadDataAsync();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Błąd podczas finalizowania sprzedaży:\n{ex.Message}", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("SalesPanel_FinalizeError"), ex.Message), SalonSamochodowy.Services.LocalizationHelper.GetString("Global_Error"), MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {
@@ -174,8 +174,8 @@ namespace SalonSamochodowy.ViewModels
             if (order == null) return;
 
             var result = MessageBox.Show(
-                $"Czy na pewno chcesz anulować sprzedaż pojazdu {order.VehicleName} (VIN: {order.VehicleVin})?\nPojazd zostanie przywrócony jako 'Dostępny'.",
-                "Potwierdzenie anulowania sprzedaży",
+                string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("SalesPanel_ConfirmFail"), order.VehicleName, order.VehicleVin),
+                SalonSamochodowy.Services.LocalizationHelper.GetString("SalesPanel_ConfirmFailTitle"),
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Warning);
 
@@ -185,12 +185,12 @@ namespace SalonSamochodowy.ViewModels
             try
             {
                 await _orderService.UpdateOrderStatusAsync(order.OrderID, OrderStatuses.Canceled);
-                OperationCompleted?.Invoke("Sprzedaż została anulowana.");
+                OperationCompleted?.Invoke(SalonSamochodowy.Services.LocalizationHelper.GetString("SalesPanel_MsgFail"));
                 await LoadDataAsync();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Błąd podczas anulowania sprzedaży:\n{ex.Message}", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("SalesPanel_CancelError"), ex.Message), SalonSamochodowy.Services.LocalizationHelper.GetString("Global_Error"), MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {

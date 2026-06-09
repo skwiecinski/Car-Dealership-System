@@ -36,7 +36,7 @@ namespace SalonSamochodowy.Views
 
             WeakReferenceMessenger.Default.Register<StartTourRequestMessage>(this, (r, m) =>
             {
-                if (m.PageName == "Dodaj zamówienie" && this.IsVisible)
+                if (m.PageName == nameof(CreateOrder) && this.IsVisible)
                 {
                     m.Reply(true);
                     StartTour();
@@ -57,17 +57,17 @@ namespace SalonSamochodowy.Views
             {
                 case 0:
                     TourPopup.PlacementTarget = CardClient;
-                    TourText.Text = "Krok 1/3: Najpierw wybierz klienta z bazy lub wpisz dane nowego klienta.";
-                    TourNextBtn.Content = "Dalej";
+                    TourText.Text = SalonSamochodowy.Services.LocalizationHelper.GetString("Tour_CreateOrder_Step1");
+                    TourNextBtn.Content = SalonSamochodowy.Services.LocalizationHelper.GetString("Tour_Next");
                     break;
                 case 1:
                     TourPopup.PlacementTarget = CardVehicle;
-                    TourText.Text = "Krok 2/3: Następnie wybierz markę, model i parametry techniczne pojazdu.";
+                    TourText.Text = SalonSamochodowy.Services.LocalizationHelper.GetString("Tour_CreateOrder_Step2");
                     break;
                 case 2:
                     TourPopup.PlacementTarget = CardConditions;
-                    TourText.Text = "Krok 3/3: Na koniec ustal datę, status, formę płatności i ewentualne usługi (np. montaż wyposażenia).";
-                    TourNextBtn.Content = "Zakończ";
+                    TourText.Text = SalonSamochodowy.Services.LocalizationHelper.GetString("Tour_CreateOrder_Step3");
+                    TourNextBtn.Content = SalonSamochodowy.Services.LocalizationHelper.GetString("Tour_Finish");
                     break;
                 default:
                     return;

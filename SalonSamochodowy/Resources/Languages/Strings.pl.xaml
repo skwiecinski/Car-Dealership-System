@@ -1,0 +1,530 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+    
+    <!-- Menu Główne -->
+    <system:String x:Key="Menu_MyOrders">Moje Zamówienia</system:String>
+    <system:String x:Key="Menu_Dashboard">Dashboard</system:String>
+    <system:String x:Key="Menu_Clients">Klienci</system:String>
+    <system:String x:Key="Menu_ActiveSales">Trwające Sprzedaże</system:String>
+    <system:String x:Key="Menu_SalesRecords">Ewidencja Sprzedaży</system:String>
+    <system:String x:Key="Menu_CreateOrder">Dodaj zamówienie</system:String>
+    <system:String x:Key="Menu_Vehicles">Zarządzanie Pojazdami</system:String>
+    <system:String x:Key="Menu_Services">Usługi Serwisowe</system:String>
+    <system:String x:Key="Menu_Reports">Raporty</system:String>
+    <system:String x:Key="Menu_Help">Pomoc</system:String>
+    <system:String x:Key="Menu_Profile">Mój profil</system:String>
+    <system:String x:Key="Menu_Admin">Administracja</system:String>
+    <system:String x:Key="Menu_Logout">Wyloguj</system:String>
+
+    <!-- Dashboard -->
+    <system:String x:Key="Dash_NewOrders">Nowe zamówienia</system:String>
+    <system:String x:Key="Dash_InProcess">W procesie</system:String>
+    <system:String x:Key="Dash_CarsOnLot">Auta na placu</system:String>
+    <system:String x:Key="Dash_ForSale">Do sprzedaży</system:String>
+    <system:String x:Key="Dash_ServiceJobs">Zlecenia serwisowe</system:String>
+    <system:String x:Key="Dash_InProgress">W toku</system:String>
+    <system:String x:Key="Dash_RecentActivities">Ostatnie aktywności</system:String>
+    <system:String x:Key="Dash_SeeAll">Zobacz wszystkie →</system:String>
+    <system:String x:Key="Dash_OrderCode">Kod zamówienia</system:String>
+    <system:String x:Key="Dash_Client">Klient</system:String>
+    <system:String x:Key="Dash_Vehicle">Pojazd</system:String>
+    <system:String x:Key="Dash_Status">Status</system:String>
+    <system:String x:Key="Dash_Date">Data</system:String>
+    <system:String x:Key="Dash_SalesChartTitle">Sprzedaż w {0} (Top 5 Pracowników)</system:String>
+
+    <!-- Globalne Statusy -->
+    <system:String x:Key="Status_Pending">Oczekujące</system:String>
+    <system:String x:Key="Status_InProgress">W trakcie</system:String>
+    <system:String x:Key="Status_Finished">Zrealizowane</system:String>
+    <system:String x:Key="Status_FinishedAlt">Sfinalizowane</system:String>
+    <system:String x:Key="Status_Reserved">Zarezerwowane</system:String>
+    <system:String x:Key="Status_Canceled">Anulowane</system:String>
+    <system:String x:Key="Status_New">Nowe</system:String>
+
+    <!-- Pomoc (Globalna) -->
+    <system:String x:Key="Help_Title">Pomoc</system:String>
+    <system:String x:Key="Help_Default">Wybierz zakładkę z menu po lewej stronie, aby rozpocząć pracę.</system:String>
+    <system:String x:Key="Help_CustomerPanelPage">W tej sekcji możesz przeglądać listę swoich zamówień, ich statusy oraz pobrać raport, jeżeli zamówienie zostało przypisane do Twojego konta.</system:String>
+    <system:String x:Key="Help_DashboardPage">Tablica podsumowująca najważniejsze statystyki w salonie. Znajdziesz tu szybki podgląd liczby aut, nowych zamówień i trwających napraw.</system:String>
+    <system:String x:Key="Help_ClientsPage">Moduł do zarządzania bazą klientów. Możesz tutaj zarejestrować nowego klienta, wygenerować dla niego raport oraz przejrzeć pełną historię zakupów.</system:String>
+    <system:String x:Key="Help_SalesPanelPage">Lista aktualnie procedowanych zamówień. Umożliwia zmianę statusu i weryfikację postępu dla każdego zlecenia (np. z 'Gotowe do odbioru' na 'Zrealizowane').</system:String>
+    <system:String x:Key="Help_SalesRecordsPage">Przeglądaj pełny rejestr wszystkich transakcji. Możesz tu filtrować zamówienia według statusu, salonu, doradcy lub zakresu dat. Tabela pozwala na szybki wgląd w szczegóły sprzedaży, takie jak przypisany pojazd, numer VIN, klient, doradca oraz aktualny status realizacji.</system:String>
+    <system:String x:Key="Help_CreateOrder">Zacznij nową sprzedaż. Wybierz klienta (lub stwórz nowego), dopasuj odpowiedni pojazd, dobierz konfigurację opcjonalną i sfinalizuj transakcję.</system:String>
+    <system:String x:Key="Help_VehiclesPage">Zarządzaj autami na placu. Możesz tu dodawać nowe pojazdy z bazy fabrycznej (Silnik + Model), określać, czy są nowe, czy używane, i podawać numery VIN.</system:String>
+    <system:String x:Key="Help_ServicesPage">Warsztat mechaniczny. Serwisanci mogą tu przejmować nowe zlecenia (np. montaż akcesoriów), zmieniać ich statusy na robocze lub ostatecznie ukończone.</system:String>
+    <system:String x:Key="Help_ReportsPage">Generuj zaawansowane PDF-y, aby poznać wydajność firmy. Raporty posiadają pełną analitykę, kolorowe wykresy i rankingi Twoich pracowników.</system:String>
+    <system:String x:Key="Help_AdminPage">Panel administratora do zarządzania bazą danych (np. dodawanie nowych salonów) i rejestrowania nowych kont pracowniczych z konkretnymi stanowiskami.</system:String>
+
+    <!-- Samouczek -->
+    <system:String x:Key="Tour_Next">Dalej</system:String>
+    <system:String x:Key="Tour_Finish">Zakończ</system:String>
+    <system:String x:Key="Tour_DefaultText">Tekst samouczka</system:String>
+
+    <!-- Role -->
+    <system:String x:Key="Role_Administrator">Administrator</system:String>
+    <system:String x:Key="Role_Kierownik">Kierownik</system:String>
+    <system:String x:Key="Role_Sprzedawca">Sprzedawca</system:String>
+    <system:String x:Key="Role_Serwisant">Serwisant</system:String>
+    <system:String x:Key="Role_Klient">Klient</system:String>
+
+    <!-- Akcesoria / Features -->
+    <system:String x:Key="Feature_Lakier_metalik">Lakier metalik</system:String>
+    <system:String x:Key="Feature_Czujniki_parkowania">Czujniki parkowania</system:String>
+    <system:String x:Key="Feature_Kamera_cofania">Kamera cofania</system:String>
+    <system:String x:Key="Feature_Alarm">Alarm</system:String>
+    <system:String x:Key="Feature_Klimatyzacja_2-strefowa">Klimatyzacja 2-strefowa</system:String>
+    <system:String x:Key="Feature_Skórzane_fotele">Skórzane fotele</system:String>
+    <system:String x:Key="Feature_Nawigacja">Nawigacja GPS</system:String>
+    <system:String x:Key="Feature_Pakiet_sportowy_M">Pakiet sportowy M</system:String>
+    <system:String x:Key="Feature_Alpejska_Biel_(bazowy)">Alpejska Biel (bazowy)</system:String>
+    <system:String x:Key="Feature_Czarny_Szafir_metalik">Czarny Szafir metalik</system:String>
+    <system:String x:Key="Feature_Szary_Melbourne_metalik">Szary Melbourne metalik</system:String>
+    <system:String x:Key="Feature_Niebieski_Phytonic_metalik">Niebieski Phytonic metalik</system:String>
+
+    <system:String x:Key="Category_Akcesoria">Akcesoria</system:String>
+    <system:String x:Key="Category_Bezpieczeństwo">Bezpieczeństwo</system:String>
+    <system:String x:Key="Category_Kolor">Kolor</system:String>
+    <system:String x:Key="Category_Komfort">Komfort</system:String>
+    <system:String x:Key="Category_Multimedia">Multimedia</system:String>
+    <system:String x:Key="Category_Wnętrze">Wnętrze</system:String>
+    <system:String x:Key="Category_Wygląd">Wygląd</system:String>
+    <system:String x:Key="Tour_Dash_Step1">Krok 1/4: Tutaj widzisz liczbę nowych zamówień gotowych do przetworzenia.</system:String>
+    <system:String x:Key="Tour_Dash_Step2">Krok 2/4: To jest ogólna liczba aut na placu, gotowych od razu do sprzedaży.</system:String>
+    <system:String x:Key="Tour_Dash_Step3">Krok 3/4: Tyle zleceń serwisowych czeka na przydzielenie lub dokończenie.</system:String>
+    <system:String x:Key="Tour_Dash_Step4">Krok 4/4: Interaktywny wykres przedstawiający Twoją dynamikę sprzedaży.</system:String>
+
+    <system:String x:Key="Tour_Clients_Step1">Krok 1/2: Kliknij tutaj, aby dodać nowego klienta do bazy.</system:String>
+    <system:String x:Key="Tour_Clients_Step2">Krok 2/2: W tej tabeli znajdziesz wszystkich zapisanych klientów. Po kliknięciu na wiersz zobaczysz opcje zarządzania po prawej stronie.</system:String>
+
+    <system:String x:Key="Tour_CreateOrder_Step1">Krok 1/3: Najpierw wybierz klienta z bazy lub wpisz dane nowego klienta.</system:String>
+    <system:String x:Key="Tour_CreateOrder_Step2">Krok 2/3: Następnie wybierz markę, model i parametry techniczne pojazdu.</system:String>
+    <system:String x:Key="Tour_CreateOrder_Step3">Krok 3/3: Na koniec ustal datę, status, formę płatności i ewentualne usługi (np. montaż wyposażenia).</system:String>
+
+    <system:String x:Key="Tour_SalesRecords_Step1">Krok 1/3: Użyj tych filtrów, aby zawęzić wyniki według statusu, salonu, doradcy lub zakresu dat.</system:String>
+    <system:String x:Key="Tour_SalesRecords_Step2">Krok 2/3: Tutaj znajduje się pełna lista transakcji spełniających podane kryteria.</system:String>
+    <system:String x:Key="Tour_SalesRecords_Step3">Krok 3/3: W tym miejscu zobaczysz podsumowanie - np. łączną kwotę sfinalizowanych zamówień.</system:String>
+
+    <system:String x:Key="Tour_Reports_Step1">Krok 1/1: Tutaj możesz generować dowolne raporty w formacie PDF i eksportować statystyki.</system:String>
+
+    <!-- Dodaj zamówienie (CreateOrder) -->
+    <system:String x:Key="Order_AddTitle">Dodaj zamówienie</system:String>
+    <system:String x:Key="Order_AddSubtitle">Wypełnij dane klienta, wybór pojazdu i warunki zamówienia</system:String>
+    <system:String x:Key="Order_Client">Klient</system:String>
+    <system:String x:Key="Order_ExistingClient">Istniejący klient</system:String>
+    <system:String x:Key="Order_NewClient">Nowy klient</system:String>
+    <system:String x:Key="Order_SelectClient">Wybierz klienta</system:String>
+    <system:String x:Key="Order_ClientFilterHint">Wpisz fragment imienia, nazwiska lub e-maila, aby filtrować</system:String>
+    <system:String x:Key="Order_FirstName">Imię</system:String>
+    <system:String x:Key="Order_LastName">Nazwisko</system:String>
+    <system:String x:Key="Order_Email">E-mail</system:String>
+    <system:String x:Key="Order_Phone">Telefon</system:String>
+    <system:String x:Key="Order_NIP">NIP (opcjonalnie)</system:String>
+    <system:String x:Key="Order_ExtraFeatures">Wyposażenie dodatkowe</system:String>
+    <system:String x:Key="Order_FeaturesHint">Lista zostanie wypełniona po wyborze wersji wyposażenia</system:String>
+    <system:String x:Key="Order_Vehicle">Pojazd</system:String>
+    <system:String x:Key="Order_Brand">Marka</system:String>
+    <system:String x:Key="Order_Model">Model</system:String>
+    <system:String x:Key="Order_Trim">Wersja wyposażenia</system:String>
+    <system:String x:Key="Order_Engine">Silnik</system:String>
+    <system:String x:Key="Order_Color">Kolor</system:String>
+    <system:String x:Key="Order_VIN">VIN</system:String>
+    <system:String x:Key="Order_UsedVehicle">Pojazd używany</system:String>
+    <system:String x:Key="Order_Mileage">Przebieg (km)</system:String>
+    <system:String x:Key="Order_Conditions">Warunki zamówienia</system:String>
+    <system:String x:Key="Order_OrderDate">Data zamówienia</system:String>
+    <system:String x:Key="Order_Seller">Sprzedawca</system:String>
+    <system:String x:Key="Order_PaymentMethod">Forma płatności</system:String>
+    <system:String x:Key="Order_Status">Status</system:String>
+    <system:String x:Key="Order_Mechanic">Serwisant (instalacja wyposażenia)</system:String>
+    <system:String x:Key="Order_FinalPrice">Cena finalna (zł)</system:String>
+    <system:String x:Key="Order_Notes">Uwagi</system:String>
+    <system:String x:Key="Order_Cancel">Anuluj</system:String>
+    <system:String x:Key="Order_Save">Zapisz zamówienie</system:String>
+
+    <!-- CreateOrderViewModel Komunikaty -->
+    <system:String x:Key="Payment_Cash">Gotówka</system:String>
+    <system:String x:Key="Payment_Credit">Kredyt</system:String>
+    <system:String x:Key="Payment_Leasing">Leasing</system:String>
+
+    <system:String x:Key="Msg_SelectVehicleDetails">Wybierz model, wersję i silnik pojazdu.</system:String>
+    <system:String x:Key="Msg_SelectSeller">Wybierz sprzedawcę.</system:String>
+    <system:String x:Key="Msg_SelectMechanic">Wybierz serwisanta.</system:String>
+    <system:String x:Key="Msg_SelectColor">Wybierz kolor pojazdu.</system:String>
+    <system:String x:Key="Msg_SelectClient">Wybierz klienta z listy.</system:String>
+    <system:String x:Key="Msg_FillClientInfo">Wypełnij imię i e-mail nowego klienta.</system:String>
+    <system:String x:Key="Msg_EmailExists">Użytkownik z takim e-mailem już istnieje. Wybierz go z listy istniejących klientów.</system:String>
+    <system:String x:Key="Msg_NoDealership">Brak salonu w bazie.</system:String>
+    <system:String x:Key="Msg_OrderSaved">Zamówienie zapisane.\nNumer: {0}\nCena: {1:N0} zł</system:String>
+    <system:String x:Key="Msg_OrderSaveError">Nie udało się zapisać zamówienia:\n{0}\n\n{1}</system:String>
+    <system:String x:Key="Msg_LoadDataError">Nie udało się załadować danych z bazy:\n{0}\n\n{1}</system:String>
+    <system:String x:Key="Msg_LoadModelsError">Błąd ładowania modeli/silników: {0}</system:String>
+    <system:String x:Key="Msg_LoadTrimsError">Błąd ładowania wersji: {0}</system:String>
+    <system:String x:Key="Msg_ConfirmDeleteClient">Czy na pewno chcesz usunąć klienta {0}?</system:String>
+
+    <!-- Klienci (ClientsPage) -->
+    <system:String x:Key="Clients_Title">Baza Klientów</system:String>
+    <system:String x:Key="Clients_Subtitle">Zarządzanie danymi nabywców i firm</system:String>
+    <system:String x:Key="Clients_NewClient">Nowy Klient</system:String>
+    <system:String x:Key="Clients_ColName">Imię i Nazwisko / Firma</system:String>
+    <system:String x:Key="Clients_ColNIP">NIP</system:String>
+    <system:String x:Key="Clients_ColPhone">Telefon</system:String>
+    <system:String x:Key="Clients_ColEmail">E-mail</system:String>
+    <system:String x:Key="Clients_NewOrder">Nowe Zamówienie</system:String>
+    <system:String x:Key="Clients_Edit">Edytuj dane</system:String>
+    <system:String x:Key="Clients_Delete">Usuń klienta</system:String>
+    
+    <system:String x:Key="Clients_NewTitle">Nowy klient</system:String>
+    <system:String x:Key="Clients_AddHeader">Dodaj nowego klienta</system:String>
+    <system:String x:Key="Clients_AddDesc">Wypełnij podstawowe dane. NIP wymagany dla firm.</system:String>
+    <system:String x:Key="Clients_IsCompany">Klient firmowy</system:String>
+    <system:String x:Key="Clients_NameHint">np. Jan Kowalski lub Firma XYZ Sp. z o.o.</system:String>
+    <system:String x:Key="Clients_EmailReq">E-mail (wymagany)</system:String>
+    <system:String x:Key="Clients_Cancel">Anuluj</system:String>
+    <system:String x:Key="Clients_Save">Zapisz</system:String>
+    <system:String x:Key="Clients_EditTitle">Edytuj dane klienta</system:String>
+    <system:String x:Key="Clients_EditHeader">Edytuj dane klienta</system:String>
+    <system:String x:Key="Clients_EditDesc">Zaktualizuj dane kontaktowe. NIP wymagany dla firm.</system:String>
+    <system:String x:Key="Clients_SaveChanges">Zapisz zmiany</system:String>
+    <system:String x:Key="Clients_TypeBusiness">Klient Biznesowy</system:String>
+    <system:String x:Key="Clients_TypeIndividual">Klient Indywidualny</system:String>
+    <system:String x:Key="Msg_LoadClientsError">Nie udało się załadować klientów z bazy:\n{0}</system:String>
+    <system:String x:Key="Msg_ProvideName">Podaj imię i nazwisko lub nazwę firmy.</system:String>
+    <system:String x:Key="Msg_ProvideNIP">Dla klienta firmowego NIP jest wymagany.</system:String>
+    <system:String x:Key="Msg_ProvideEmail">E-mail jest wymagany.</system:String>
+    <system:String x:Key="Msg_InvalidEmail">Podany adres e-mail jest niepoprawny.</system:String>
+    <system:String x:Key="Msg_UserNotFound">Nie znaleziono konta użytkownika w bazie.</system:String>
+    <system:String x:Key="Msg_EmailExistsAddClient">Konto z tym adresem e-mail już istnieje.</system:String>
+    <system:String x:Key="Msg_SaveClientError">Nie udało się zapisać zmian:\n{0}</system:String>
+
+    <!-- Aktywne Procesy Sprzedaży (SalesPanelPage) -->
+    <system:String x:Key="SalesPanel_PageTitle">Aktywne Procesy Sprzedaży</system:String>
+    <system:String x:Key="SalesPanel_Subtitle">Zarządzanie trwającymi zamówieniami, postępem przygotowania pojazdów i finalizacja transakcji</system:String>
+    <system:String x:Key="SalesPanel_ColReserved">Zarezerwowane</system:String>
+    <system:String x:Key="SalesPanel_ColReservedDesc">Pojazdy oczekujące na podjęcie dalszych kroków</system:String>
+    <system:String x:Key="SalesPanel_NoReserved">Brak rezerwacji</system:String>
+    <system:String x:Key="SalesPanel_Client">Klient:</system:String>
+    <system:String x:Key="SalesPanel_OrderDate">Data zamówienia:</system:String>
+    <system:String x:Key="SalesPanel_Finalize">Sfinalizuj</system:String>
+    <system:String x:Key="SalesPanel_Cancel">Anuluj</system:String>
+    <system:String x:Key="SalesPanel_ColServicing">Serwis i Przygotowanie</system:String>
+    <system:String x:Key="SalesPanel_ColServicingDesc">Pojazdy w trakcie montażu dodatkowego wyposażenia</system:String>
+    <system:String x:Key="SalesPanel_NoServicing">Brak pojazdów w serwisie</system:String>
+    <system:String x:Key="SalesPanel_ColReady">Gotowe do Oddania</system:String>
+    <system:String x:Key="SalesPanel_ColReadyDesc">Pojazdy w pełni gotowe do odbioru przez klienta</system:String>
+    <system:String x:Key="SalesPanel_NoReady">Brak pojazdów gotowych do odbioru</system:String>
+    
+    <system:String x:Key="Tour_SalesPanel_Step1">Krok 1/3: Tutaj pojawiają się pojazdy dopiero co zarezerwowane przez klientów.</system:String>
+    <system:String x:Key="Tour_SalesPanel_Step2">Krok 2/3: Jeśli klient zażyczył sobie usług (np. oklejenie), pojazd trafia tutaj do serwisu.</system:String>
+    <system:String x:Key="Tour_SalesPanel_Step3">Krok 3/3: Kiedy wszystkie usługi są wykonane, pojazd czeka tu na sfinalizowanie odbioru.</system:String>
+    
+    <system:String x:Key="SalesPanel_ErrorTitle">Błąd Panelu Sprzedaży</system:String>
+    <system:String x:Key="SalesPanel_SuccessTitle">Operacja Zakończona</system:String>
+    <system:String x:Key="SalesPanel_UnknownModel">Nieznany model</system:String>
+    <system:String x:Key="SalesPanel_UnknownClient">Nieznany klient</system:String>
+    <system:String x:Key="SalesPanel_Tel">Tel:</system:String>
+    <system:String x:Key="SalesPanel_Email">Email:</system:String>
+    <system:String x:Key="SalesPanel_NoJobs">Brak dodatkowych zleceń</system:String>
+    <system:String x:Key="SalesPanel_JobsCompleted">{0} z {1} zleceń ukończone</system:String>
+    <system:String x:Key="SalesPanel_LoadError">Błąd podczas ładowania danych sprzedaży:\n{0}</system:String>
+    <system:String x:Key="SalesPanel_ConfirmSuccess">Czy na pewno chcesz sfinalizować sprzedaż pojazdu {0} (VIN: {1}) za kwotę {2}?</system:String>
+    <system:String x:Key="SalesPanel_ConfirmSuccessTitle">Potwierdzenie sfinalizowania sprzedaży</system:String>
+    <system:String x:Key="SalesPanel_MsgSuccess">Sprzedaż została pomyślnie sfinalizowana!</system:String>
+    <system:String x:Key="SalesPanel_FinalizeError">Błąd podczas finalizowania sprzedaży:\n{0}</system:String>
+    <system:String x:Key="SalesPanel_ConfirmFail">Czy na pewno chcesz anulować sprzedaż pojazdu {0} (VIN: {1})?\nPojazd zostanie przywrócony jako 'Dostępny'.</system:String>
+    <system:String x:Key="SalesPanel_ConfirmFailTitle">Potwierdzenie anulowania sprzedaży</system:String>
+    <system:String x:Key="SalesPanel_MsgFail">Sprzedaż została anulowana.</system:String>
+    <system:String x:Key="SalesPanel_CancelError">Błąd podczas anulowania sprzedaży:\n{0}</system:String>
+    <system:String x:Key="Global_Error">Błąd</system:String>
+
+    <!-- Katalog Pojazdów (VehiclesPage) -->
+    <system:String x:Key="Vehicles_FilterTitle">Filtrowanie</system:String>
+    <system:String x:Key="Vehicles_Brand">Marka</system:String>
+    <system:String x:Key="Vehicles_Model">Model</system:String>
+    <system:String x:Key="Vehicles_Engine">Silnik</system:String>
+    <system:String x:Key="Vehicles_ColorLabel">Kolor lakieru</system:String>
+    <system:String x:Key="Vehicles_StatusLabel">Status pojazdu</system:String>
+    <system:String x:Key="Vehicles_StatusAll">Wszystkie</system:String>
+    <system:String x:Key="Vehicles_StatusAvailable">Dostępny</system:String>
+    <system:String x:Key="Vehicles_StatusReserved">Zarezerwowany</system:String>
+    <system:String x:Key="Vehicles_StatusSold">Sprzedany</system:String>
+    <system:String x:Key="Vehicles_SearchBtn">Szukaj pojazdów</system:String>
+    <system:String x:Key="Vehicles_PageTitle">Katalog pojazdów</system:String>
+    <system:String x:Key="Vehicles_AddBtn">Dodaj pojazd</system:String>
+    <system:String x:Key="Vehicles_ColorFormat">Kolor: {0}</system:String>
+    <system:String x:Key="Vehicles_VIN">VIN</system:String>
+    <system:String x:Key="Vehicles_RetailPrice">Cena detaliczna</system:String>
+    <system:String x:Key="Vehicles_EditBtn">Edytuj</system:String>
+    <system:String x:Key="Vehicles_DeleteBtn">Usuń</system:String>
+    <system:String x:Key="Vehicles_OrderServiceBtn">Zleć usługę serwisową</system:String>
+
+    <system:String x:Key="Tour_Vehicles_Step1">Krok 1/2: Użyj tego panelu, aby szybko przefiltrować dostępne i sprzedane pojazdy.</system:String>
+    <system:String x:Key="Tour_Vehicles_Step2">Krok 2/2: Tutaj przeglądasz karty pojazdów. Możesz dodawać nowe lub zlecać usługi dla konkretnego auta.</system:String>
+    
+    <system:String x:Key="Vehicles_ErrorTitle">Wyszukiwarka pojazdów</system:String>
+    <system:String x:Key="Vehicles_ConfirmDelete">Czy na pewno chcesz usunąć pojazd {0} ({1})?</system:String>
+    <system:String x:Key="Vehicles_ConfirmDeleteTitle">Usuń pojazd</system:String>
+    
+    <system:String x:Key="Vehicles_AllBrands">Wszystkie marki</system:String>
+    <system:String x:Key="Vehicles_AllModels">Wszystkie modele</system:String>
+    <system:String x:Key="Vehicles_Any">Dowolny</system:String>
+    <system:String x:Key="Vehicles_FilterLoadError">Nie udało się załadować filtrów:\n{0}</system:String>
+    <system:String x:Key="Vehicles_VehiclesLoadError">Nie udało się załadować pojazdów:\n{0}\n\n{1}</system:String>
+    <system:String x:Key="Vehicles_EngineFormat">Silnik: {0} ({1} KM)</system:String>
+    <system:String x:Key="Vehicles_EngineNone">Silnik: —</system:String>
+    <system:String x:Key="Vehicles_None">Brak</system:String>
+
+    <system:String x:Key="Vehicles_AddTitle">Dodaj nowy pojazd</system:String>
+    <system:String x:Key="Vehicles_Catalog">Katalog Pojazdów</system:String>
+    <system:String x:Key="Vehicles_AddingNew"> · Dodawanie nowego pojazdu</system:String>
+    <system:String x:Key="Vehicles_IdentityData">DANE IDENTYFIKACYJNE</system:String>
+    <system:String x:Key="Vehicles_VINLabel">Numer VIN (17 znaków)</system:String>
+    <system:String x:Key="Vehicles_Mileage">Przebieg (km)</system:String>
+    <system:String x:Key="Vehicles_IsUsed">Pojazd używany</system:String>
+    <system:String x:Key="Vehicles_Specification">SPECYFIKACJA</system:String>
+    <system:String x:Key="Vehicles_ModelLabel">Model pojazdu</system:String>
+    <system:String x:Key="Vehicles_TrimLevel">Wersja wyposażenia</system:String>
+    <system:String x:Key="Vehicles_EditTitle">Edytuj pojazd</system:String>
+    <system:String x:Key="Vehicles_Editing"> · Edycja pojazdu</system:String>
+    
+    <!-- AddJobWindow -->
+    <system:String x:Key="Vehicles_NewJobTitle">Nowe Zlecenie Serwisowe</system:String>
+    <system:String x:Key="Vehicles_AddJobTitle">Zleć Usługę Serwisową</system:String>
+    <system:String x:Key="Vehicles_AddJobSubtitle"> · Zlecenie nowej usługi</system:String>
+    <system:String x:Key="Vehicles_ServiceType">Rodzaj usługi</system:String>
+    <system:String x:Key="Vehicles_ServiceDesc">Dodatkowy opis dla mechanika</system:String>
+    <system:String x:Key="Vehicles_OrderJobBtn">Zleć usługę</system:String>
+    <system:String x:Key="Vehicles_Vehicle">Pojazd</system:String>
+    <system:String x:Key="Vehicles_OptionService">Opcja / Usługa</system:String>
+    <system:String x:Key="Vehicles_Mechanic">Serwisant</system:String>
+    <system:String x:Key="Vehicles_Loading">Ładowanie...</system:String>
+    <system:String x:Key="Vehicles_ValidationJob">Wybierz opcję/usługę oraz serwisanta.</system:String>
+    
+    <!-- ViewModels Strings -->
+    <system:String x:Key="Vehicles_DictionaryLoadError">Nie udało się pobrać danych słownikowych:\n{0}</system:String>
+    <system:String x:Key="Vehicles_ValidationVIN">Uzupełnij numer VIN.</system:String>
+    <system:String x:Key="Vehicles_ValidationSpecs">Wybierz model, wersję wyposażenia, silnik i kolor.</system:String>
+    <system:String x:Key="Vehicles_ValidationSpecsEdit">Wybierz model, wersję wyposażenia i silnik.</system:String>
+    <system:String x:Key="Vehicles_VINExists">Pojazd z VIN "{0}" już istnieje w bazie.</system:String>
+    <system:String x:Key="Vehicles_SuccessAdded">Pojazd został poprawnie dodany do katalogu.</system:String>
+    <system:String x:Key="Vehicles_SaveError">Błąd podczas zapisu: {0}\n\n{1}</system:String>
+    <system:String x:Key="Vehicles_NotFound">Nie znaleziono pojazdu.</system:String>
+    <system:String x:Key="Vehicles_SuccessEdited">Zmiany zostały zapisane.</system:String>
+    <system:String x:Key="Vehicles_DataLoadError">Nie udało się pobrać danych:\n{0}</system:String>
+
+    <!-- ServicesPage & ServicesDetailsWindow -->
+    <system:String x:Key="Services_PageTitle">Usługi Serwisowe</system:String>
+    <system:String x:Key="Services_Title">Zlecenia Serwisowe i Montażowe</system:String>
+    <system:String x:Key="Services_Subtitle">Przygotowanie pojazdów do wydania klientom</system:String>
+    <system:String x:Key="Services_StatusPending">Oczekujące</system:String>
+    <system:String x:Key="Services_StatusInProgress">W trakcie</system:String>
+    <system:String x:Key="Services_StatusFinished">Zakończone</system:String>
+    
+    <system:String x:Key="ServicesDetails_Title">Szczegóły zlecenia serwisowego</system:String>
+    <system:String x:Key="ServicesDetails_Header">Zlecenie serwisowe</system:String>
+    <system:String x:Key="ServicesDetails_Created">UTWORZONE</system:String>
+    <system:String x:Key="ServicesDetails_ServiceAction">🔧  CZYNNOŚĆ SERWISOWA</system:String>
+    <system:String x:Key="ServicesDetails_Equipment">Wyposażenie</system:String>
+    <system:String x:Key="ServicesDetails_Category">Kategoria</system:String>
+    <system:String x:Key="ServicesDetails_Vehicle">🚗  POJAZD</system:String>
+    <system:String x:Key="ServicesDetails_VehicleStatus">Status auta</system:String>
+    <system:String x:Key="ServicesDetails_MechanicInfo">👤  SERWISANT</system:String>
+    <system:String x:Key="ServicesDetails_FullName">Imię i nazwisko</system:String>
+    <system:String x:Key="ServicesDetails_Email">E-mail</system:String>
+    <system:String x:Key="ServicesDetails_Dealership">Salon</system:String>
+    <system:String x:Key="ServicesDetails_ChangeStatus">⚡  ZMIEŃ STATUS</system:String>
+    <system:String x:Key="ServicesDetails_SetPending">⏳  Oczekujące</system:String>
+    <system:String x:Key="ServicesDetails_SetInProgress">🔄  W trakcie</system:String>
+    <system:String x:Key="ServicesDetails_SetFinished">✅  Zakończone</system:String>
+    
+    <system:String x:Key="Tour_Services_Step1">Krok 1/3: Zlecenia oczekujące na przypisanie do mechanika/montażysty.</system:String>
+    <system:String x:Key="Tour_Services_Step2">Krok 2/3: Zlecenia w trakcie realizacji. Pasek postępu pokazuje zaawansowanie prac.</system:String>
+    <system:String x:Key="Tour_Services_Step3">Krok 3/3: Zakończone zlecenia. Pojazd może już wrócić do Panelu Sprzedaży i czekać na wydanie klientowi.</system:String>
+    <system:String x:Key="Services_LoadError">Nie udało się pobrać zleceń: {0}</system:String>
+    <system:String x:Key="ServicesDetails_NotFound">Nie znaleziono zlecenia w bazie danych.</system:String>
+    <system:String x:Key="ServicesDetails_StatusSuccess">Status zmieniony na: {0}</system:String>
+    <system:String x:Key="ServicesDetails_StatusError">Nie udało się zmienić statusu:\n{0}</system:String>
+
+    <system:String x:Key="Global_Cancel">Anuluj</system:String>
+    <system:String x:Key="Global_Save">Zapisz</system:String>
+    <system:String x:Key="Global_SaveChanges">Zapisz zmiany</system:String>
+    <system:String x:Key="Global_Close">Zamknij</system:String>
+    <system:String x:Key="Global_Edit">Edytuj</system:String>
+    <system:String x:Key="Global_Delete">Usuń</system:String>
+
+    <!-- AdminPage & EditEmployeeWindow -->
+    <system:String x:Key="Admin_PageTitle">Administracja</system:String>
+    <system:String x:Key="Admin_Subtitle">Zarządzanie kontami pracowników i salonami</system:String>
+    <system:String x:Key="Admin_TabUsers">Użytkownicy</system:String>
+    <system:String x:Key="Admin_TabDealerships">Salony</system:String>
+    <system:String x:Key="Admin_TabDictionaries">Słowniki</system:String>
+    <system:String x:Key="Admin_AddEmployeeTitle">Dodaj nowego pracownika</system:String>
+    <system:String x:Key="Admin_FirstName">Imię</system:String>
+    <system:String x:Key="Admin_LastName">Nazwisko</system:String>
+    <system:String x:Key="Admin_Role">Rola w systemie</system:String>
+    <system:String x:Key="Role_Salesman">Sprzedawca</system:String>
+    <system:String x:Key="Role_Mechanic">Serwisant</system:String>
+    <system:String x:Key="Role_Manager">Kierownik</system:String>
+    <system:String x:Key="Role_Admin">Administrator</system:String>
+    <system:String x:Key="Admin_Dealership">Salon (dla pracowników)</system:String>
+    <system:String x:Key="Admin_DealershipRequired">Salon (wymagany dla pracowników)</system:String>
+    <system:String x:Key="Admin_Email">Email (login)</system:String>
+    <system:String x:Key="Admin_Password">Hasło tymczasowe</system:String>
+    <system:String x:Key="Admin_NewPassword">Nowe hasło (pozostaw puste, by nie zmieniać)</system:String>
+    <system:String x:Key="Admin_RegisterEmployeeBtn">Zarejestruj pracownika</system:String>
+    <system:String x:Key="Admin_ActiveAccounts">Aktywne konta</system:String>
+    <system:String x:Key="Admin_DataGridEmployee">Pracownik</system:String>
+    <system:String x:Key="Admin_DataGridEmail">E-mail</system:String>
+    <system:String x:Key="Admin_DataGridRole">Rola</system:String>
+    <system:String x:Key="Admin_DataGridDealership">Salon</system:String>
+    <system:String x:Key="Admin_AddDealershipTitle">Dodaj nowy salon</system:String>
+    <system:String x:Key="Admin_DealershipName">Nazwa salonu</system:String>
+    <system:String x:Key="Admin_Address">Adres</system:String>
+    <system:String x:Key="Admin_City">Miasto</system:String>
+    <system:String x:Key="Admin_Owner">Właściciel</system:String>
+    <system:String x:Key="Admin_AddDealershipBtn">Dodaj salon</system:String>
+    <system:String x:Key="Admin_DealershipNetwork">Sieć salonów</system:String>
+    <system:String x:Key="Admin_DataGridName">Nazwa</system:String>
+    <system:String x:Key="Admin_DataGridAddress">Adres</system:String>
+    <system:String x:Key="Admin_DataGridCity">Miasto</system:String>
+    <system:String x:Key="Admin_DataGridOwner">Właściciel</system:String>
+    <system:String x:Key="Admin_ModelsTitle">Modele</system:String>
+    <system:String x:Key="Admin_AddModelBtn">Dodaj model</system:String>
+    <system:String x:Key="Admin_TrimsTitle">Wersje wyposażenia (Trim Levels)</system:String>
+    <system:String x:Key="Admin_AddTrimBtn">Dodaj wersję</system:String>
+    <system:String x:Key="Admin_EnginesTitle">Silniki</system:String>
+    <system:String x:Key="Admin_AddEngineBtn">Dodaj silnik</system:String>
+    <system:String x:Key="Admin_FeaturesTitle">Opcje i Usługi</system:String>
+    <system:String x:Key="Admin_AddFeatureBtn">Dodaj opcję</system:String>
+    <system:String x:Key="Admin_ListModelsTitle">Modele pojazdów</system:String>
+    <system:String x:Key="Admin_DataGridBrand">Marka</system:String>
+    <system:String x:Key="Admin_DataGridModel">Model</system:String>
+    <system:String x:Key="Admin_ListTrimsTitle">Wersje wyposażenia</system:String>
+    <system:String x:Key="Admin_DataGridTrim">Wersja</system:String>
+    <system:String x:Key="Admin_DataGridBasePrice">Cena bazowa</system:String>
+    <system:String x:Key="Admin_DataGridEngineSize">Pojemność</system:String>
+    <system:String x:Key="Admin_DataGridPower">Moc</system:String>
+    <system:String x:Key="Admin_DataGridPrice">Cena</system:String>
+    <system:String x:Key="Admin_DataGridCategory">Kategoria</system:String>
+    <system:String x:Key="Admin_DataGridFeatureName">Nazwa opcji</system:String>
+    <system:String x:Key="Admin_EditEmployeeTitle">Edytuj dane pracownika</system:String>
+    <system:String x:Key="Admin_EditEmployeeSubtitle">Zaktualizuj dane personalne, rolę oraz opcjonalnie hasło.</system:String>
+    <system:String x:Key="Admin_DictLoadError">Nie udało się załadować słowników:\n{0}</system:String>
+    <system:String x:Key="Admin_AccountsCount">{0} kont w systemie</system:String>
+    <system:String x:Key="Admin_AccountsLoadError">Nie udało się załadować kont:\n{0}</system:String>
+    <system:String x:Key="Admin_DealershipsCount">{0} salonów</system:String>
+    <system:String x:Key="Admin_DealershipsLoadError">Nie udało się załadować salonów:\n{0}</system:String>
+    <system:String x:Key="Admin_ValName">Podaj imię i nazwisko.</system:String>
+    <system:String x:Key="Admin_ValEmail">Podaj poprawny adres e-mail.</system:String>
+    <system:String x:Key="Admin_ValPassword">Hasło musi mieć minimum 4 znaki.</system:String>
+    <system:String x:Key="Admin_ValRole">Wybierz rolę.</system:String>
+    <system:String x:Key="Admin_ValDealership">Wybierz salon, do którego pracownik ma zostać przypisany.</system:String>
+    <system:String x:Key="Admin_EmailExists">Konto z takim adresem e-mail już istnieje.</system:String>
+    <system:String x:Key="Admin_RoleMissing">Rola '{0}' nie istnieje w bazie.</system:String>
+    <system:String x:Key="Admin_AccountCreated">Konto '{0}' ({1}) zostało utworzone.</system:String>
+    <system:String x:Key="Admin_AccountCreateError">Nie udało się utworzyć konta:\n{0}\n\n{1}</system:String>
+    <system:String x:Key="Admin_DeleteProtected">Konto kierownika jest chronione i nie może zostać usunięte.</system:String>
+    <system:String x:Key="Admin_DeleteConfirm">Czy na pewno usunąć konto:\n\n{0}\n{1}\nRola: {2}\nSalon: {3}\n\nOperacji nie można cofnąć.</system:String>
+    <system:String x:Key="Admin_AccountNotFound">Konto nie istnieje w bazie.</system:String>
+    <system:String x:Key="Admin_SelfDelete">Nie możesz usunąć własnego konta.</system:String>
+    <system:String x:Key="Admin_AccountDeleted">Konto {0} zostało usunięte.</system:String>
+    <system:String x:Key="Admin_AccountDeleteError">Nie udało się usunąć konta:\n{0}\n\n{1}\n\nMożliwa przyczyna: użytkownik ma w bazie powiązane zamówienia lub zlecenia serwisowe.</system:String>
+    <system:String x:Key="Admin_AccountUpdated">Konto '{0}' zostało zaktualizowane.</system:String>
+    <system:String x:Key="Admin_AccountUpdateError">Nie udało się zaktualizować konta:\n{0}</system:String>
+    <system:String x:Key="Admin_ValDealershipData">Wypełnij wszystkie pola salonu (nazwa, adres, miasto, właściciel).</system:String>
+    <system:String x:Key="Admin_DealershipExists">Salon '{0}' w mieście '{1}' już istnieje.</system:String>
+    <system:String x:Key="Admin_DealershipAdded">Salon '{0}' ({1}) został dodany.</system:String>
+    <system:String x:Key="Admin_DealershipAddError">Nie udało się dodać salonu:\n{0}\n\n{1}</system:String>
+    <system:String x:Key="Admin_DealershipHasWorkers">Nie można usunąć salonu '{0}' — przypisanych jest {1} pracowników.\nNajpierw przenieś pracowników do innego salonu.</system:String>
+    <system:String x:Key="Admin_DeleteDealershipConfirm">Czy na pewno usunąć salon:\n\n{0}\n{1}, {2}\nWłaściciel: {3}\n\nOperacji nie można cofnąć.</system:String>
+    <system:String x:Key="Admin_DealershipNotFound">Salon nie istnieje w bazie.</system:String>
+    <system:String x:Key="Admin_DealershipDeleted">Salon '{0}' został usunięty.</system:String>
+    <system:String x:Key="Admin_DealershipDeleteError">Nie udało się usunąć salonu:\n{0}\n\n{1}\n\nMożliwa przyczyna: salon ma powiązane pojazdy lub zamówienia.</system:String>
+    <system:String x:Key="Admin_ValModel">Wypełnij markę i nazwę modelu.</system:String>
+    <system:String x:Key="Admin_ModelAdded">Model został dodany.</system:String>
+    <system:String x:Key="Admin_Error">Błąd:\n{0}</system:String>
+    <system:String x:Key="Admin_DeleteModelConfirm">Usunąć model {0} {1}?</system:String>
+    <system:String x:Key="Admin_ModelDeleted">Model usunięty.</system:String>
+    <system:String x:Key="Admin_ValFeature">Wypełnij nazwę, kategorię oraz cenę opcji.</system:String>
+    <system:String x:Key="Admin_FeatureAdded">Opcja dodana.</system:String>
+    <system:String x:Key="Admin_DeleteFeatureConfirm">Usunąć opcję {0}?</system:String>
+    <system:String x:Key="Admin_FeatureDeleted">Opcja usunięta.</system:String>
+    <system:String x:Key="Admin_ValEngine">Wypełnij markę, nazwę silnika, moc oraz cenę.</system:String>
+    <system:String x:Key="Admin_EngineAdded">Silnik dodany.</system:String>
+    <system:String x:Key="Admin_DeleteEngineConfirm">Usunąć silnik {0}?</system:String>
+    <system:String x:Key="Admin_EngineDeleted">Silnik usunięty.</system:String>
+    <system:String x:Key="Admin_ValTrim">Wybierz model, wpisz nazwę wersji i cenę bazową.</system:String>
+    <system:String x:Key="Admin_TrimAdded">Wersja wyposażenia dodana.</system:String>
+    <system:String x:Key="Admin_DeleteTrimConfirm">Usunąć wersję {0} dla modelu {1}?</system:String>
+    <system:String x:Key="Admin_TrimDeleted">Wersja usunięta.</system:String>
+    <system:String x:Key="Tour_Admin_Step1">Krok 1/1: Tutaj jako administrator możesz zarządzać użytkownikami, salonami oraz słownikami systemowymi.</system:String>
+    <system:String x:Key="Admin_DeleteEmployee">Usuń pracownika</system:String>
+    <system:String x:Key="Admin_ValNameEdit">Imię i nazwisko są wymagane.</system:String>
+    <system:String x:Key="Admin_ValEmailEdit">Podaj poprawny adres e-mail.</system:String>
+    <system:String x:Key="Admin_ValDealershipEdit">Wybierz salon dla tego pracownika.</system:String>
+
+    <!-- Ewidencja Sprzedaży (SalesRecords) -->
+    <system:String x:Key="SalesRecords_Title">Ewidencja Sprzedaży</system:String>
+    <system:String x:Key="SalesRecords_Subtitle">Rejestr wszystkich transakcji: pojazd, klient, doradca i salon</system:String>
+    <system:String x:Key="SalesRecords_Status">Status</system:String>
+    <system:String x:Key="SalesRecords_Dealership">Salon</system:String>
+    <system:String x:Key="SalesRecords_Advisor">Doradca</system:String>
+    <system:String x:Key="SalesRecords_DateFrom">Od</system:String>
+    <system:String x:Key="SalesRecords_DateTo">Do</system:String>
+    <system:String x:Key="SalesRecords_ClearFilters">Wyczyść</system:String>
+    <system:String x:Key="SalesRecords_ColCode">Kod</system:String>
+    <system:String x:Key="SalesRecords_ColDate">Data</system:String>
+    <system:String x:Key="SalesRecords_ColVehicle">Pojazd</system:String>
+    <system:String x:Key="SalesRecords_ColVIN">VIN</system:String>
+    <system:String x:Key="SalesRecords_ColClient">Klient</system:String>
+    <system:String x:Key="SalesRecords_ColAdvisor">Doradca</system:String>
+    <system:String x:Key="SalesRecords_ColDealership">Salon</system:String>
+    <system:String x:Key="SalesRecords_ColStatus">Status</system:String>
+    <system:String x:Key="SalesRecords_ColPrice">Kwota</system:String>
+    <system:String x:Key="SalesRecords_NoRecords">Brak transakcji spełniających kryteria</system:String>
+
+    <system:String x:Key="Filter_AllStatuses">Wszystkie statusy</system:String>
+    <system:String x:Key="Filter_AllDealerships">Wszystkie salony</system:String>
+    <system:String x:Key="Filter_AllAdvisors">Wszyscy doradcy</system:String>
+    <system:String x:Key="Msg_LoadSalesRecordsError">Nie udało się załadować ewidencji sprzedaży:\n{0}\n\n{1}</system:String>
+    <system:String x:Key="SalesRecords_Summary">Liczba transakcji: {0}   •   Łączna wartość: {1}</system:String>
+    <system:String x:Key="SalesRecords_UnknownVehicle">Nieznany pojazd</system:String>
+    <system:String x:Key="SalesRecords_UnknownClient">Nieznany klient</system:String>
+
+    <system:String x:Key="Culture_CurrencyCode">pl-PL</system:String>
+
+    <!-- Raporty (ReportsPage) -->
+    <system:String x:Key="Reports_Title">Raporty i statystyki</system:String>
+    <system:String x:Key="Reports_Subtitle">Generuj kompleksowe raporty w formacie PDF</system:String>
+    <system:String x:Key="Reports_Period">Zakres czasowy:</system:String>
+    <system:String x:Key="Reports_GeneratePDF">Generuj PDF</system:String>
+    <system:String x:Key="Reports_OrderStatusTitle">Statusy zamówień</system:String>
+    <system:String x:Key="Reports_OrderStatusDesc">Generuje raport wszystkich zamówień, pogrupowanych według ich obecnego statusu operacyjnego.</system:String>
+    <system:String x:Key="Reports_ClientPurchasesTitle">Zakupy klienta</system:String>
+    <system:String x:Key="Reports_ClientPurchasesDesc">Wybierz klienta z bazy i wygeneruj imienny wykaz jego wszystkich zakupów (zamówienia i zlecenia).</system:String>
+    <system:String x:Key="Reports_SalesRankingsTitle">Rankingi sprzedaży</system:String>
+    <system:String x:Key="Reports_SalesRankingsDesc">Porównawczy raport sprzedaży ze statystykami: najlepsi pracownicy, najlepiej prosperujące salony i wykresy.</system:String>
+    <system:String x:Key="Reports_FullDumpTitle">Kompleksowy raport</system:String>
+    <system:String x:Key="Reports_FullDumpDesc">Pełny, szczegółowy wykaz wszystkich salonów, pracowników, dostępnych pojazdów i historii klientów.</system:String>
+    <system:String x:Key="Reports_FinancialReportTitle">Przychody miesięczne</system:String>
+    <system:String x:Key="Reports_FinancialReportDesc">Zestawienie słupkowe obrazujące przychody salonów z podziałem na poszczególne miesiące sprzedaży.</system:String>
+    <system:String x:Key="Reports_TrendsReportTitle">Popularność modeli</system:String>
+    <system:String x:Key="Reports_TrendsReportDesc">Wykres prezentujący modele i marki samochodów, które cieszą się największym zainteresowaniem wśród klientów.</system:String>
+    <system:String x:Key="Reports_ServiceReportTitle">Wydajność serwisu</system:String>
+    <system:String x:Key="Reports_ServiceReportDesc">Analiza wykonanych zleceń oraz graficzne zestawienie pracowników, którzy ukończyli najwięcej napraw i modyfikacji.</system:String>
+
+    <system:String x:Key="Period_All">Wszystko (Cała historia)</system:String>
+    <system:String x:Key="Period_LastDay">Ostatni dzień</system:String>
+    <system:String x:Key="Period_LastWeek">Ostatni tydzień</system:String>
+    <system:String x:Key="Period_Last2Weeks">Ostatnie 2 tygodnie</system:String>
+    <system:String x:Key="Period_LastMonth">Ostatni miesiąc</system:String>
+    <system:String x:Key="Period_Last3Months">Ostatnie 3 miesiące</system:String>
+    <system:String x:Key="Period_Last6Months">Ostatnie pół roku</system:String>
+    <system:String x:Key="Period_LastYear">Ostatni rok</system:String>
+
+    <system:String x:Key="Msg_ReportError">Błąd generowania raportu: {0}</system:String>
+    <system:String x:Key="Msg_Error">Błąd</system:String>
+    <system:String x:Key="Msg_SelectClientFirst">Proszę wybrać klienta z listy.</system:String>
+    <system:String x:Key="Msg_Info">Informacja</system:String>
+
+</ResourceDictionary>

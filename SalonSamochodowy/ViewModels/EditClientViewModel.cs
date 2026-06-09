@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Net.Mail;
 using System.Threading.Tasks;
@@ -123,22 +123,22 @@ namespace SalonSamochodowy.ViewModels
 
             if (string.IsNullOrWhiteSpace(fn))
             {
-                ShowError("Podaj imię i nazwisko lub nazwę firmy.");
+                ShowError(SalonSamochodowy.Services.LocalizationHelper.GetString("Msg_ProvideName"));
                 return;
             }
             if (IsCompany && string.IsNullOrWhiteSpace(nip))
             {
-                ShowError("Dla klienta firmowego NIP jest wymagany.");
+                ShowError(SalonSamochodowy.Services.LocalizationHelper.GetString("Msg_ProvideNIP"));
                 return;
             }
             if (string.IsNullOrWhiteSpace(em))
             {
-                ShowError("E-mail jest wymagany.");
+                ShowError(SalonSamochodowy.Services.LocalizationHelper.GetString("Msg_ProvideEmail"));
                 return;
             }
             if (!IsValidEmail(em))
             {
-                ShowError("Podany adres e-mail jest niepoprawny.");
+                ShowError(SalonSamochodowy.Services.LocalizationHelper.GetString("Msg_InvalidEmail"));
                 return;
             }
 
@@ -152,7 +152,7 @@ namespace SalonSamochodowy.ViewModels
                 var user = users.FirstOrDefault();
                 if (user == null)
                 {
-                    ShowError("Nie znaleziono konta użytkownika w bazie.");
+                    ShowError(SalonSamochodowy.Services.LocalizationHelper.GetString("Msg_UserNotFound"));
                     return;
                 }
 
@@ -162,7 +162,7 @@ namespace SalonSamochodowy.ViewModels
                     var existing = await uow.AppUsers.FindAsync(u => u.Email == em);
                     if (existing.Any())
                     {
-                        ShowError("Konto z tym adresem e-mail już istnieje.");
+                        ShowError(SalonSamochodowy.Services.LocalizationHelper.GetString("Msg_EmailExistsAddClient"));
                         return;
                     }
                 }
@@ -197,7 +197,7 @@ namespace SalonSamochodowy.ViewModels
             }
             catch (Exception ex)
             {
-                ShowError($"Nie udało się zapisać zmian:\n{ex.Message}");
+                ShowError(string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Msg_SaveClientError"), ex.Message));
             }
         }
 

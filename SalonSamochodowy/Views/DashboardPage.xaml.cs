@@ -27,7 +27,7 @@ namespace SalonSamochodowy.Views
 
             WeakReferenceMessenger.Default.Register<StartTourRequestMessage>(this, (r, m) =>
             {
-                if (m.PageName == "Dashboard" && this.IsVisible)
+                if (m.PageName == nameof(DashboardPage) && this.IsVisible)
                 {
                     m.Reply(true);
                     StartTour();
@@ -48,21 +48,21 @@ namespace SalonSamochodowy.Views
             {
                 case 0:
                     TourPopup.PlacementTarget = BorderOrders;
-                    TourText.Text = "Krok 1/4: Tutaj widzisz liczbę nowych zamówień gotowych do przetworzenia.";
-                    TourNextBtn.Content = "Dalej";
+                    TourText.Text = SalonSamochodowy.Services.LocalizationHelper.GetString("Tour_Dash_Step1");
+                    TourNextBtn.Content = SalonSamochodowy.Services.LocalizationHelper.GetString("Tour_Next");
                     break;
                 case 1:
                     TourPopup.PlacementTarget = BorderVehicles;
-                    TourText.Text = "Krok 2/4: To jest ogólna liczba aut na placu, gotowych od razu do sprzedaży.";
+                    TourText.Text = SalonSamochodowy.Services.LocalizationHelper.GetString("Tour_Dash_Step2");
                     break;
                 case 2:
                     TourPopup.PlacementTarget = BorderJobs;
-                    TourText.Text = "Krok 3/4: Tyle zleceń serwisowych czeka na przydzielenie lub dokończenie.";
+                    TourText.Text = SalonSamochodowy.Services.LocalizationHelper.GetString("Tour_Dash_Step3");
                     break;
                 case 3:
                     TourPopup.PlacementTarget = BorderChart;
-                    TourText.Text = "Krok 4/4: Interaktywny wykres przedstawiający Twoją dynamikę sprzedaży.";
-                    TourNextBtn.Content = "Zakończ";
+                    TourText.Text = SalonSamochodowy.Services.LocalizationHelper.GetString("Tour_Dash_Step4");
+                    TourNextBtn.Content = SalonSamochodowy.Services.LocalizationHelper.GetString("Tour_Finish");
                     break;
                 default:
                     return;

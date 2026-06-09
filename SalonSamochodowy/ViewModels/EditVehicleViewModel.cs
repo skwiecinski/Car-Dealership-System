@@ -96,7 +96,7 @@ namespace SalonSamochodowy.ViewModels
             }
             catch (Exception ex)
             {
-                ShowError?.Invoke($"Nie udało się pobrać danych:\n{ex.Message}");
+                ShowError?.Invoke(string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Vehicles_DataLoadError"), ex.Message));
             }
         }
 
@@ -119,12 +119,12 @@ namespace SalonSamochodowy.ViewModels
         {
             if (string.IsNullOrWhiteSpace(NewVehicle.VIN))
             {
-                ShowError?.Invoke("Uzupełnij numer VIN.");
+                ShowError?.Invoke(SalonSamochodowy.Services.LocalizationHelper.GetString("Vehicles_ValidationVIN"));
                 return;
             }
             if (SelectedModel == null || SelectedTrim == null || SelectedEngine == null)
             {
-                ShowError?.Invoke("Wybierz model, wersję wyposażenia i silnik.");
+                ShowError?.Invoke(SalonSamochodowy.Services.LocalizationHelper.GetString("Vehicles_ValidationSpecsEdit"));
                 return;
             }
 
@@ -136,7 +136,7 @@ namespace SalonSamochodowy.ViewModels
                 var existingVehicle = await uow.Vehicles.GetByIdAsync(NewVehicle.VehicleID);
                 if (existingVehicle == null)
                 {
-                    ShowError?.Invoke("Nie znaleziono pojazdu.");
+                    ShowError?.Invoke(SalonSamochodowy.Services.LocalizationHelper.GetString("Vehicles_NotFound"));
                     return;
                 }
 
@@ -146,7 +146,7 @@ namespace SalonSamochodowy.ViewModels
                     var vinExists = await uow.Vehicles.FindAsync(v => v.VIN == NewVehicle.VIN.Trim());
                     if (vinExists.Any())
                     {
-                        ShowError?.Invoke($"Pojazd z VIN \"{NewVehicle.VIN}\" już istnieje w bazie.");
+                        ShowError?.Invoke(string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Vehicles_VINExists"), NewVehicle.VIN));
                         return;
                     }
                 }
@@ -160,13 +160,13 @@ namespace SalonSamochodowy.ViewModels
                 uow.Vehicles.Update(existingVehicle);
                 await uow.CompleteAsync();
 
-                ShowSuccess?.Invoke("Zmiany zostały zapisane.");
+                ShowSuccess?.Invoke(SalonSamochodowy.Services.LocalizationHelper.GetString("Vehicles_SuccessEdited"));
                 VehicleEdited?.Invoke();
                 CloseRequested?.Invoke();
             }
             catch (Exception ex)
             {
-                ShowError?.Invoke($"Błąd podczas zapisu: {ex.Message}\n\n{ex.InnerException?.Message}");
+                ShowError?.Invoke(string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Vehicles_SaveError"), ex.Message, ex.InnerException?.Message ?? ""));
             }
         }
 

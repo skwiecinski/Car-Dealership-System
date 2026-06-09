@@ -10,6 +10,7 @@ using SalonSamochodowy.Entities;
 using SalonSamochodowy.Repositories;
 using SalonSamochodowy.Services;
 using Microsoft.Extensions.DependencyInjection;
+using CommunityToolkit.Mvvm.Messaging;
 
 namespace SalonSamochodowy.ViewModels
 {
@@ -20,6 +21,12 @@ namespace SalonSamochodowy.ViewModels
         public AdminPageViewModel(IUnitOfWork uow)
         {
             _uow = uow;
+            WeakReferenceMessenger.Default.Register(this, (AdminPageViewModel r, SalonSamochodowy.Messages.LanguageChangedMessage m) =>
+            {
+                var tempAccounts = r.Accounts.ToList();
+                r.Accounts.Clear();
+                foreach (var a in tempAccounts) r.Accounts.Add(a);
+            });
         }
         public ObservableCollection<AccountRow> Accounts { get; } = new();
         public ObservableCollection<DealershipRow> Dealerships { get; } = new();
@@ -103,7 +110,7 @@ namespace SalonSamochodowy.ViewModels
             }
             catch (Exception ex)
             {
-                ShowMessage?.Invoke($"Nie udało się załadować słowników:\n{ex.Message}", MessageBoxImage.Error);
+                ShowMessage?.Invoke(string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_DictLoadError"), ex.Message), MessageBoxImage.Error);
             }
         }
 
@@ -132,11 +139,11 @@ namespace SalonSamochodowy.ViewModels
                         DealershipName = dealership?.Name ?? "—"
                     });
                 }
-                AccountsCountText = $"{Accounts.Count} kont w systemie";
+                AccountsCountText = string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_AccountsCount"), Accounts.Count);
             }
             catch (Exception ex)
             {
-                ShowMessage?.Invoke($"Nie udało się załadować kont:\n{ex.Message}", MessageBoxImage.Error);
+                ShowMessage?.Invoke(string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_AccountsLoadError"), ex.Message), MessageBoxImage.Error);
             }
         }
 
@@ -168,7 +175,7 @@ namespace SalonSamochodowy.ViewModels
                         Display      = $"{d.Name} ({d.City})"
                     });
                 }
-                DealershipsCountText = $"{Dealerships.Count} salonów";
+                DealershipsCountText = string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_DealershipsCount"), Dealerships.Count);
 
                 if (prevSelectedId.HasValue)
                     SelectedDealershipForEmployee = AvailableDealerships.FirstOrDefault(x => x.DealershipID == prevSelectedId.Value);
@@ -178,7 +185,7 @@ namespace SalonSamochodowy.ViewModels
             }
             catch (Exception ex)
             {
-                ShowMessage?.Invoke($"Nie udało się załadować salonów:\n{ex.Message}", MessageBoxImage.Error);
+                ShowMessage?.Invoke(string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_DealershipsLoadError"), ex.Message), MessageBoxImage.Error);
             }
         }
 
@@ -192,29 +199,29 @@ namespace SalonSamochodowy.ViewModels
 
             if (string.IsNullOrWhiteSpace(fn) || string.IsNullOrWhiteSpace(ln))
             {
-                ShowMessage?.Invoke("Podaj imię i nazwisko.", MessageBoxImage.Warning);
+                ShowMessage?.Invoke(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_ValName"), MessageBoxImage.Warning);
                 return;
             }
             if (string.IsNullOrWhiteSpace(em) || !IsValidEmail(em))
             {
-                ShowMessage?.Invoke("Podaj poprawny adres e-mail.", MessageBoxImage.Warning);
+                ShowMessage?.Invoke(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_ValEmail"), MessageBoxImage.Warning);
                 return;
             }
             if (string.IsNullOrWhiteSpace(pw) || pw.Length < 4)
             {
-                ShowMessage?.Invoke("Hasło musi mieć minimum 4 znaki.", MessageBoxImage.Warning);
+                ShowMessage?.Invoke(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_ValPassword"), MessageBoxImage.Warning);
                 return;
             }
             if (string.IsNullOrWhiteSpace(RoleName))
             {
-                ShowMessage?.Invoke("Wybierz rolę.", MessageBoxImage.Warning);
+                ShowMessage?.Invoke(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_ValRole"), MessageBoxImage.Warning);
                 return;
             }
 
             var isWorkerRole = RoleName == RoleNames.Sprzedawca || RoleName == RoleNames.Serwisant || RoleName == RoleNames.Kierownik;
             if (isWorkerRole && SelectedDealershipForEmployee == null)
             {
-                ShowMessage?.Invoke("Wybierz salon, do którego pracownik ma zostać przypisany.", MessageBoxImage.Warning);
+                ShowMessage?.Invoke(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_ValDealership"), MessageBoxImage.Warning);
                 return;
             }
 
@@ -225,14 +232,14 @@ namespace SalonSamochodowy.ViewModels
                 var existing = await uow.AppUsers.FindAsync(u => u.Email == em);
                 if (existing.Any())
                 {
-                    ShowMessage?.Invoke("Konto z takim adresem e-mail już istnieje.", MessageBoxImage.Warning);
+                    ShowMessage?.Invoke(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_EmailExists"), MessageBoxImage.Warning);
                     return;
                 }
 
                 var role = (await uow.AppRoles.FindAsync(r => r.RoleName == RoleName)).FirstOrDefault();
                 if (role == null)
                 {
-                    ShowMessage?.Invoke($"Rola '{RoleName}' nie istnieje w bazie.", MessageBoxImage.Error);
+                    ShowMessage?.Invoke(string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_RoleMissing"), RoleName), MessageBoxImage.Error);
                     return;
                 }
 
@@ -260,7 +267,7 @@ namespace SalonSamochodowy.ViewModels
                     await uow.CompleteAsync();
                 }
 
-                ShowMessage?.Invoke($"Konto '{fn} {ln}' ({RoleName}) zostało utworzone.", MessageBoxImage.Information);
+                ShowMessage?.Invoke(string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_AccountCreated"), $"{fn} {ln}", RoleName), MessageBoxImage.Information);
 
                 FirstName = "";
                 LastName = "";
@@ -272,7 +279,7 @@ namespace SalonSamochodowy.ViewModels
             }
             catch (Exception ex)
             {
-                ShowMessage?.Invoke($"Nie udało się utworzyć konta:\n{ex.Message}\n\n{ex.InnerException?.Message}", MessageBoxImage.Error);
+                ShowMessage?.Invoke(string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_AccountCreateError"), ex.Message, ex.InnerException?.Message), MessageBoxImage.Error);
             }
         }
 
@@ -283,11 +290,11 @@ namespace SalonSamochodowy.ViewModels
 
             if (row.RoleName == RoleNames.Kierownik)
             {
-                ShowMessage?.Invoke("Konto kierownika jest chronione i nie może zostać usunięte.", MessageBoxImage.Warning);
+                ShowMessage?.Invoke(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_DeleteProtected"), MessageBoxImage.Warning);
                 return;
             }
 
-            var confirmMsg = $"Czy na pewno usunąć konto:\n\n{row.FullName}\n{row.Email}\nRola: {row.RoleName}\nSalon: {row.DealershipName}\n\nOperacji nie można cofnąć.";
+            var confirmMsg = string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_DeleteConfirm"), row.FullName, row.Email, row.RoleName, row.DealershipName);
             if (ConfirmDelete?.Invoke(confirmMsg) != true) return;
 
             try
@@ -297,14 +304,14 @@ namespace SalonSamochodowy.ViewModels
                 var user = (await uow.AppUsers.FindAsync(u => u.Email == row.Email)).FirstOrDefault();
                 if (user == null)
                 {
-                    ShowMessage?.Invoke("Konto nie istnieje w bazie.", MessageBoxImage.Warning);
+                    ShowMessage?.Invoke(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_AccountNotFound"), MessageBoxImage.Warning);
                     return;
                 }
 
                 var loggedId = GetLoggedInUserId?.Invoke() ?? -1;
                 if (loggedId == user.UserID)
                 {
-                    ShowMessage?.Invoke("Nie możesz usunąć własnego konta.", MessageBoxImage.Warning);
+                    ShowMessage?.Invoke(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_SelfDelete"), MessageBoxImage.Warning);
                     return;
                 }
 
@@ -318,14 +325,11 @@ namespace SalonSamochodowy.ViewModels
                 await uow.CompleteAsync();
 
                 await LoadAccountsAsync();
-                ShowMessage?.Invoke($"Konto {row.FullName} zostało usunięte.", MessageBoxImage.Information);
+                ShowMessage?.Invoke(string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_AccountDeleted"), row.FullName), MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
-                ShowMessage?.Invoke(
-                    $"Nie udało się usunąć konta:\n{ex.Message}\n\n{ex.InnerException?.Message}\n\n" +
-                    "Możliwa przyczyna: użytkownik ma w bazie powiązane zamówienia lub zlecenia serwisowe.",
-                    MessageBoxImage.Error);
+                ShowMessage?.Invoke(string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_AccountDeleteError"), ex.Message, ex.InnerException?.Message), MessageBoxImage.Error);
             }
         }
 
@@ -345,14 +349,14 @@ namespace SalonSamochodowy.ViewModels
                     var user = (await uow.AppUsers.FindAsync(u => u.UserID == row.UserID)).FirstOrDefault();
                     if (user == null)
                     {
-                        ShowMessage?.Invoke("Konto nie istnieje w bazie.", MessageBoxImage.Warning);
+                        ShowMessage?.Invoke(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_AccountNotFound"), MessageBoxImage.Warning);
                         return;
                     }
 
                     var newRole = (await uow.AppRoles.FindAsync(r => r.RoleName == vm.RoleName)).FirstOrDefault();
                     if (newRole == null)
                     {
-                        ShowMessage?.Invoke($"Rola '{vm.RoleName}' nie istnieje.", MessageBoxImage.Error);
+                        ShowMessage?.Invoke(string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_RoleMissing"), vm.RoleName), MessageBoxImage.Error);
                         return;
                     }
 
@@ -398,11 +402,11 @@ namespace SalonSamochodowy.ViewModels
 
                     await uow.CompleteAsync();
                     await LoadAccountsAsync();
-                    ShowMessage?.Invoke($"Konto '{user.FirstName} {user.LastName}' zostało zaktualizowane.", MessageBoxImage.Information);
+                    ShowMessage?.Invoke(string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_AccountUpdated"), $"{user.FirstName} {user.LastName}"), MessageBoxImage.Information);
                 }
                 catch (Exception ex)
                 {
-                    ShowMessage?.Invoke($"Nie udało się zaktualizować konta:\n{ex.Message}", MessageBoxImage.Error);
+                    ShowMessage?.Invoke(string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_AccountUpdateError"), ex.Message), MessageBoxImage.Error);
                 }
             }
         }
@@ -418,7 +422,7 @@ namespace SalonSamochodowy.ViewModels
             if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(address) ||
                 string.IsNullOrWhiteSpace(city) || string.IsNullOrWhiteSpace(owner))
             {
-                ShowMessage?.Invoke("Wypełnij wszystkie pola salonu (nazwa, adres, miasto, właściciel).", MessageBoxImage.Warning);
+                ShowMessage?.Invoke(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_ValDealershipData"), MessageBoxImage.Warning);
                 return;
             }
 
@@ -429,7 +433,7 @@ namespace SalonSamochodowy.ViewModels
                 var existing = await uow.Dealerships.FindAsync(d => d.Name == name && d.City == city);
                 if (existing.Any())
                 {
-                    ShowMessage?.Invoke($"Salon '{name}' w mieście '{city}' już istnieje.", MessageBoxImage.Warning);
+                    ShowMessage?.Invoke(string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_DealershipExists"), name, city), MessageBoxImage.Warning);
                     return;
                 }
 
@@ -442,7 +446,7 @@ namespace SalonSamochodowy.ViewModels
                 });
                 await uow.CompleteAsync();
 
-                ShowMessage?.Invoke($"Salon '{name}' ({city}) został dodany.", MessageBoxImage.Information);
+                ShowMessage?.Invoke(string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_DealershipAdded"), name, city), MessageBoxImage.Information);
 
                 NewSalonName    = "";
                 NewSalonAddress = "";
@@ -453,7 +457,7 @@ namespace SalonSamochodowy.ViewModels
             }
             catch (Exception ex)
             {
-                ShowMessage?.Invoke($"Nie udało się dodać salonu:\n{ex.Message}\n\n{ex.InnerException?.Message}", MessageBoxImage.Error);
+                ShowMessage?.Invoke(string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_DealershipAddError"), ex.Message, ex.InnerException?.Message), MessageBoxImage.Error);
             }
         }
 
@@ -469,20 +473,17 @@ namespace SalonSamochodowy.ViewModels
                 var workersHere = await uow.Workers.CountAsync(w => w.DealershipID == row.DealershipID);
                 if (workersHere > 0)
                 {
-                    ShowMessage?.Invoke(
-                        $"Nie można usunąć salonu '{row.Name}' — przypisanych jest {workersHere} pracowników.\n" +
-                        "Najpierw przenieś pracowników do innego salonu.",
-                        MessageBoxImage.Warning);
+                    ShowMessage?.Invoke(string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_DealershipHasWorkers"), row.Name, workersHere), MessageBoxImage.Warning);
                     return;
                 }
 
-                var confirmMsg = $"Czy na pewno usunąć salon:\n\n{row.Name}\n{row.Address}, {row.City}\nWłaściciel: {row.Owner}\n\nOperacji nie można cofnąć.";
+                var confirmMsg = string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_DeleteDealershipConfirm"), row.Name, row.Address, row.City, row.Owner);
                 if (ConfirmDelete?.Invoke(confirmMsg) != true) return;
 
                 var dealership = await uow.Dealerships.GetByIdAsync(row.DealershipID);
                 if (dealership == null)
                 {
-                    ShowMessage?.Invoke("Salon nie istnieje w bazie.", MessageBoxImage.Warning);
+                    ShowMessage?.Invoke(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_DealershipNotFound"), MessageBoxImage.Warning);
                     return;
                 }
 
@@ -490,14 +491,11 @@ namespace SalonSamochodowy.ViewModels
                 await uow.CompleteAsync();
 
                 await LoadDealershipsAsync();
-                ShowMessage?.Invoke($"Salon '{row.Name}' został usunięty.", MessageBoxImage.Information);
+                ShowMessage?.Invoke(string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_DealershipDeleted"), row.Name), MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
-                ShowMessage?.Invoke(
-                    $"Nie udało się usunąć salonu:\n{ex.Message}\n\n{ex.InnerException?.Message}\n\n" +
-                    "Możliwa przyczyna: salon ma powiązane pojazdy lub zamówienia.",
-                    MessageBoxImage.Error);
+                ShowMessage?.Invoke(string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_DealershipDeleteError"), ex.Message, ex.InnerException?.Message), MessageBoxImage.Error);
             }
         }
 
@@ -508,7 +506,7 @@ namespace SalonSamochodowy.ViewModels
             var name = NewModelName.Trim();
             if (string.IsNullOrWhiteSpace(brand) || string.IsNullOrWhiteSpace(name))
             {
-                ShowMessage?.Invoke("Wypełnij markę i nazwę modelu.", MessageBoxImage.Warning);
+                ShowMessage?.Invoke(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_ValModel"), MessageBoxImage.Warning);
                 return;
             }
             try
@@ -518,11 +516,11 @@ namespace SalonSamochodowy.ViewModels
                 NewModelBrand = "";
                 NewModelName = "";
                 await LoadDictionariesAsync();
-                ShowMessage?.Invoke("Model został dodany.", MessageBoxImage.Information);
+                ShowMessage?.Invoke(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_ModelAdded"), MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
-                ShowMessage?.Invoke($"Błąd:\n{ex.Message}", MessageBoxImage.Error);
+                ShowMessage?.Invoke(string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_Error"), ex.Message), MessageBoxImage.Error);
             }
         }
 
@@ -530,17 +528,17 @@ namespace SalonSamochodowy.ViewModels
         private async Task DeleteVehicleModelAsync(VehicleModel? model)
         {
             if (model == null) return;
-            if (ConfirmDelete?.Invoke($"Usunąć model {model.Brand} {model.ModelName}?") != true) return;
+            if (ConfirmDelete?.Invoke(string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_DeleteModelConfirm"), model.Brand, model.ModelName)) != true) return;
             try
             {
                 var catalogService = ((App)Application.Current).Services.GetRequiredService<SalonSamochodowy.Services.ICatalogService>();
                 await catalogService.DeleteVehicleModelAsync(model.ModelID);
                 await LoadDictionariesAsync();
-                ShowMessage?.Invoke("Model usunięty.", MessageBoxImage.Information);
+                ShowMessage?.Invoke(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_ModelDeleted"), MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
-                ShowMessage?.Invoke($"Błąd:\n{ex.Message}", MessageBoxImage.Error);
+                ShowMessage?.Invoke(string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_Error"), ex.Message), MessageBoxImage.Error);
             }
         }
 
@@ -551,7 +549,7 @@ namespace SalonSamochodowy.ViewModels
             var cat = NewFeatureCategory;
             if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(cat) || !NewFeaturePrice.HasValue)
             {
-                ShowMessage?.Invoke("Wypełnij nazwę, kategorię oraz cenę opcji.", MessageBoxImage.Warning);
+                ShowMessage?.Invoke(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_ValFeature"), MessageBoxImage.Warning);
                 return;
             }
             try
@@ -561,11 +559,11 @@ namespace SalonSamochodowy.ViewModels
                 NewFeatureName = "";
                 NewFeaturePrice = null;
                 await LoadDictionariesAsync();
-                ShowMessage?.Invoke("Opcja dodana.", MessageBoxImage.Information);
+                ShowMessage?.Invoke(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_FeatureAdded"), MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
-                ShowMessage?.Invoke($"Błąd:\n{ex.Message}", MessageBoxImage.Error);
+                ShowMessage?.Invoke(string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_Error"), ex.Message), MessageBoxImage.Error);
             }
         }
 
@@ -573,17 +571,17 @@ namespace SalonSamochodowy.ViewModels
         private async Task DeleteFeatureAsync(Feature? feature)
         {
             if (feature == null) return;
-            if (ConfirmDelete?.Invoke($"Usunąć opcję {feature.FeatureName}?") != true) return;
+            if (ConfirmDelete?.Invoke(string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_DeleteFeatureConfirm"), feature.FeatureName)) != true) return;
             try
             {
                 var catalogService = ((App)Application.Current).Services.GetRequiredService<SalonSamochodowy.Services.ICatalogService>();
                 await catalogService.DeleteFeatureAsync(feature.FeatureID);
                 await LoadDictionariesAsync();
-                ShowMessage?.Invoke("Opcja usunięta.", MessageBoxImage.Information);
+                ShowMessage?.Invoke(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_FeatureDeleted"), MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
-                ShowMessage?.Invoke($"Błąd:\n{ex.Message}", MessageBoxImage.Error);
+                ShowMessage?.Invoke(string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_Error"), ex.Message), MessageBoxImage.Error);
             }
         }
 
@@ -595,7 +593,7 @@ namespace SalonSamochodowy.ViewModels
             var size = NewEngineSize.Trim();
             if (string.IsNullOrWhiteSpace(brand) || string.IsNullOrWhiteSpace(name) || !NewEnginePower.HasValue || !NewEnginePrice.HasValue)
             {
-                ShowMessage?.Invoke("Wypełnij markę, nazwę silnika, moc oraz cenę.", MessageBoxImage.Warning);
+                ShowMessage?.Invoke(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_ValEngine"), MessageBoxImage.Warning);
                 return;
             }
             try
@@ -612,11 +610,11 @@ namespace SalonSamochodowy.ViewModels
                 NewEnginePower = null;
                 NewEnginePrice = null;
                 await LoadDictionariesAsync();
-                ShowMessage?.Invoke("Silnik dodany.", MessageBoxImage.Information);
+                ShowMessage?.Invoke(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_EngineAdded"), MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
-                ShowMessage?.Invoke($"Błąd:\n{ex.Message}", MessageBoxImage.Error);
+                ShowMessage?.Invoke(string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_Error"), ex.Message), MessageBoxImage.Error);
             }
         }
 
@@ -624,17 +622,17 @@ namespace SalonSamochodowy.ViewModels
         private async Task DeleteEngineAsync(Engine? engine)
         {
             if (engine == null) return;
-            if (ConfirmDelete?.Invoke($"Usunąć silnik {engine.EngineName}?") != true) return;
+            if (ConfirmDelete?.Invoke(string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_DeleteEngineConfirm"), engine.EngineName)) != true) return;
             try
             {
                 var catalogService = ((App)Application.Current).Services.GetRequiredService<SalonSamochodowy.Services.ICatalogService>();
                 await catalogService.DeleteEngineAsync(engine.EngineID);
                 await LoadDictionariesAsync();
-                ShowMessage?.Invoke("Silnik usunięty.", MessageBoxImage.Information);
+                ShowMessage?.Invoke(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_EngineDeleted"), MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
-                ShowMessage?.Invoke($"Błąd:\n{ex.Message}", MessageBoxImage.Error);
+                ShowMessage?.Invoke(string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_Error"), ex.Message), MessageBoxImage.Error);
             }
         }
 
@@ -644,7 +642,7 @@ namespace SalonSamochodowy.ViewModels
             var name = NewTrimName.Trim();
             if (NewTrimSelectedModel == null || string.IsNullOrWhiteSpace(name) || !NewTrimBasePrice.HasValue)
             {
-                ShowMessage?.Invoke("Wybierz model, wpisz nazwę wersji i cenę bazową.", MessageBoxImage.Warning);
+                ShowMessage?.Invoke(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_ValTrim"), MessageBoxImage.Warning);
                 return;
             }
             try
@@ -659,11 +657,11 @@ namespace SalonSamochodowy.ViewModels
                 NewTrimName = "";
                 NewTrimBasePrice = null;
                 await LoadDictionariesAsync();
-                ShowMessage?.Invoke("Wersja wyposażenia dodana.", MessageBoxImage.Information);
+                ShowMessage?.Invoke(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_TrimAdded"), MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
-                ShowMessage?.Invoke($"Błąd:\n{ex.Message}", MessageBoxImage.Error);
+                ShowMessage?.Invoke(string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_Error"), ex.Message), MessageBoxImage.Error);
             }
         }
 
@@ -671,17 +669,17 @@ namespace SalonSamochodowy.ViewModels
         private async Task DeleteTrimLevelAsync(TrimLevel? trim)
         {
             if (trim == null) return;
-            if (ConfirmDelete?.Invoke($"Usunąć wersję {trim.TrimName} dla modelu {trim.Model?.ModelName}?") != true) return;
+            if (ConfirmDelete?.Invoke(string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_DeleteTrimConfirm"), trim.TrimName, trim.Model?.ModelName)) != true) return;
             try
             {
                 var catalogService = ((App)Application.Current).Services.GetRequiredService<SalonSamochodowy.Services.ICatalogService>();
                 await catalogService.DeleteTrimLevelAsync(trim.TrimID);
                 await LoadDictionariesAsync();
-                ShowMessage?.Invoke("Wersja usunięta.", MessageBoxImage.Information);
+                ShowMessage?.Invoke(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_TrimDeleted"), MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
-                ShowMessage?.Invoke($"Błąd:\n{ex.Message}", MessageBoxImage.Error);
+                ShowMessage?.Invoke(string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_Error"), ex.Message), MessageBoxImage.Error);
             }
         }
 
@@ -704,6 +702,7 @@ namespace SalonSamochodowy.ViewModels
         public string Email          { get; set; } = "";
         public string RoleName       { get; set; } = "";
         public string DealershipName { get; set; } = "";
+        public string DisplayRoleName => RoleName == "—" ? "—" : SalonSamochodowy.Services.LocalizationHelper.GetString($"Role_{RoleName}");
     }
 
     public class DealershipRow

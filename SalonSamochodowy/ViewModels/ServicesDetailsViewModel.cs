@@ -62,7 +62,7 @@ namespace SalonSamochodowy.ViewModels
                 var job = await _jobService.GetJobDetailsAsync(_jobId);
                 if (job == null)
                 {
-                    ShowError?.Invoke("Nie znaleziono zlecenia w bazie danych.");
+                    ShowError?.Invoke(SalonSamochodowy.Services.LocalizationHelper.GetString("ServicesDetails_NotFound"));
                     return;
                 }
 
@@ -84,7 +84,7 @@ namespace SalonSamochodowy.ViewModels
             }
             catch (Exception ex)
             {
-                ShowError?.Invoke($"Błąd ładowania danych:\n{ex.Message}");
+                ShowError?.Invoke(string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Vehicles_DataLoadError"), ex.Message));
             }
         }
 
@@ -92,23 +92,44 @@ namespace SalonSamochodowy.ViewModels
         {
             CurrentStatus = status switch
             {
-                "PendingJob" or "Oczekujące" => "Oczekujące",
-                "InProgressJob" or "W trakcie" => "W trakcie",
-                "FinishedJob" or "Zakończone" => "Zakończone",
+                "PendingJob" or "Oczekujące" => SalonSamochodowy.Services.LocalizationHelper.GetString("Services_StatusPending"),
+                "InProgressJob" or "W trakcie" => SalonSamochodowy.Services.LocalizationHelper.GetString("Services_StatusInProgress"),
+                "FinishedJob" or "Zakończone" => SalonSamochodowy.Services.LocalizationHelper.GetString("Services_StatusFinished"),
                 _ => status
             };
 
-            (StatusBadgeBackground, StatusBadgeBorder, StatusBadgeForeground) = CurrentStatus switch
+            var statusPending = SalonSamochodowy.Services.LocalizationHelper.GetString("Services_StatusPending");
+            var statusInProgress = SalonSamochodowy.Services.LocalizationHelper.GetString("Services_StatusInProgress");
+            var statusFinished = SalonSamochodowy.Services.LocalizationHelper.GetString("Services_StatusFinished");
+
+            if (CurrentStatus == statusPending)
             {
-                "Oczekujące" => ("#332A12", "#D3A125", "#F0B82B"),
-                "W trakcie" => ("#1A2540", "#3B82F6", "#60A5FA"),
-                "Zakończone" => ("#112C1E", "#2D9A4A", "#44C767"),
-                _ => ("#1F2536", "#3B82F6", "#60A5FA"),
-            };
+                StatusBadgeBackground = "#332A12";
+                StatusBadgeBorder = "#D3A125";
+                StatusBadgeForeground = "#F0B82B";
+            }
+            else if (CurrentStatus == statusInProgress)
+            {
+                StatusBadgeBackground = "#1A2540";
+                StatusBadgeBorder = "#3B82F6";
+                StatusBadgeForeground = "#60A5FA";
+            }
+            else if (CurrentStatus == statusFinished)
+            {
+                StatusBadgeBackground = "#112C1E";
+                StatusBadgeBorder = "#2D9A4A";
+                StatusBadgeForeground = "#44C767";
+            }
+            else
+            {
+                StatusBadgeBackground = "#1F2536";
+                StatusBadgeBorder = "#3B82F6";
+                StatusBadgeForeground = "#60A5FA";
+            }
 
             CanMoveToPending = false;
-            CanMoveToInProgress = CurrentStatus == "Oczekujące";
-            CanMoveToFinished = CurrentStatus == "W trakcie";
+            CanMoveToInProgress = CurrentStatus == statusPending;
+            CanMoveToFinished = CurrentStatus == statusInProgress;
         }
 
         [RelayCommand]
@@ -126,12 +147,12 @@ namespace SalonSamochodowy.ViewModels
             {
                 await _jobService.ChangeJobStatusAsync(_jobId, newStatus);
                 await LoadAsync();
-                ShowSuccess?.Invoke($"Status zmieniony na: {CurrentStatus}");
+                ShowSuccess?.Invoke(string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("ServicesDetails_StatusSuccess"), CurrentStatus));
                 StatusChanged?.Invoke();
             }
             catch (Exception ex)
             {
-                ShowError?.Invoke($"Nie udało się zmienić statusu:\n{ex.Message}");
+                ShowError?.Invoke(string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("ServicesDetails_StatusError"), ex.Message));
             }
         }
 

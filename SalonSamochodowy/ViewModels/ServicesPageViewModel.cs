@@ -2,6 +2,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Messaging;
 using SalonSamochodowy.Services;
 using SalonSamochodowy.Repositories;
 
@@ -16,6 +17,12 @@ namespace SalonSamochodowy.ViewModels
         {
             _uow = uow;
             _jobService = jobService;
+            WeakReferenceMessenger.Default.Register(this, (ServicesPageViewModel r, SalonSamochodowy.Messages.LanguageChangedMessage m) =>
+            {
+                foreach (var j in r.PendingJobs) j.RefreshLocalization();
+                foreach (var j in r.InProgressJobs) j.RefreshLocalization();
+                foreach (var j in r.FinishedJobs) j.RefreshLocalization();
+            });
         }
 
         public ObservableCollection<ServiceJob> PendingJobs { get; } = new();
@@ -72,17 +79,23 @@ namespace SalonSamochodowy.ViewModels
             }
             catch (Exception ex)
             {
-                LoadFailed?.Invoke($"Nie udało się pobrać zleceń: {ex.Message}");
+                LoadFailed?.Invoke(string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Services_LoadError"), ex.Message));
             }
         }
     }
 
-    public class ServiceJob
+    public class ServiceJob : ObservableObject
     {
         public int JobID { get; set; }
         public string TaskName { get; set; } = "";
+        public string DisplayTaskName => SalonSamochodowy.Services.LocalizationHelper.GetString($"Feature_{TaskName.Replace(" ", "_")}");
         public string CarModel { get; set; } = "";
         public string WorkerName { get; set; } = "";
         public int Progress { get; set; }
+
+        public void RefreshLocalization()
+        {
+            OnPropertyChanged(nameof(DisplayTaskName));
+        }
     }
 }

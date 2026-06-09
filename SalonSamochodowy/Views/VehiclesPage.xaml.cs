@@ -20,7 +20,7 @@ namespace SalonSamochodowy.Views
             DataContext = _vm;
 
             _vm.LoadFailed += msg => System.Windows.MessageBox.Show(
-                msg, "Wyszukiwarka pojazdów",
+                msg, SalonSamochodowy.Services.LocalizationHelper.GetString("Vehicles_ErrorTitle"),
                 System.Windows.MessageBoxButton.OK,
                 System.Windows.MessageBoxImage.Error);
 
@@ -29,8 +29,8 @@ namespace SalonSamochodowy.Views
             _vm.DeleteVehicleRequested += async item =>
             {
                 var result = System.Windows.MessageBox.Show(
-                    $"Czy na pewno chcesz usunąć pojazd {item.FullName} ({item.VIN})?", 
-                    "Usuń pojazd", 
+                    string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Vehicles_ConfirmDelete"), item.FullName, item.VIN), 
+                    SalonSamochodowy.Services.LocalizationHelper.GetString("Vehicles_ConfirmDeleteTitle"), 
                     System.Windows.MessageBoxButton.YesNo, 
                     System.Windows.MessageBoxImage.Warning);
                     
@@ -75,7 +75,7 @@ namespace SalonSamochodowy.Views
 
             WeakReferenceMessenger.Default.Register<StartTourRequestMessage>(this, (r, m) =>
             {
-                if (m.PageName == "Zarządzanie Pojazdami" && this.IsVisible)
+                if (m.PageName == nameof(VehiclesPage) && this.IsVisible)
                 {
                     m.Reply(true);
                     StartTour();
@@ -96,13 +96,13 @@ namespace SalonSamochodowy.Views
             {
                 case 0:
                     TourPopup.PlacementTarget = FilterPanel;
-                    TourText.Text = "Krok 1/2: Użyj tego panelu, aby szybko przefiltrować dostępne i sprzedane pojazdy.";
-                    TourNextBtn.Content = "Dalej";
+                    TourText.Text = SalonSamochodowy.Services.LocalizationHelper.GetString("Tour_Vehicles_Step1");
+                    TourNextBtn.Content = SalonSamochodowy.Services.LocalizationHelper.GetString("Tour_Next");
                     break;
                 case 1:
                     TourPopup.PlacementTarget = VehicleScrollViewer;
-                    TourText.Text = "Krok 2/2: Tutaj przeglądasz karty pojazdów. Możesz dodawać nowe lub zlecać usługi dla konkretnego auta.";
-                    TourNextBtn.Content = "Zakończ";
+                    TourText.Text = SalonSamochodowy.Services.LocalizationHelper.GetString("Tour_Vehicles_Step2");
+                    TourNextBtn.Content = SalonSamochodowy.Services.LocalizationHelper.GetString("Tour_Finish");
                     break;
                 default:
                     return;

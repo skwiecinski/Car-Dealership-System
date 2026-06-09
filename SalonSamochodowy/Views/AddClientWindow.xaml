@@ -14,20 +14,20 @@
 
         <StackPanel Margin="32,56,32,24">
 
-            <TextBlock Text="Dodaj nowego klienta"
+            <TextBlock Text="{DynamicResource Clients_AddHeader}"
                        FontSize="18" FontWeight="Bold"
                        Margin="0,0,0,4"/>
-            <TextBlock Text="Wypełnij podstawowe dane. NIP wymagany dla firm."
+            <TextBlock Text="{DynamicResource Clients_AddDesc}"
                        FontSize="12" Foreground="#8A8D98"
                        Margin="0,0,0,20"/>
 
-            <CheckBox Content="Klient firmowy"
+            <CheckBox Content="{DynamicResource Clients_IsCompany}"
                       IsChecked="{Binding IsCompany, Mode=TwoWay}"
                       Margin="0,0,0,16"/>
 
-            <TextBlock Text="Imię i nazwisko / Nazwa firmy" Foreground="#8A8D98" FontSize="12" Margin="0,0,0,4"/>
+            <TextBlock Text="{DynamicResource Clients_ColName}" Foreground="#8A8D98" FontSize="12" Margin="0,0,0,4"/>
             <ui:TextBox Text="{Binding FullName, UpdateSourceTrigger=PropertyChanged}"
-                        PlaceholderText="np. Jan Kowalski lub Firma XYZ Sp. z o.o."
+                        PlaceholderText="{DynamicResource Clients_NameHint}"
                         Margin="0,0,0,12"/>
 
             <Grid Margin="0,0,0,12">
@@ -37,29 +37,29 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <StackPanel Grid.Column="0">
-                    <TextBlock Text="Telefon" Foreground="#8A8D98" FontSize="12" Margin="0,0,0,4"/>
+                    <TextBlock Text="{DynamicResource Clients_ColPhone}" Foreground="#8A8D98" FontSize="12" Margin="0,0,0,4"/>
                     <ui:TextBox Text="{Binding Phone, UpdateSourceTrigger=PropertyChanged}"
                                 PlaceholderText="+48 600 000 000"/>
                 </StackPanel>
                 <StackPanel Grid.Column="2">
-                    <TextBlock Text="NIP" Foreground="#8A8D98" FontSize="12" Margin="0,0,0,4"/>
+                    <TextBlock Text="{DynamicResource Clients_ColNIP}" Foreground="#8A8D98" FontSize="12" Margin="0,0,0,4"/>
                     <ui:TextBox Text="{Binding TaxId, UpdateSourceTrigger=PropertyChanged}"
                                 PlaceholderText="1234567890"/>
                 </StackPanel>
             </Grid>
 
-            <TextBlock Text="E-mail (wymagany)" Foreground="#8A8D98" FontSize="12" Margin="0,0,0,4"/>
+            <TextBlock Text="{DynamicResource Clients_EmailReq}" Foreground="#8A8D98" FontSize="12" Margin="0,0,0,4"/>
             <ui:TextBox Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}"
                         PlaceholderText="klient@example.com"
                         Margin="0,0,0,28"/>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <ui:Button Content="Anuluj"
+                <ui:Button Content="{DynamicResource Clients_Cancel}"
                            Appearance="Secondary"
                            Padding="16,6"
                            Margin="0,0,8,0"
                            Command="{Binding CancelCommand}"/>
-                <ui:Button Content="Zapisz"
+                <ui:Button Content="{DynamicResource Clients_Save}"
                            Appearance="Primary"
                            Icon="{ui:SymbolIcon Save24}"
                            Padding="16,6"

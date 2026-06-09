@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Messaging;
 using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
@@ -30,6 +31,22 @@ namespace SalonSamochodowy.ViewModels
         _vehicleService = vehicleService;
         _orderService = orderService;
         _jobService = jobService;
+
+            WeakReferenceMessenger.Default.Register(this, (DashboardPageViewModel r, SalonSamochodowy.Messages.LanguageChangedMessage m) =>
+            {
+                // Refresh title
+                var currentCulture = System.Threading.Thread.CurrentThread.CurrentUICulture;
+                var firstDay = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
+                var monthName = firstDay.ToString("MMMM yyyy", currentCulture);
+                var titleFormat = LocalizationHelper.GetString("Dash_SalesChartTitle");
+                r.SalesChartTitle = string.Format(titleFormat, monthName);
+
+                // Refresh orders
+                foreach (var order in r.RecentOrders)
+                {
+                    order.RefreshLocalization();
+                }
+            });
         }
         [ObservableProperty] private string kpiOrders = "—";
         [ObservableProperty] private string kpiVehicles = "—";
@@ -121,9 +138,11 @@ namespace SalonSamochodowy.ViewModels
                 }
             };
 
-            var polishCulture = new System.Globalization.CultureInfo("pl-PL");
-            var monthName = firstDay.ToString("MMMM yyyy", polishCulture);
-            SalesChartTitle = $"Sprzedaż w {monthName} (Top 5 Pracowników)";
+            var currentCulture = System.Threading.Thread.CurrentThread.CurrentUICulture;
+            var monthName = firstDay.ToString("MMMM yyyy", currentCulture);
+            
+            var titleFormat = LocalizationHelper.GetString("Dash_SalesChartTitle");
+            SalesChartTitle = string.Format(titleFormat, monthName);
         }
 
         private async Task BuildRecentOrdersAsync()
@@ -147,12 +166,25 @@ namespace SalonSamochodowy.ViewModels
 
                 var (bg, bd, fg) = StatusColors(o.Status);
 
+                string locStatusKey = o.Status switch
+                {
+                    OrderStatuses.Pending => "Status_Pending",
+                    OrderStatuses.InProgress => "Status_InProgress",
+                    OrderStatuses.Finished => "Status_Finished",
+                    OrderStatuses.FinishedAlt => "Status_FinishedAlt",
+                    OrderStatuses.Reserved => "Status_Reserved",
+                    OrderStatuses.Canceled => "Status_Canceled",
+                    _ => null
+                };
+                string locStatus = o.Status;
+
                 RecentOrders.Add(new RecentOrderItem
                 {
                     OrderCode        = $"ZAM/{o.OrderDate:yyyy}/{o.OrderID:D4}",
                     ClientName       = clientName,
                     Vehicle          = model != null && trim != null ? $"{model.Brand} {model.ModelName} {trim.TrimName}" : "—",
-                    Status           = o.Status,
+                    Status           = locStatus,
+                    StatusKey        = locStatusKey ?? "",
                     Date             = o.OrderDate.ToString("dd.MM.yyyy HH:mm"),
                     StatusBackground = bg,
                     StatusBorder     = bd,
@@ -172,15 +204,22 @@ namespace SalonSamochodowy.ViewModels
         };
     }
 
-    public class RecentOrderItem
+    public class RecentOrderItem : ObservableObject
     {
         public string OrderCode        { get; set; } = "";
         public string ClientName       { get; set; } = "";
         public string Vehicle          { get; set; } = "";
         public string Status           { get; set; } = "";
+        public string StatusKey        { get; set; } = "";
+        public string DisplayStatus => !string.IsNullOrEmpty(StatusKey) ? SalonSamochodowy.Services.LocalizationHelper.GetString(StatusKey) : Status;
         public string Date             { get; set; } = "";
         public string StatusBackground { get; set; } = "";
         public string StatusBorder     { get; set; } = "";
         public string StatusForeground { get; set; } = "";
+
+        public void RefreshLocalization()
+        {
+            OnPropertyChanged(nameof(DisplayStatus));
+        }
     }
 }

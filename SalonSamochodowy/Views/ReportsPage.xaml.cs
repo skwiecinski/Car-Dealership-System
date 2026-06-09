@@ -24,7 +24,7 @@ namespace SalonSamochodowy.Views
 
             WeakReferenceMessenger.Default.Register<StartTourRequestMessage>(this, (r, m) =>
             {
-                if (m.PageName == "Raporty" && this.IsVisible)
+                if (m.PageName == nameof(ReportsPage) && this.IsVisible)
                 {
                     m.Reply(true);
                     StartTour();
@@ -45,8 +45,8 @@ namespace SalonSamochodowy.Views
             {
                 case 0:
                     TourPopup.PlacementTarget = ReportsPanel;
-                    TourText.Text = "Krok 1/1: Tutaj możesz generować dowolne raporty w formacie PDF i eksportować statystyki.";
-                    TourNextBtn.Content = "Zakończ";
+                    TourText.Text = SalonSamochodowy.Services.LocalizationHelper.GetString("Tour_Reports_Step1");
+                    TourNextBtn.Content = SalonSamochodowy.Services.LocalizationHelper.GetString("Tour_Finish");
                     break;
                 default:
                     return;

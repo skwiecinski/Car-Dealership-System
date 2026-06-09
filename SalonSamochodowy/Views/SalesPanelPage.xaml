@@ -19,8 +19,8 @@
         <!-- Header -->
         <Grid Grid.Row="0" Margin="0,0,0,20">
             <StackPanel>
-                <TextBlock Text="Aktywne Procesy Sprzedaży" FontSize="24" FontWeight="Bold" Foreground="#E2E2E2"/>
-                <TextBlock Text="Zarządzanie trwającymi zamówieniami, postępem przygotowania pojazdów i finalizacja transakcji" Foreground="#8A8D98" Margin="0,4,0,0"/>
+                <TextBlock Text="{DynamicResource SalesPanel_PageTitle}" FontSize="24" FontWeight="Bold" Foreground="#E2E2E2"/>
+                <TextBlock Text="{DynamicResource SalesPanel_Subtitle}" Foreground="#8A8D98" Margin="0,4,0,0"/>
             </StackPanel>
             
             <!-- Refresh Indicator / Progress -->
@@ -52,13 +52,13 @@
                         <Grid>
                             <StackPanel Orientation="Horizontal">
                                 <ui:SymbolIcon Symbol="Bookmark24" Foreground="#F0B82B" FontSize="18" VerticalAlignment="Center"/>
-                                <TextBlock Text="Zarezerwowane" FontSize="16" FontWeight="SemiBold" Foreground="White" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="{DynamicResource SalesPanel_ColReserved}" FontSize="16" FontWeight="SemiBold" Foreground="White" Margin="10,0,0,0" VerticalAlignment="Center"/>
                             </StackPanel>
                             <Border Background="#332A12" CornerRadius="10" Padding="8,2" HorizontalAlignment="Right" VerticalAlignment="Center">
                                 <TextBlock Text="{Binding ReservedSales.Count, StringFormat='{}{0}'}" Foreground="#F0B82B" FontSize="11" FontWeight="Bold"/>
                             </Border>
                         </Grid>
-                        <TextBlock Text="Pojazdy oczekujące na podjęcie dalszych kroków" FontSize="11" Foreground="#8A8D98" Margin="0,4,0,0"/>
+                        <TextBlock Text="{DynamicResource SalesPanel_ColReservedDesc}" FontSize="11" Foreground="#8A8D98" Margin="0,4,0,0"/>
                         <Separator Background="#2D3038" Margin="0,10,0,0"/>
                     </StackPanel>
 
@@ -66,7 +66,7 @@
                     <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <Grid>
                             <!-- Empty message -->
-                            <TextBlock Text="Brak rezerwacji" Foreground="#8A8D98" FontSize="13" FontStyle="Italic" 
+                            <TextBlock Text="{DynamicResource SalesPanel_NoReserved}" Foreground="#8A8D98" FontSize="13" FontStyle="Italic" 
                                        HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,40,0,0"
                                        Visibility="{Binding ReservedEmptyVisibility}"/>
 
@@ -86,7 +86,7 @@
 
                                                 <!-- Client Details -->
                                                 <StackPanel Margin="0,0,0,8">
-                                                    <TextBlock Text="Klient:" FontSize="10" Foreground="#8A8D98" FontWeight="SemiBold"/>
+                                                    <TextBlock Text="{DynamicResource SalesPanel_Client}" FontSize="10" Foreground="#8A8D98" FontWeight="SemiBold"/>
                                                     <TextBlock Text="{Binding ClientName}" FontSize="12" FontWeight="SemiBold" Foreground="#E2E2E2"/>
                                                     <TextBlock Text="{Binding ClientContact}" FontSize="11" Foreground="#8A8D98"/>
                                                 </StackPanel>
@@ -94,7 +94,7 @@
                                                 <!-- Date and Price -->
                                                 <Grid Margin="0,0,0,12">
                                                     <StackPanel HorizontalAlignment="Left">
-                                                        <TextBlock Text="Data zamówienia:" FontSize="10" Foreground="#8A8D98"/>
+                                                        <TextBlock Text="{DynamicResource SalesPanel_OrderDate}" FontSize="10" Foreground="#8A8D98"/>
                                                         <TextBlock Text="{Binding OrderDateText}" FontSize="11" Foreground="#E2E2E2"/>
                                                     </StackPanel>
                                                     <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center">
@@ -108,10 +108,10 @@
                                                         <ColumnDefinition Width="*"/>
                                                         <ColumnDefinition Width="*"/>
                                                     </Grid.ColumnDefinitions>
-                                                    <ui:Button Content="Sfinalizuj" Appearance="Primary" Grid.Column="0" Margin="0,0,4,0" HorizontalAlignment="Stretch"
+                                                    <ui:Button Content="{DynamicResource SalesPanel_Finalize}" Appearance="Primary" Grid.Column="0" Margin="0,0,4,0" HorizontalAlignment="Stretch"
                                                                Command="{Binding DataContext.CloseSuccessCommand, RelativeSource={RelativeSource AncestorType=Page}}"
                                                                CommandParameter="{Binding}"/>
-                                                    <ui:Button Content="Anuluj" Appearance="Danger" Grid.Column="1" Margin="4,0,0,0" HorizontalAlignment="Stretch"
+                                                    <ui:Button Content="{DynamicResource SalesPanel_Cancel}" Appearance="Danger" Grid.Column="1" Margin="4,0,0,0" HorizontalAlignment="Stretch"
                                                                Command="{Binding DataContext.CloseFailCommand, RelativeSource={RelativeSource AncestorType=Page}}"
                                                                CommandParameter="{Binding}"/>
                                                 </Grid>
@@ -137,13 +137,13 @@
                         <Grid>
                             <StackPanel Orientation="Horizontal">
                                 <ui:SymbolIcon Symbol="Wrench24" Foreground="#5B59E8" FontSize="18" VerticalAlignment="Center"/>
-                                <TextBlock Text="Serwis i Przygotowanie" FontSize="16" FontWeight="SemiBold" Foreground="White" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="{DynamicResource SalesPanel_ColServicing}" FontSize="16" FontWeight="SemiBold" Foreground="White" Margin="10,0,0,0" VerticalAlignment="Center"/>
                             </StackPanel>
                             <Border Background="#1A1833" CornerRadius="10" Padding="8,2" HorizontalAlignment="Right" VerticalAlignment="Center">
                                 <TextBlock Text="{Binding ServicingSales.Count, StringFormat='{}{0}'}" Foreground="#5B59E8" FontSize="11" FontWeight="Bold"/>
                             </Border>
                         </Grid>
-                        <TextBlock Text="Pojazdy w trakcie montażu dodatkowego wyposażenia" FontSize="11" Foreground="#8A8D98" Margin="0,4,0,0"/>
+                        <TextBlock Text="{DynamicResource SalesPanel_ColServicingDesc}" FontSize="11" Foreground="#8A8D98" Margin="0,4,0,0"/>
                         <Separator Background="#2D3038" Margin="0,10,0,0"/>
                     </StackPanel>
 
@@ -151,7 +151,7 @@
                     <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <Grid>
                             <!-- Empty message -->
-                            <TextBlock Text="Brak pojazdów w serwisie" Foreground="#8A8D98" FontSize="13" FontStyle="Italic" 
+                            <TextBlock Text="{DynamicResource SalesPanel_NoServicing}" Foreground="#8A8D98" FontSize="13" FontStyle="Italic" 
                                        HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,40,0,0"
                                        Visibility="{Binding ServicingEmptyVisibility}"/>
 
@@ -179,7 +179,7 @@
 
                                                 <!-- Client Details -->
                                                 <StackPanel Margin="0,0,0,8">
-                                                    <TextBlock Text="Klient:" FontSize="10" Foreground="#8A8D98" FontWeight="SemiBold"/>
+                                                    <TextBlock Text="{DynamicResource SalesPanel_Client}" FontSize="10" Foreground="#8A8D98" FontWeight="SemiBold"/>
                                                     <TextBlock Text="{Binding ClientName}" FontSize="12" FontWeight="SemiBold" Foreground="#E2E2E2"/>
                                                     <TextBlock Text="{Binding ClientContact}" FontSize="11" Foreground="#8A8D98"/>
                                                 </StackPanel>
@@ -187,7 +187,7 @@
                                                 <!-- Date and Price -->
                                                 <Grid Margin="0,0,0,12">
                                                     <StackPanel HorizontalAlignment="Left">
-                                                        <TextBlock Text="Data zamówienia:" FontSize="10" Foreground="#8A8D98"/>
+                                                        <TextBlock Text="{DynamicResource SalesPanel_OrderDate}" FontSize="10" Foreground="#8A8D98"/>
                                                         <TextBlock Text="{Binding OrderDateText}" FontSize="11" Foreground="#E2E2E2"/>
                                                     </StackPanel>
                                                     <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center">
@@ -201,10 +201,10 @@
                                                         <ColumnDefinition Width="*"/>
                                                         <ColumnDefinition Width="*"/>
                                                     </Grid.ColumnDefinitions>
-                                                    <ui:Button Content="Sfinalizuj" Appearance="Primary" Grid.Column="0" Margin="0,0,4,0" HorizontalAlignment="Stretch"
+                                                    <ui:Button Content="{DynamicResource SalesPanel_Finalize}" Appearance="Primary" Grid.Column="0" Margin="0,0,4,0" HorizontalAlignment="Stretch"
                                                                Command="{Binding DataContext.CloseSuccessCommand, RelativeSource={RelativeSource AncestorType=Page}}"
                                                                CommandParameter="{Binding}"/>
-                                                    <ui:Button Content="Anuluj" Appearance="Danger" Grid.Column="1" Margin="4,0,0,0" HorizontalAlignment="Stretch"
+                                                    <ui:Button Content="{DynamicResource SalesPanel_Cancel}" Appearance="Danger" Grid.Column="1" Margin="4,0,0,0" HorizontalAlignment="Stretch"
                                                                Command="{Binding DataContext.CloseFailCommand, RelativeSource={RelativeSource AncestorType=Page}}"
                                                                CommandParameter="{Binding}"/>
                                                 </Grid>
@@ -230,13 +230,13 @@
                         <Grid>
                             <StackPanel Orientation="Horizontal">
                                 <ui:SymbolIcon Symbol="CheckmarkCircle24" Foreground="#44C767" FontSize="18" VerticalAlignment="Center"/>
-                                <TextBlock Text="Gotowe do Oddania" FontSize="16" FontWeight="SemiBold" Foreground="White" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="{DynamicResource SalesPanel_ColReady}" FontSize="16" FontWeight="SemiBold" Foreground="White" Margin="10,0,0,0" VerticalAlignment="Center"/>
                             </StackPanel>
                             <Border Background="#112C1E" CornerRadius="10" Padding="8,2" HorizontalAlignment="Right" VerticalAlignment="Center">
                                 <TextBlock Text="{Binding ReadySales.Count, StringFormat='{}{0}'}" Foreground="#44C767" FontSize="11" FontWeight="Bold"/>
                             </Border>
                         </Grid>
-                        <TextBlock Text="Pojazdy w pełni gotowe do odbioru przez klienta" FontSize="11" Foreground="#8A8D98" Margin="0,4,0,0"/>
+                        <TextBlock Text="{DynamicResource SalesPanel_ColReadyDesc}" FontSize="11" Foreground="#8A8D98" Margin="0,4,0,0"/>
                         <Separator Background="#2D3038" Margin="0,10,0,0"/>
                     </StackPanel>
 
@@ -244,7 +244,7 @@
                     <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <Grid>
                             <!-- Empty message -->
-                            <TextBlock Text="Brak pojazdów gotowych do odbioru" Foreground="#8A8D98" FontSize="13" FontStyle="Italic" 
+                            <TextBlock Text="{DynamicResource SalesPanel_NoReady}" Foreground="#8A8D98" FontSize="13" FontStyle="Italic" 
                                        HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,40,0,0"
                                        Visibility="{Binding ReadyEmptyVisibility}"/>
 
@@ -272,7 +272,7 @@
 
                                                 <!-- Client Details -->
                                                 <StackPanel Margin="0,0,0,8">
-                                                    <TextBlock Text="Klient:" FontSize="10" Foreground="#8A8D98" FontWeight="SemiBold"/>
+                                                    <TextBlock Text="{DynamicResource SalesPanel_Client}" FontSize="10" Foreground="#8A8D98" FontWeight="SemiBold"/>
                                                     <TextBlock Text="{Binding ClientName}" FontSize="12" FontWeight="SemiBold" Foreground="#E2E2E2"/>
                                                     <TextBlock Text="{Binding ClientContact}" FontSize="11" Foreground="#8A8D98"/>
                                                 </StackPanel>
@@ -280,7 +280,7 @@
                                                 <!-- Date and Price -->
                                                 <Grid Margin="0,0,0,12">
                                                     <StackPanel HorizontalAlignment="Left">
-                                                        <TextBlock Text="Data zamówienia:" FontSize="10" Foreground="#8A8D98"/>
+                                                        <TextBlock Text="{DynamicResource SalesPanel_OrderDate}" FontSize="10" Foreground="#8A8D98"/>
                                                         <TextBlock Text="{Binding OrderDateText}" FontSize="11" Foreground="#E2E2E2"/>
                                                     </StackPanel>
                                                     <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center">
@@ -294,10 +294,10 @@
                                                         <ColumnDefinition Width="*"/>
                                                         <ColumnDefinition Width="*"/>
                                                     </Grid.ColumnDefinitions>
-                                                    <ui:Button Content="Sfinalizuj" Appearance="Primary" Grid.Column="0" Margin="0,0,4,0" HorizontalAlignment="Stretch"
+                                                    <ui:Button Content="{DynamicResource SalesPanel_Finalize}" Appearance="Primary" Grid.Column="0" Margin="0,0,4,0" HorizontalAlignment="Stretch"
                                                                Command="{Binding DataContext.CloseSuccessCommand, RelativeSource={RelativeSource AncestorType=Page}}"
                                                                CommandParameter="{Binding}"/>
-                                                    <ui:Button Content="Anuluj" Appearance="Danger" Grid.Column="1" Margin="4,0,0,0" HorizontalAlignment="Stretch"
+                                                    <ui:Button Content="{DynamicResource SalesPanel_Cancel}" Appearance="Danger" Grid.Column="1" Margin="4,0,0,0" HorizontalAlignment="Stretch"
                                                                Command="{Binding DataContext.CloseFailCommand, RelativeSource={RelativeSource AncestorType=Page}}"
                                                                CommandParameter="{Binding}"/>
                                                 </Grid>
@@ -315,9 +315,9 @@
         <Popup x:Name="TourPopup" AllowsTransparency="True" StaysOpen="True" Placement="Bottom">
             <Border Background="#2D3038" BorderBrush="#5B59E8" BorderThickness="2" CornerRadius="8" Padding="15" Width="280">
                 <StackPanel>
-                    <TextBlock x:Name="TourText" Text="Tekst samouczka" TextWrapping="Wrap" Foreground="White" FontSize="14" Margin="0,0,0,10"/>
+                    <TextBlock x:Name="TourText" Text="{DynamicResource Tour_DefaultText}" TextWrapping="Wrap" Foreground="White" FontSize="14" Margin="0,0,0,10"/>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                        <ui:Button x:Name="TourNextBtn" Content="Dalej" Appearance="Primary" Click="TourNext_Click"/>
+                        <ui:Button x:Name="TourNextBtn" Content="{DynamicResource Tour_Next}" Appearance="Primary" Click="TourNext_Click"/>
                     </StackPanel>
                 </StackPanel>
             </Border>

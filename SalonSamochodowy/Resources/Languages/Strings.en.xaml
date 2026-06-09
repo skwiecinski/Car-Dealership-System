@@ -1,0 +1,530 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+    
+    <!-- Menu Główne -->
+    <system:String x:Key="Menu_MyOrders">My Orders</system:String>
+    <system:String x:Key="Menu_Dashboard">Dashboard</system:String>
+    <system:String x:Key="Menu_Clients">Clients</system:String>
+    <system:String x:Key="Menu_ActiveSales">Active Sales</system:String>
+    <system:String x:Key="Menu_SalesRecords">Sales Records</system:String>
+    <system:String x:Key="Menu_CreateOrder">Create Order</system:String>
+    <system:String x:Key="Menu_Vehicles">Vehicle Management</system:String>
+    <system:String x:Key="Menu_Services">Services</system:String>
+    <system:String x:Key="Menu_Reports">Reports &amp; Statistics</system:String>
+    <system:String x:Key="Menu_Help">Help</system:String>
+    <system:String x:Key="Menu_Profile">My Profile</system:String>
+    <system:String x:Key="Menu_Admin">Administration</system:String>
+    <system:String x:Key="Menu_Logout">Logout</system:String>
+
+    <!-- Dashboard -->
+    <system:String x:Key="Dash_NewOrders">New orders</system:String>
+    <system:String x:Key="Dash_InProcess">In process</system:String>
+    <system:String x:Key="Dash_CarsOnLot">Vehicles on lot</system:String>
+    <system:String x:Key="Dash_ForSale">For sale</system:String>
+    <system:String x:Key="Dash_ServiceJobs">Service jobs</system:String>
+    <system:String x:Key="Dash_InProgress">In progress</system:String>
+    <system:String x:Key="Dash_RecentActivities">Recent activities</system:String>
+    <system:String x:Key="Dash_SeeAll">See all →</system:String>
+    <system:String x:Key="Dash_OrderCode">Order code</system:String>
+    <system:String x:Key="Dash_Client">Client</system:String>
+    <system:String x:Key="Dash_Vehicle">Vehicle</system:String>
+    <system:String x:Key="Dash_Status">Status</system:String>
+    <system:String x:Key="Dash_Date">Date</system:String>
+    <system:String x:Key="Dash_SalesChartTitle">Sales in {0} (Top 5 Employees)</system:String>
+
+    <!-- Globalne Statusy -->
+    <system:String x:Key="Status_Pending">Pending</system:String>
+    <system:String x:Key="Status_InProgress">In progress</system:String>
+    <system:String x:Key="Status_Finished">Finished</system:String>
+    <system:String x:Key="Status_FinishedAlt">Finalized</system:String>
+    <system:String x:Key="Status_Reserved">Reserved</system:String>
+    <system:String x:Key="Status_Canceled">Canceled</system:String>
+    <system:String x:Key="Status_New">New</system:String>
+
+    <!-- Pomoc (Globalna) -->
+    <system:String x:Key="Help_Title">Help</system:String>
+    <system:String x:Key="Help_Default">Select a tab from the left menu to start working.</system:String>
+    <system:String x:Key="Help_CustomerPanelPage">In this section, you can view the list of your orders, their statuses, and download a report if an order is assigned to your account.</system:String>
+    <system:String x:Key="Help_DashboardPage">A dashboard summarizing the most important statistics in the dealership. Here you will find a quick overview of the number of cars, new orders, and ongoing repairs.</system:String>
+    <system:String x:Key="Help_ClientsPage">A module for managing the customer database. Here you can register a new customer, generate a report for them, and review their full purchase history.</system:String>
+    <system:String x:Key="Help_SalesPanelPage">A list of currently processed orders. Allows you to change the status and verify progress for each order (e.g., from 'Ready for pickup' to 'Finished').</system:String>
+    <system:String x:Key="Help_SalesRecordsPage">Browse the full registry of all transactions. You can filter orders by status, dealership, advisor, or date range. The table provides quick insight into sales details such as the assigned vehicle, VIN, client, advisor, and current fulfillment status.</system:String>
+    <system:String x:Key="Help_CreateOrder">Start a new sale. Select a customer (or create a new one), match the right vehicle, choose optional configuration, and finalize the transaction.</system:String>
+    <system:String x:Key="Help_VehiclesPage">Manage cars on the lot. Here you can add new vehicles from the factory database (Engine + Model), specify whether they are new or used, and provide VIN numbers.</system:String>
+    <system:String x:Key="Help_ServicesPage">Mechanic workshop. Service technicians can take on new jobs here (e.g., accessory installation) and change their statuses to in-progress or finally completed.</system:String>
+    <system:String x:Key="Help_ReportsPage">Generate advanced PDFs to understand company performance. Reports include full analytics, colorful charts, and employee rankings.</system:String>
+    <system:String x:Key="Help_AdminPage">Administrator panel for managing the database (e.g., adding new dealerships) and registering new employee accounts with specific roles.</system:String>
+
+    <!-- Samouczek -->
+    <system:String x:Key="Tour_Next">Next</system:String>
+    <system:String x:Key="Tour_Finish">Finish</system:String>
+    <system:String x:Key="Tour_DefaultText">Tutorial text</system:String>
+
+    <!-- Role -->
+    <system:String x:Key="Role_Administrator">Administrator</system:String>
+    <system:String x:Key="Role_Kierownik">Manager</system:String>
+    <system:String x:Key="Role_Sprzedawca">Salesman</system:String>
+    <system:String x:Key="Role_Serwisant">Mechanic</system:String>
+    <system:String x:Key="Role_Klient">Customer</system:String>
+
+    <!-- Akcesoria / Features -->
+    <system:String x:Key="Feature_Lakier_metalik">Metallic paint</system:String>
+    <system:String x:Key="Feature_Czujniki_parkowania">Parking sensors</system:String>
+    <system:String x:Key="Feature_Kamera_cofania">Rearview camera</system:String>
+    <system:String x:Key="Feature_Alarm">Alarm system</system:String>
+    <system:String x:Key="Feature_Klimatyzacja_2-strefowa">2-zone automatic climate control</system:String>
+    <system:String x:Key="Feature_Skórzane_fotele">Leather seats</system:String>
+    <system:String x:Key="Feature_Nawigacja">GPS Navigation</system:String>
+    <system:String x:Key="Feature_Pakiet_sportowy_M">M Sport package</system:String>
+    <system:String x:Key="Feature_Alpejska_Biel_(bazowy)">Alpine White (base)</system:String>
+    <system:String x:Key="Feature_Czarny_Szafir_metalik">Black Sapphire metallic</system:String>
+    <system:String x:Key="Feature_Szary_Melbourne_metalik">Melbourne Grey metallic</system:String>
+    <system:String x:Key="Feature_Niebieski_Phytonic_metalik">Phytonic Blue metallic</system:String>
+
+    <system:String x:Key="Category_Akcesoria">Accessories</system:String>
+    <system:String x:Key="Category_Bezpieczeństwo">Safety</system:String>
+    <system:String x:Key="Category_Kolor">Color</system:String>
+    <system:String x:Key="Category_Komfort">Comfort</system:String>
+    <system:String x:Key="Category_Multimedia">Multimedia</system:String>
+    <system:String x:Key="Category_Wnętrze">Interior</system:String>
+    <system:String x:Key="Category_Wygląd">Appearance</system:String>
+    <system:String x:Key="Tour_Dash_Step1">Step 1/4: Here you can see the number of new orders ready for processing.</system:String>
+    <system:String x:Key="Tour_Dash_Step2">Step 2/4: This is the total number of cars on the lot, ready for immediate sale.</system:String>
+    <system:String x:Key="Tour_Dash_Step3">Step 3/4: This many service jobs are waiting to be assigned or completed.</system:String>
+    <system:String x:Key="Tour_Dash_Step4">Step 4/4: An interactive chart presenting your sales dynamics.</system:String>
+
+    <system:String x:Key="Tour_Clients_Step1">Step 1/2: Click here to add a new client to the database.</system:String>
+    <system:String x:Key="Tour_Clients_Step2">Step 2/2: In this table, you will find all saved clients. After clicking on a row, you will see management options on the right.</system:String>
+
+    <system:String x:Key="Tour_CreateOrder_Step1">Step 1/3: First, select a client from the database or enter details for a new client.</system:String>
+    <system:String x:Key="Tour_CreateOrder_Step2">Step 2/3: Next, select the brand, model, and technical parameters of the vehicle.</system:String>
+    <system:String x:Key="Tour_CreateOrder_Step3">Step 3/3: Finally, set the date, status, payment method, and optional services (e.g., equipment installation).</system:String>
+
+    <system:String x:Key="Tour_SalesRecords_Step1">Step 1/3: Use these filters to narrow down the results by status, dealership, advisor, or date range.</system:String>
+    <system:String x:Key="Tour_SalesRecords_Step2">Step 2/3: Here is the full list of transactions that meet the criteria.</system:String>
+    <system:String x:Key="Tour_SalesRecords_Step3">Step 3/3: Here you will see a summary - e.g., the total amount of finalized orders.</system:String>
+
+    <system:String x:Key="Tour_Reports_Step1">Step 1/1: Here you can generate PDF reports and export statistics.</system:String>
+
+    <!-- Dodaj zamówienie (CreateOrder) -->
+    <system:String x:Key="Order_AddTitle">Create Order</system:String>
+    <system:String x:Key="Order_AddSubtitle">Fill in customer details, vehicle selection, and order conditions</system:String>
+    <system:String x:Key="Order_Client">Customer</system:String>
+    <system:String x:Key="Order_ExistingClient">Existing customer</system:String>
+    <system:String x:Key="Order_NewClient">New customer</system:String>
+    <system:String x:Key="Order_SelectClient">Select customer</system:String>
+    <system:String x:Key="Order_ClientFilterHint">Type part of the name, surname, or email to filter</system:String>
+    <system:String x:Key="Order_FirstName">First Name</system:String>
+    <system:String x:Key="Order_LastName">Last Name</system:String>
+    <system:String x:Key="Order_Email">E-mail</system:String>
+    <system:String x:Key="Order_Phone">Phone</system:String>
+    <system:String x:Key="Order_NIP">Tax ID (optional)</system:String>
+    <system:String x:Key="Order_ExtraFeatures">Additional Equipment</system:String>
+    <system:String x:Key="Order_FeaturesHint">The list will be populated after selecting a trim version</system:String>
+    <system:String x:Key="Order_Vehicle">Vehicle</system:String>
+    <system:String x:Key="Order_Brand">Brand</system:String>
+    <system:String x:Key="Order_Model">Model</system:String>
+    <system:String x:Key="Order_Trim">Trim Level</system:String>
+    <system:String x:Key="Order_Engine">Engine</system:String>
+    <system:String x:Key="Order_Color">Color</system:String>
+    <system:String x:Key="Order_VIN">VIN</system:String>
+    <system:String x:Key="Order_UsedVehicle">Used vehicle</system:String>
+    <system:String x:Key="Order_Mileage">Mileage (km)</system:String>
+    <system:String x:Key="Order_Conditions">Order Conditions</system:String>
+    <system:String x:Key="Order_OrderDate">Order Date</system:String>
+    <system:String x:Key="Order_Seller">Salesperson</system:String>
+    <system:String x:Key="Order_PaymentMethod">Payment Method</system:String>
+    <system:String x:Key="Order_Status">Status</system:String>
+    <system:String x:Key="Order_Mechanic">Service Technician (equipment installation)</system:String>
+    <system:String x:Key="Order_FinalPrice">Final Price</system:String>
+    <system:String x:Key="Order_Notes">Notes</system:String>
+    <system:String x:Key="Order_Cancel">Cancel</system:String>
+    <system:String x:Key="Order_Save">Save Order</system:String>
+
+    <!-- CreateOrderViewModel Komunikaty -->
+    <system:String x:Key="Payment_Cash">Cash</system:String>
+    <system:String x:Key="Payment_Credit">Credit</system:String>
+    <system:String x:Key="Payment_Leasing">Leasing</system:String>
+
+    <system:String x:Key="Msg_SelectVehicleDetails">Please select the vehicle's model, trim, and engine.</system:String>
+    <system:String x:Key="Msg_SelectSeller">Please select a salesperson.</system:String>
+    <system:String x:Key="Msg_SelectMechanic">Please select a service technician.</system:String>
+    <system:String x:Key="Msg_SelectColor">Please select a vehicle color.</system:String>
+    <system:String x:Key="Msg_SelectClient">Please select a customer from the list.</system:String>
+    <system:String x:Key="Msg_FillClientInfo">Please provide the first name and email of the new customer.</system:String>
+    <system:String x:Key="Msg_EmailExists">A user with this email already exists. Please select them from the existing customers list.</system:String>
+    <system:String x:Key="Msg_NoDealership">Dealership not found in the database.</system:String>
+    <system:String x:Key="Msg_OrderSaved">Order saved successfully.\nNumber: {0}\nPrice: {1:N0} PLN</system:String>
+    <system:String x:Key="Msg_OrderSaveError">Failed to save the order:\n{0}\n\n{1}</system:String>
+    <system:String x:Key="Msg_LoadDataError">Failed to load data from the database:\n{0}\n\n{1}</system:String>
+    <system:String x:Key="Msg_LoadModelsError">Error loading models/engines: {0}</system:String>
+    <system:String x:Key="Msg_LoadTrimsError">Error loading trims: {0}</system:String>
+    <system:String x:Key="Msg_ConfirmDeleteClient">Are you sure you want to delete client {0}?</system:String>
+
+    <!-- Klienci (ClientsPage) -->
+    <system:String x:Key="Clients_Title">Clients Database</system:String>
+    <system:String x:Key="Clients_Subtitle">Management of buyer and company data</system:String>
+    <system:String x:Key="Clients_NewClient">New Client</system:String>
+    <system:String x:Key="Clients_ColName">Full Name / Company</system:String>
+    <system:String x:Key="Clients_ColNIP">Tax ID</system:String>
+    <system:String x:Key="Clients_ColPhone">Phone</system:String>
+    <system:String x:Key="Clients_ColEmail">E-mail</system:String>
+    <system:String x:Key="Clients_NewOrder">New Order</system:String>
+    <system:String x:Key="Clients_Edit">Edit details</system:String>
+    <system:String x:Key="Clients_Delete">Delete client</system:String>
+    
+    <system:String x:Key="Clients_NewTitle">New Client</system:String>
+    <system:String x:Key="Clients_AddHeader">Add a new client</system:String>
+    <system:String x:Key="Clients_AddDesc">Fill in basic details. Tax ID is required for companies.</system:String>
+    <system:String x:Key="Clients_IsCompany">Company client</system:String>
+    <system:String x:Key="Clients_NameHint">e.g. John Doe or XYZ Ltd.</system:String>
+    <system:String x:Key="Clients_EmailReq">E-mail (required)</system:String>
+    <system:String x:Key="Clients_Cancel">Cancel</system:String>
+    <system:String x:Key="Clients_Save">Save</system:String>
+    <system:String x:Key="Clients_EditTitle">Edit client details</system:String>
+    <system:String x:Key="Clients_EditHeader">Edit client details</system:String>
+    <system:String x:Key="Clients_EditDesc">Update contact details. Tax ID is required for companies.</system:String>
+    <system:String x:Key="Clients_SaveChanges">Save changes</system:String>
+    <system:String x:Key="Clients_TypeBusiness">Business Client</system:String>
+    <system:String x:Key="Clients_TypeIndividual">Individual Client</system:String>
+    <system:String x:Key="Msg_LoadClientsError">Failed to load clients from the database:\n{0}</system:String>
+    <system:String x:Key="Msg_ProvideName">Please provide a full name or company name.</system:String>
+    <system:String x:Key="Msg_ProvideNIP">Tax ID is required for a company client.</system:String>
+    <system:String x:Key="Msg_ProvideEmail">E-mail is required.</system:String>
+    <system:String x:Key="Msg_InvalidEmail">The provided e-mail address is invalid.</system:String>
+    <system:String x:Key="Msg_UserNotFound">User account not found in the database.</system:String>
+    <system:String x:Key="Msg_EmailExistsAddClient">An account with this e-mail address already exists.</system:String>
+    <system:String x:Key="Msg_SaveClientError">Failed to save changes:\n{0}</system:String>
+
+    <!-- Aktywne Procesy Sprzedaży (SalesPanelPage) -->
+    <system:String x:Key="SalesPanel_PageTitle">Active Sales Processes</system:String>
+    <system:String x:Key="SalesPanel_Subtitle">Management of ongoing orders, vehicle preparation progress, and transaction finalization</system:String>
+    <system:String x:Key="SalesPanel_ColReserved">Reserved</system:String>
+    <system:String x:Key="SalesPanel_ColReservedDesc">Vehicles waiting for further steps to be taken</system:String>
+    <system:String x:Key="SalesPanel_NoReserved">No reservations</system:String>
+    <system:String x:Key="SalesPanel_Client">Client:</system:String>
+    <system:String x:Key="SalesPanel_OrderDate">Order Date:</system:String>
+    <system:String x:Key="SalesPanel_Finalize">Finalize</system:String>
+    <system:String x:Key="SalesPanel_Cancel">Cancel</system:String>
+    <system:String x:Key="SalesPanel_ColServicing">Service and Preparation</system:String>
+    <system:String x:Key="SalesPanel_ColServicingDesc">Vehicles undergoing installation of additional equipment</system:String>
+    <system:String x:Key="SalesPanel_NoServicing">No vehicles in service</system:String>
+    <system:String x:Key="SalesPanel_ColReady">Ready for Delivery</system:String>
+    <system:String x:Key="SalesPanel_ColReadyDesc">Vehicles fully ready for customer pickup</system:String>
+    <system:String x:Key="SalesPanel_NoReady">No vehicles ready for pickup</system:String>
+
+    <system:String x:Key="Tour_SalesPanel_Step1">Step 1/3: Vehicles newly reserved by customers appear here.</system:String>
+    <system:String x:Key="Tour_SalesPanel_Step2">Step 2/3: If the customer requested services (e.g. wrapping), the vehicle goes to service here.</system:String>
+    <system:String x:Key="Tour_SalesPanel_Step3">Step 3/3: When all services are completed, the vehicle waits here to finalize the delivery.</system:String>
+
+    <system:String x:Key="SalesPanel_ErrorTitle">Sales Panel Error</system:String>
+    <system:String x:Key="SalesPanel_SuccessTitle">Operation Completed</system:String>
+    <system:String x:Key="SalesPanel_UnknownModel">Unknown model</system:String>
+    <system:String x:Key="SalesPanel_UnknownClient">Unknown client</system:String>
+    <system:String x:Key="SalesPanel_Tel">Tel:</system:String>
+    <system:String x:Key="SalesPanel_Email">Email:</system:String>
+    <system:String x:Key="SalesPanel_NoJobs">No additional jobs</system:String>
+    <system:String x:Key="SalesPanel_JobsCompleted">{0} of {1} jobs completed</system:String>
+    <system:String x:Key="SalesPanel_LoadError">Error loading sales data:\n{0}</system:String>
+    <system:String x:Key="SalesPanel_ConfirmSuccess">Are you sure you want to finalize the sale of vehicle {0} (VIN: {1}) for {2}?</system:String>
+    <system:String x:Key="SalesPanel_ConfirmSuccessTitle">Confirm Sale Finalization</system:String>
+    <system:String x:Key="SalesPanel_MsgSuccess">Sale successfully finalized!</system:String>
+    <system:String x:Key="SalesPanel_FinalizeError">Error while finalizing sale:\n{0}</system:String>
+    <system:String x:Key="SalesPanel_ConfirmFail">Are you sure you want to cancel the sale of vehicle {0} (VIN: {1})?\nThe vehicle will be restored as 'Available'.</system:String>
+    <system:String x:Key="SalesPanel_ConfirmFailTitle">Confirm Sale Cancellation</system:String>
+    <system:String x:Key="SalesPanel_MsgFail">Sale has been cancelled.</system:String>
+    <system:String x:Key="SalesPanel_CancelError">Error while cancelling sale:\n{0}</system:String>
+    <system:String x:Key="Global_Error">Error</system:String>
+
+    <!-- Katalog Pojazdów (VehiclesPage) -->
+    <system:String x:Key="Vehicles_FilterTitle">Filters</system:String>
+    <system:String x:Key="Vehicles_Brand">Brand</system:String>
+    <system:String x:Key="Vehicles_Model">Model</system:String>
+    <system:String x:Key="Vehicles_Engine">Engine</system:String>
+    <system:String x:Key="Vehicles_ColorLabel">Color</system:String>
+    <system:String x:Key="Vehicles_StatusLabel">Vehicle Status</system:String>
+    <system:String x:Key="Vehicles_StatusAll">All</system:String>
+    <system:String x:Key="Vehicles_StatusAvailable">Available</system:String>
+    <system:String x:Key="Vehicles_StatusReserved">Reserved</system:String>
+    <system:String x:Key="Vehicles_StatusSold">Sold</system:String>
+    <system:String x:Key="Vehicles_SearchBtn">Search vehicles</system:String>
+    <system:String x:Key="Vehicles_PageTitle">Vehicle Catalog</system:String>
+    <system:String x:Key="Vehicles_AddBtn">Add vehicle</system:String>
+    <system:String x:Key="Vehicles_ColorFormat">Color: {0}</system:String>
+    <system:String x:Key="Vehicles_VIN">VIN</system:String>
+    <system:String x:Key="Vehicles_RetailPrice">Retail Price</system:String>
+    <system:String x:Key="Vehicles_EditBtn">Edit</system:String>
+    <system:String x:Key="Vehicles_DeleteBtn">Delete</system:String>
+    <system:String x:Key="Vehicles_OrderServiceBtn">Order service</system:String>
+
+    <system:String x:Key="Tour_Vehicles_Step1">Step 1/2: Use this panel to quickly filter available and sold vehicles.</system:String>
+    <system:String x:Key="Tour_Vehicles_Step2">Step 2/2: Browse vehicle cards here. You can add new vehicles or order services for a specific car.</system:String>
+    
+    <system:String x:Key="Vehicles_ErrorTitle">Vehicle Search</system:String>
+    <system:String x:Key="Vehicles_ConfirmDelete">Are you sure you want to delete vehicle {0} ({1})?</system:String>
+    <system:String x:Key="Vehicles_ConfirmDeleteTitle">Delete vehicle</system:String>
+    
+    <system:String x:Key="Vehicles_AllBrands">All brands</system:String>
+    <system:String x:Key="Vehicles_AllModels">All models</system:String>
+    <system:String x:Key="Vehicles_Any">Any</system:String>
+    <system:String x:Key="Vehicles_FilterLoadError">Failed to load filters:\n{0}</system:String>
+    <system:String x:Key="Vehicles_VehiclesLoadError">Failed to load vehicles:\n{0}\n\n{1}</system:String>
+    <system:String x:Key="Vehicles_EngineFormat">Engine: {0} ({1} HP)</system:String>
+    <system:String x:Key="Vehicles_EngineNone">Engine: —</system:String>
+    <system:String x:Key="Vehicles_None">None</system:String>
+
+    <system:String x:Key="Vehicles_AddTitle">Add new vehicle</system:String>
+    <system:String x:Key="Vehicles_Catalog">Vehicle Catalog</system:String>
+    <system:String x:Key="Vehicles_AddingNew"> · Adding new vehicle</system:String>
+    <system:String x:Key="Vehicles_IdentityData">IDENTIFICATION DATA</system:String>
+    <system:String x:Key="Vehicles_VINLabel">VIN number (17 chars)</system:String>
+    <system:String x:Key="Vehicles_Mileage">Mileage (km)</system:String>
+    <system:String x:Key="Vehicles_IsUsed">Used vehicle</system:String>
+    <system:String x:Key="Vehicles_Specification">SPECIFICATION</system:String>
+    <system:String x:Key="Vehicles_ModelLabel">Vehicle model</system:String>
+    <system:String x:Key="Vehicles_TrimLevel">Trim level</system:String>
+    <system:String x:Key="Vehicles_EditTitle">Edit vehicle</system:String>
+    <system:String x:Key="Vehicles_Editing"> · Editing vehicle</system:String>
+    
+    <!-- AddJobWindow -->
+    <system:String x:Key="Vehicles_NewJobTitle">New Service Order</system:String>
+    <system:String x:Key="Vehicles_AddJobTitle">Order Service</system:String>
+    <system:String x:Key="Vehicles_AddJobSubtitle"> · Ordering new service</system:String>
+    <system:String x:Key="Vehicles_ServiceType">Service type</system:String>
+    <system:String x:Key="Vehicles_ServiceDesc">Additional description for the mechanic</system:String>
+    <system:String x:Key="Vehicles_OrderJobBtn">Order service</system:String>
+    <system:String x:Key="Vehicles_Vehicle">Vehicle</system:String>
+    <system:String x:Key="Vehicles_OptionService">Option / Service</system:String>
+    <system:String x:Key="Vehicles_Mechanic">Mechanic</system:String>
+    <system:String x:Key="Vehicles_Loading">Loading...</system:String>
+    <system:String x:Key="Vehicles_ValidationJob">Please select option/service and mechanic.</system:String>
+    
+    <!-- ViewModels Strings -->
+    <system:String x:Key="Vehicles_DictionaryLoadError">Failed to load dictionary data:\n{0}</system:String>
+    <system:String x:Key="Vehicles_ValidationVIN">Please provide the VIN number.</system:String>
+    <system:String x:Key="Vehicles_ValidationSpecs">Please select model, trim level, engine, and color.</system:String>
+    <system:String x:Key="Vehicles_ValidationSpecsEdit">Please select model, trim level, and engine.</system:String>
+    <system:String x:Key="Vehicles_VINExists">Vehicle with VIN "{0}" already exists in the database.</system:String>
+    <system:String x:Key="Vehicles_SuccessAdded">The vehicle was successfully added to the catalog.</system:String>
+    <system:String x:Key="Vehicles_SaveError">Error during save: {0}\n\n{1}</system:String>
+    <system:String x:Key="Vehicles_NotFound">Vehicle not found.</system:String>
+    <system:String x:Key="Vehicles_SuccessEdited">Changes have been saved.</system:String>
+    <system:String x:Key="Vehicles_DataLoadError">Failed to load data:\n{0}</system:String>
+
+    <!-- ServicesPage & ServicesDetailsWindow -->
+    <system:String x:Key="Services_PageTitle">Services</system:String>
+    <system:String x:Key="Services_Title">Service and Assembly Jobs</system:String>
+    <system:String x:Key="Services_Subtitle">Preparing vehicles for delivery to customers</system:String>
+    <system:String x:Key="Services_StatusPending">Pending</system:String>
+    <system:String x:Key="Services_StatusInProgress">In progress</system:String>
+    <system:String x:Key="Services_StatusFinished">Finished</system:String>
+    
+    <system:String x:Key="ServicesDetails_Title">Service job details</system:String>
+    <system:String x:Key="ServicesDetails_Header">Service job</system:String>
+    <system:String x:Key="ServicesDetails_Created">CREATED</system:String>
+    <system:String x:Key="ServicesDetails_ServiceAction">🔧  SERVICE ACTION</system:String>
+    <system:String x:Key="ServicesDetails_Equipment">Equipment</system:String>
+    <system:String x:Key="ServicesDetails_Category">Category</system:String>
+    <system:String x:Key="ServicesDetails_Vehicle">🚗  VEHICLE</system:String>
+    <system:String x:Key="ServicesDetails_VehicleStatus">Vehicle status</system:String>
+    <system:String x:Key="ServicesDetails_MechanicInfo">👤  MECHANIC</system:String>
+    <system:String x:Key="ServicesDetails_FullName">Full name</system:String>
+    <system:String x:Key="ServicesDetails_Email">E-mail</system:String>
+    <system:String x:Key="ServicesDetails_Dealership">Dealership</system:String>
+    <system:String x:Key="ServicesDetails_ChangeStatus">⚡  CHANGE STATUS</system:String>
+    <system:String x:Key="ServicesDetails_SetPending">⏳  Pending</system:String>
+    <system:String x:Key="ServicesDetails_SetInProgress">🔄  In progress</system:String>
+    <system:String x:Key="ServicesDetails_SetFinished">✅  Finished</system:String>
+    
+    <system:String x:Key="Tour_Services_Step1">Step 1/3: Jobs pending assignment to a mechanic/installer.</system:String>
+    <system:String x:Key="Tour_Services_Step2">Step 2/3: Jobs currently in progress. The progress bar shows completion status.</system:String>
+    <system:String x:Key="Tour_Services_Step3">Step 3/3: Finished jobs. The vehicle can now be returned to the Sales Panel and wait for customer delivery.</system:String>
+    <system:String x:Key="Services_LoadError">Failed to load jobs: {0}</system:String>
+    <system:String x:Key="ServicesDetails_NotFound">Job not found in the database.</system:String>
+    <system:String x:Key="ServicesDetails_StatusSuccess">Status changed to: {0}</system:String>
+    <system:String x:Key="ServicesDetails_StatusError">Failed to change status:\n{0}</system:String>
+
+    <system:String x:Key="Global_Cancel">Cancel</system:String>
+    <system:String x:Key="Global_Save">Save</system:String>
+    <system:String x:Key="Global_SaveChanges">Save changes</system:String>
+    <system:String x:Key="Global_Close">Close</system:String>
+    <system:String x:Key="Global_Edit">Edit</system:String>
+    <system:String x:Key="Global_Delete">Delete</system:String>
+
+    <!-- AdminPage & EditEmployeeWindow -->
+    <system:String x:Key="Admin_PageTitle">Administration</system:String>
+    <system:String x:Key="Admin_Subtitle">Managing employee accounts and dealerships</system:String>
+    <system:String x:Key="Admin_TabUsers">Users</system:String>
+    <system:String x:Key="Admin_TabDealerships">Dealerships</system:String>
+    <system:String x:Key="Admin_TabDictionaries">Dictionaries</system:String>
+    <system:String x:Key="Admin_AddEmployeeTitle">Add new employee</system:String>
+    <system:String x:Key="Admin_FirstName">First name</system:String>
+    <system:String x:Key="Admin_LastName">Last name</system:String>
+    <system:String x:Key="Admin_Role">System role</system:String>
+    <system:String x:Key="Role_Salesman">Salesman</system:String>
+    <system:String x:Key="Role_Mechanic">Mechanic</system:String>
+    <system:String x:Key="Role_Manager">Manager</system:String>
+    <system:String x:Key="Role_Admin">Administrator</system:String>
+    <system:String x:Key="Admin_Dealership">Dealership (for employees)</system:String>
+    <system:String x:Key="Admin_DealershipRequired">Dealership (required for employees)</system:String>
+    <system:String x:Key="Admin_Email">Email (login)</system:String>
+    <system:String x:Key="Admin_Password">Temporary password</system:String>
+    <system:String x:Key="Admin_NewPassword">New password (leave empty to not change)</system:String>
+    <system:String x:Key="Admin_RegisterEmployeeBtn">Register employee</system:String>
+    <system:String x:Key="Admin_ActiveAccounts">Active accounts</system:String>
+    <system:String x:Key="Admin_DataGridEmployee">Employee</system:String>
+    <system:String x:Key="Admin_DataGridEmail">E-mail</system:String>
+    <system:String x:Key="Admin_DataGridRole">Role</system:String>
+    <system:String x:Key="Admin_DataGridDealership">Dealership</system:String>
+    <system:String x:Key="Admin_AddDealershipTitle">Add new dealership</system:String>
+    <system:String x:Key="Admin_DealershipName">Dealership name</system:String>
+    <system:String x:Key="Admin_Address">Address</system:String>
+    <system:String x:Key="Admin_City">City</system:String>
+    <system:String x:Key="Admin_Owner">Owner</system:String>
+    <system:String x:Key="Admin_AddDealershipBtn">Add dealership</system:String>
+    <system:String x:Key="Admin_DealershipNetwork">Dealership network</system:String>
+    <system:String x:Key="Admin_DataGridName">Name</system:String>
+    <system:String x:Key="Admin_DataGridAddress">Address</system:String>
+    <system:String x:Key="Admin_DataGridCity">City</system:String>
+    <system:String x:Key="Admin_DataGridOwner">Owner</system:String>
+    <system:String x:Key="Admin_ModelsTitle">Models</system:String>
+    <system:String x:Key="Admin_AddModelBtn">Add model</system:String>
+    <system:String x:Key="Admin_TrimsTitle">Trim Levels</system:String>
+    <system:String x:Key="Admin_AddTrimBtn">Add trim level</system:String>
+    <system:String x:Key="Admin_EnginesTitle">Engines</system:String>
+    <system:String x:Key="Admin_AddEngineBtn">Add engine</system:String>
+    <system:String x:Key="Admin_FeaturesTitle">Options and Services</system:String>
+    <system:String x:Key="Admin_AddFeatureBtn">Add option</system:String>
+    <system:String x:Key="Admin_ListModelsTitle">Vehicle models</system:String>
+    <system:String x:Key="Admin_DataGridBrand">Brand</system:String>
+    <system:String x:Key="Admin_DataGridModel">Model</system:String>
+    <system:String x:Key="Admin_ListTrimsTitle">Trim levels</system:String>
+    <system:String x:Key="Admin_DataGridTrim">Trim level</system:String>
+    <system:String x:Key="Admin_DataGridBasePrice">Base price</system:String>
+    <system:String x:Key="Admin_DataGridEngineSize">Size</system:String>
+    <system:String x:Key="Admin_DataGridPower">Power</system:String>
+    <system:String x:Key="Admin_DataGridPrice">Price</system:String>
+    <system:String x:Key="Admin_DataGridCategory">Category</system:String>
+    <system:String x:Key="Admin_DataGridFeatureName">Feature name</system:String>
+    <system:String x:Key="Admin_EditEmployeeTitle">Edit employee data</system:String>
+    <system:String x:Key="Admin_EditEmployeeSubtitle">Update personal data, role, and optionally password.</system:String>
+    <system:String x:Key="Admin_DictLoadError">Failed to load dictionaries:\n{0}</system:String>
+    <system:String x:Key="Admin_AccountsCount">{0} accounts in system</system:String>
+    <system:String x:Key="Admin_AccountsLoadError">Failed to load accounts:\n{0}</system:String>
+    <system:String x:Key="Admin_DealershipsCount">{0} dealerships</system:String>
+    <system:String x:Key="Admin_DealershipsLoadError">Failed to load dealerships:\n{0}</system:String>
+    <system:String x:Key="Admin_ValName">Please provide first and last name.</system:String>
+    <system:String x:Key="Admin_ValEmail">Please provide a valid e-mail address.</system:String>
+    <system:String x:Key="Admin_ValPassword">Password must have at least 4 characters.</system:String>
+    <system:String x:Key="Admin_ValRole">Please select a role.</system:String>
+    <system:String x:Key="Admin_ValDealership">Please select a dealership to assign the employee to.</system:String>
+    <system:String x:Key="Admin_EmailExists">An account with this e-mail already exists.</system:String>
+    <system:String x:Key="Admin_RoleMissing">Role '{0}' does not exist in the database.</system:String>
+    <system:String x:Key="Admin_AccountCreated">Account '{0}' ({1}) has been created.</system:String>
+    <system:String x:Key="Admin_AccountCreateError">Failed to create account:\n{0}\n\n{1}</system:String>
+    <system:String x:Key="Admin_DeleteProtected">Manager account is protected and cannot be deleted.</system:String>
+    <system:String x:Key="Admin_DeleteConfirm">Are you sure you want to delete this account:\n\n{0}\n{1}\nRole: {2}\nDealership: {3}\n\nThis action cannot be undone.</system:String>
+    <system:String x:Key="Admin_AccountNotFound">Account does not exist in the database.</system:String>
+    <system:String x:Key="Admin_SelfDelete">You cannot delete your own account.</system:String>
+    <system:String x:Key="Admin_AccountDeleted">Account {0} has been deleted.</system:String>
+    <system:String x:Key="Admin_AccountDeleteError">Failed to delete account:\n{0}\n\n{1}\n\nPossible reason: user has linked orders or service jobs.</system:String>
+    <system:String x:Key="Admin_AccountUpdated">Account '{0}' has been updated.</system:String>
+    <system:String x:Key="Admin_AccountUpdateError">Failed to update account:\n{0}</system:String>
+    <system:String x:Key="Admin_ValDealershipData">Fill all dealership fields (name, address, city, owner).</system:String>
+    <system:String x:Key="Admin_DealershipExists">Dealership '{0}' in city '{1}' already exists.</system:String>
+    <system:String x:Key="Admin_DealershipAdded">Dealership '{0}' ({1}) has been added.</system:String>
+    <system:String x:Key="Admin_DealershipAddError">Failed to add dealership:\n{0}\n\n{1}</system:String>
+    <system:String x:Key="Admin_DealershipHasWorkers">Cannot delete dealership '{0}' — it has {1} assigned employees.\nMove employees to another dealership first.</system:String>
+    <system:String x:Key="Admin_DeleteDealershipConfirm">Are you sure you want to delete dealership:\n\n{0}\n{1}, {2}\nOwner: {3}\n\nThis action cannot be undone.</system:String>
+    <system:String x:Key="Admin_DealershipNotFound">Dealership does not exist in the database.</system:String>
+    <system:String x:Key="Admin_DealershipDeleted">Dealership '{0}' has been deleted.</system:String>
+    <system:String x:Key="Admin_DealershipDeleteError">Failed to delete dealership:\n{0}\n\n{1}\n\nPossible reason: dealership has linked vehicles or orders.</system:String>
+    <system:String x:Key="Admin_ValModel">Fill brand and model name.</system:String>
+    <system:String x:Key="Admin_ModelAdded">Model has been added.</system:String>
+    <system:String x:Key="Admin_Error">Error:\n{0}</system:String>
+    <system:String x:Key="Admin_DeleteModelConfirm">Delete model {0} {1}?</system:String>
+    <system:String x:Key="Admin_ModelDeleted">Model deleted.</system:String>
+    <system:String x:Key="Admin_ValFeature">Fill name, category and price for the option.</system:String>
+    <system:String x:Key="Admin_FeatureAdded">Option added.</system:String>
+    <system:String x:Key="Admin_DeleteFeatureConfirm">Delete option {0}?</system:String>
+    <system:String x:Key="Admin_FeatureDeleted">Option deleted.</system:String>
+    <system:String x:Key="Admin_ValEngine">Fill brand, engine name, power and price.</system:String>
+    <system:String x:Key="Admin_EngineAdded">Engine added.</system:String>
+    <system:String x:Key="Admin_DeleteEngineConfirm">Delete engine {0}?</system:String>
+    <system:String x:Key="Admin_EngineDeleted">Engine deleted.</system:String>
+    <system:String x:Key="Admin_ValTrim">Select model, enter trim name and base price.</system:String>
+    <system:String x:Key="Admin_TrimAdded">Trim level added.</system:String>
+    <system:String x:Key="Admin_DeleteTrimConfirm">Delete trim level {0} for model {1}?</system:String>
+    <system:String x:Key="Admin_TrimDeleted">Trim level deleted.</system:String>
+    <system:String x:Key="Tour_Admin_Step1">Step 1/1: Here, as an administrator, you can manage users, dealerships, and system dictionaries.</system:String>
+    <system:String x:Key="Admin_DeleteEmployee">Delete employee</system:String>
+    <system:String x:Key="Admin_ValNameEdit">First and last name are required.</system:String>
+    <system:String x:Key="Admin_ValEmailEdit">Provide a valid e-mail address.</system:String>
+    <system:String x:Key="Admin_ValDealershipEdit">Select a dealership for this employee.</system:String>
+
+    <!-- Ewidencja Sprzedaży (SalesRecords) -->
+    <system:String x:Key="SalesRecords_Title">Sales Records</system:String>
+    <system:String x:Key="SalesRecords_Subtitle">Register of all transactions: vehicle, client, advisor, and dealership</system:String>
+    <system:String x:Key="SalesRecords_Status">Status</system:String>
+    <system:String x:Key="SalesRecords_Dealership">Dealership</system:String>
+    <system:String x:Key="SalesRecords_Advisor">Advisor</system:String>
+    <system:String x:Key="SalesRecords_DateFrom">From</system:String>
+    <system:String x:Key="SalesRecords_DateTo">To</system:String>
+    <system:String x:Key="SalesRecords_ClearFilters">Clear</system:String>
+    <system:String x:Key="SalesRecords_ColCode">Code</system:String>
+    <system:String x:Key="SalesRecords_ColDate">Date</system:String>
+    <system:String x:Key="SalesRecords_ColVehicle">Vehicle</system:String>
+    <system:String x:Key="SalesRecords_ColVIN">VIN</system:String>
+    <system:String x:Key="SalesRecords_ColClient">Client</system:String>
+    <system:String x:Key="SalesRecords_ColAdvisor">Advisor</system:String>
+    <system:String x:Key="SalesRecords_ColDealership">Dealership</system:String>
+    <system:String x:Key="SalesRecords_ColStatus">Status</system:String>
+    <system:String x:Key="SalesRecords_ColPrice">Price</system:String>
+    <system:String x:Key="SalesRecords_NoRecords">No transactions meet the criteria</system:String>
+
+    <system:String x:Key="Filter_AllStatuses">All statuses</system:String>
+    <system:String x:Key="Filter_AllDealerships">All dealerships</system:String>
+    <system:String x:Key="Filter_AllAdvisors">All advisors</system:String>
+    <system:String x:Key="Msg_LoadSalesRecordsError">Failed to load sales records:\n{0}\n\n{1}</system:String>
+    <system:String x:Key="SalesRecords_Summary">Transactions: {0}   •   Total value: {1}</system:String>
+    <system:String x:Key="SalesRecords_UnknownVehicle">Unknown vehicle</system:String>
+    <system:String x:Key="SalesRecords_UnknownClient">Unknown client</system:String>
+
+    <system:String x:Key="Culture_CurrencyCode">en-US</system:String>
+
+    <!-- Raporty (ReportsPage) -->
+    <system:String x:Key="Reports_Title">Reports and Statistics</system:String>
+    <system:String x:Key="Reports_Subtitle">Generate comprehensive reports in PDF format</system:String>
+    <system:String x:Key="Reports_Period">Time period:</system:String>
+    <system:String x:Key="Reports_GeneratePDF">Generate PDF</system:String>
+    <system:String x:Key="Reports_OrderStatusTitle">Order Statuses</system:String>
+    <system:String x:Key="Reports_OrderStatusDesc">Generates a report of all orders, grouped by their current operational status.</system:String>
+    <system:String x:Key="Reports_ClientPurchasesTitle">Customer Purchases</system:String>
+    <system:String x:Key="Reports_ClientPurchasesDesc">Select a customer from the database and generate a personalized list of all their purchases (orders and services).</system:String>
+    <system:String x:Key="Reports_SalesRankingsTitle">Sales Rankings</system:String>
+    <system:String x:Key="Reports_SalesRankingsDesc">A comparative sales report with statistics: top employees, best-performing dealerships, and charts.</system:String>
+    <system:String x:Key="Reports_FullDumpTitle">Comprehensive Report</system:String>
+    <system:String x:Key="Reports_FullDumpDesc">A full, detailed list of all dealerships, employees, available vehicles, and customer history.</system:String>
+    <system:String x:Key="Reports_FinancialReportTitle">Monthly Revenue</system:String>
+    <system:String x:Key="Reports_FinancialReportDesc">A bar chart showing dealership revenues broken down by individual sales months.</system:String>
+    <system:String x:Key="Reports_TrendsReportTitle">Model Popularity</system:String>
+    <system:String x:Key="Reports_TrendsReportDesc">A chart presenting car models and brands that are most popular among customers.</system:String>
+    <system:String x:Key="Reports_ServiceReportTitle">Service Efficiency</system:String>
+    <system:String x:Key="Reports_ServiceReportDesc">Analysis of completed service jobs and a graphical breakdown of employees who completed the most repairs.</system:String>
+
+    <system:String x:Key="Period_All">All time (Full history)</system:String>
+    <system:String x:Key="Period_LastDay">Last day</system:String>
+    <system:String x:Key="Period_LastWeek">Last week</system:String>
+    <system:String x:Key="Period_Last2Weeks">Last 2 weeks</system:String>
+    <system:String x:Key="Period_LastMonth">Last month</system:String>
+    <system:String x:Key="Period_Last3Months">Last 3 months</system:String>
+    <system:String x:Key="Period_Last6Months">Last 6 months</system:String>
+    <system:String x:Key="Period_LastYear">Last year</system:String>
+
+    <system:String x:Key="Msg_ReportError">Error generating report: {0}</system:String>
+    <system:String x:Key="Msg_Error">Error</system:String>
+    <system:String x:Key="Msg_SelectClientFirst">Please select a customer from the list.</system:String>
+    <system:String x:Key="Msg_Info">Information</system:String>
+
+</ResourceDictionary>

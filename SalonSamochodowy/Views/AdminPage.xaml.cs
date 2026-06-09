@@ -46,7 +46,7 @@ namespace SalonSamochodowy.Views
 
             WeakReferenceMessenger.Default.Register<StartTourRequestMessage>(this, (r, m) =>
             {
-                if (m.PageName == "Administracja" && this.IsVisible)
+                if (m.PageName == nameof(AdminPage) && this.IsVisible)
                 {
                     m.Reply(true);
                     StartTour();

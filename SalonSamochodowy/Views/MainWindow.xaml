@@ -37,6 +37,8 @@
                 </StackPanel>
 
                 <StackPanel Grid.Column="6" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <!-- Language Switches Moved to PaneHeader -->
+
                     <Border Width="1" Height="30" Background="#2D3038" Margin="0,0,20,0"/>
 
                     <Border Padding="8" VerticalAlignment="Center" Background="Transparent">
@@ -46,7 +48,7 @@
                             </Border>
                             <StackPanel VerticalAlignment="Center">
                                 <TextBlock Text="{Binding UserFullName}" FontSize="13" FontWeight="SemiBold" Foreground="#E2E2E2"/>
-                                <TextBlock Text="{Binding RoleName}" FontSize="11" Foreground="#8A8D98"/>
+                                <TextBlock Text="{Binding DisplayRoleName}" FontSize="11" Foreground="#8A8D98"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>
@@ -58,22 +60,53 @@
                            PaneDisplayMode="Left"
                            Background="#16181D"
                            IsBackButtonVisible="Collapsed">
+                           
+            <ui:NavigationView.PaneHeader>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,15,0,10">
+                    <Button x:Name="LangPlBtn" Click="LangPl_Click" Background="Transparent" BorderThickness="0" Padding="0" Margin="0,0,15,0" ToolTip="Polski" Cursor="Hand">
+                        <Border Width="36" Height="24" CornerRadius="3" ClipToBounds="True" BorderBrush="#5B59E8" BorderThickness="1">
+                            <Grid Background="Transparent">
+                                <Rectangle Fill="White" Height="12" VerticalAlignment="Top"/>
+                                <Rectangle Fill="#DC143C" Height="12" VerticalAlignment="Bottom"/>
+                            </Grid>
+                        </Border>
+                    </Button>
+
+                    <Button x:Name="LangEnBtn" Click="LangEn_Click" Background="Transparent" BorderThickness="0" Padding="0" ToolTip="English" Cursor="Hand" Opacity="0.4">
+                        <Border Width="36" Height="24" CornerRadius="3" ClipToBounds="True" BorderBrush="#2D3038" BorderThickness="1">
+                            <Grid Background="Transparent">
+                                <Rectangle Fill="White"/>
+                                <StackPanel>
+                                    <Rectangle Fill="#B22234" Height="4"/>
+                                    <Rectangle Fill="White" Height="4"/>
+                                    <Rectangle Fill="#B22234" Height="4"/>
+                                    <Rectangle Fill="White" Height="4"/>
+                                    <Rectangle Fill="#B22234" Height="4"/>
+                                    <Rectangle Fill="White" Height="4"/>
+                                </StackPanel>
+                                <Rectangle Fill="#3C3B6E" Width="14" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                            </Grid>
+                        </Border>
+                    </Button>
+                </StackPanel>
+            </ui:NavigationView.PaneHeader>
+
             <ui:NavigationView.MenuItems>
-                <ui:NavigationViewItem Content="Moje Zamówienia"      Icon="{ui:SymbolIcon DocumentBulletList24}"        TargetPageType="{x:Type local:CustomerPanelPage}" Visibility="{Binding CustomerPanelVisibility}"/>
-                <ui:NavigationViewItem Content="Dashboard"             Icon="{ui:SymbolIcon Home24}"                TargetPageType="{x:Type local:DashboardPage}" Visibility="{Binding DashboardVisibility}"/>
-                <ui:NavigationViewItem Content="Klienci"               Icon="{ui:SymbolIcon DocumentBulletList24}"  TargetPageType="{x:Type local:ClientsPage}"   Visibility="{Binding ClientsVisibility}"/>
-                <ui:NavigationViewItem Content="Trwające Sprzedaże"   Icon="{ui:SymbolIcon Briefcase24}"           TargetPageType="{x:Type local:SalesPanelPage}" Visibility="{Binding SalesPanelVisibility}"/>
-                <ui:NavigationViewItem Content="Ewidencja Sprzedaży"  Icon="{ui:SymbolIcon BookContacts24}"        TargetPageType="{x:Type local:SalesRecordsPage}" Visibility="{Binding SalesRecordsVisibility}"/>
-                <ui:NavigationViewItem Content="Dodaj zamówienie"      Icon="{ui:SymbolIcon DocumentAdd24}"         TargetPageType="{x:Type local:CreateOrder}"   Visibility="{Binding CreateOrderVisibility}"/>
-                <ui:NavigationViewItem Content="Zarządzanie Pojazdami" Icon="{ui:SymbolIcon VehicleCar24}"          TargetPageType="{x:Type local:VehiclesPage}"  Visibility="{Binding VehiclesVisibility}"/>
-                <ui:NavigationViewItem Content="Usługi Serwisowe"      Icon="{ui:SymbolIcon Wrench24}"              TargetPageType="{x:Type local:ServicesPage}"  Visibility="{Binding ServicesVisibility}"/>
-                <ui:NavigationViewItem Content="Raporty"               Icon="{ui:SymbolIcon DocumentPdf24}"         TargetPageType="{x:Type local:ReportsPage}"   Visibility="{Binding ReportsVisibility}"/>
+                <ui:NavigationViewItem Content="{DynamicResource Menu_MyOrders}"      Icon="{ui:SymbolIcon DocumentBulletList24}"        TargetPageType="{x:Type local:CustomerPanelPage}" Visibility="{Binding CustomerPanelVisibility}"/>
+                <ui:NavigationViewItem Content="{DynamicResource Menu_Dashboard}"             Icon="{ui:SymbolIcon Home24}"                TargetPageType="{x:Type local:DashboardPage}" Visibility="{Binding DashboardVisibility}"/>
+                <ui:NavigationViewItem Content="{DynamicResource Menu_Clients}"               Icon="{ui:SymbolIcon DocumentBulletList24}"  TargetPageType="{x:Type local:ClientsPage}"   Visibility="{Binding ClientsVisibility}"/>
+                <ui:NavigationViewItem Content="{DynamicResource Menu_ActiveSales}"   Icon="{ui:SymbolIcon Briefcase24}"           TargetPageType="{x:Type local:SalesPanelPage}" Visibility="{Binding SalesPanelVisibility}"/>
+                <ui:NavigationViewItem Content="{DynamicResource Menu_SalesRecords}"  Icon="{ui:SymbolIcon BookContacts24}"        TargetPageType="{x:Type local:SalesRecordsPage}" Visibility="{Binding SalesRecordsVisibility}"/>
+                <ui:NavigationViewItem Content="{DynamicResource Menu_CreateOrder}"      Icon="{ui:SymbolIcon DocumentAdd24}"         TargetPageType="{x:Type local:CreateOrder}"   Visibility="{Binding CreateOrderVisibility}"/>
+                <ui:NavigationViewItem Content="{DynamicResource Menu_Vehicles}" Icon="{ui:SymbolIcon VehicleCar24}"          TargetPageType="{x:Type local:VehiclesPage}"  Visibility="{Binding VehiclesVisibility}"/>
+                <ui:NavigationViewItem Content="{DynamicResource Menu_Services}"      Icon="{ui:SymbolIcon Wrench24}"              TargetPageType="{x:Type local:ServicesPage}"  Visibility="{Binding ServicesVisibility}"/>
+                <ui:NavigationViewItem Content="{DynamicResource Menu_Reports}"               Icon="{ui:SymbolIcon DocumentPdf24}"         TargetPageType="{x:Type local:ReportsPage}"   Visibility="{Binding ReportsVisibility}"/>
             </ui:NavigationView.MenuItems>
             <ui:NavigationView.FooterMenuItems>
-                <ui:NavigationViewItem Content="Pomoc"        Icon="{ui:SymbolIcon QuestionCircle24}" Click="HelpButton_Click"/>
-                <ui:NavigationViewItem Content="Mój profil"   Icon="{ui:SymbolIcon Person24}"        Command="{Binding ProfileCommand}"/>
-                <ui:NavigationViewItem Content="Administracja" Icon="{ui:SymbolIcon ShieldKeyhole24}" TargetPageType="{x:Type local:AdminPage}" Visibility="{Binding AdminVisibility}"/>
-                <ui:NavigationViewItem Content="Wyloguj"      Icon="{ui:SymbolIcon ArrowExit20}"     Command="{Binding LogoutCommand}"/>
+                <ui:NavigationViewItem Content="{DynamicResource Menu_Help}"        Icon="{ui:SymbolIcon QuestionCircle24}" Click="HelpButton_Click"/>
+                <ui:NavigationViewItem Content="{DynamicResource Menu_Profile}"   Icon="{ui:SymbolIcon Person24}"        Command="{Binding ProfileCommand}"/>
+                <ui:NavigationViewItem Content="{DynamicResource Menu_Admin}" Icon="{ui:SymbolIcon ShieldKeyhole24}" TargetPageType="{x:Type local:AdminPage}" Visibility="{Binding AdminVisibility}"/>
+                <ui:NavigationViewItem Content="{DynamicResource Menu_Logout}"      Icon="{ui:SymbolIcon ArrowExit20}"     Command="{Binding LogoutCommand}"/>
             </ui:NavigationView.FooterMenuItems>
         </ui:NavigationView>
     </Grid>

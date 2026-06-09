@@ -57,10 +57,11 @@ namespace SalonSamochodowy.Views
         private void HelpButton_Click(object sender, RoutedEventArgs e)
         {
             var selectedItem = RootNavigation.SelectedItem as INavigationViewItem;
-            string pageName = selectedItem?.Content?.ToString() ?? "Strona główna";
+            Type pageType = selectedItem?.TargetPageType;
+            string pageTypeIdentifier = pageType?.Name ?? "Unknown";
 
             // Zapytaj aktywną stronę, czy posiada samouczek
-            var tourMessage = new SalonSamochodowy.Messages.StartTourRequestMessage(pageName);
+            var tourMessage = new SalonSamochodowy.Messages.StartTourRequestMessage(pageTypeIdentifier);
             CommunityToolkit.Mvvm.Messaging.WeakReferenceMessenger.Default.Send(tourMessage);
 
             if (tourMessage.HasReceivedResponse && tourMessage.Response == true)
@@ -69,41 +70,17 @@ namespace SalonSamochodowy.Views
                 return;
             }
             
-            string helpTitle = $"Pomoc: {pageName}";
-            string helpText = "Wybierz zakładkę z menu po lewej stronie, aby rozpocząć pracę.";
+            string helpTitleKey = "Help_Title";
+            string helpTitleStr = SalonSamochodowy.Services.LocalizationHelper.GetString(helpTitleKey);
+            
+            string helpTitle = $"{helpTitleStr}: {selectedItem?.Content?.ToString() ?? ""}";
+            
+            string helpTextKey = $"Help_{pageTypeIdentifier}";
+            string helpText = SalonSamochodowy.Services.LocalizationHelper.GetString(helpTextKey);
 
-            switch (pageName)
+            if (helpText == helpTextKey) // If missing
             {
-                case "Moje Zamówienia":
-                    helpText = "W tej sekcji możesz przeglądać listę swoich zamówień, ich statusy oraz pobrać raport, jeżeli zamówienie zostało przypisane do Twojego konta.";
-                    break;
-                case "Dashboard":
-                    helpText = "Tablica podsumowująca najważniejsze statystyki w salonie. Znajdziesz tu szybki podgląd liczby aut, nowych zamówień i trwających napraw.";
-                    break;
-                case "Klienci i Sprzedaż":
-                    helpText = "Moduł do zarządzania bazą klientów. Możesz tutaj zarejestrować nowego klienta, wygenerować dla niego raport oraz przejrzeć pełną historię zakupów.";
-                    break;
-                case "Trwające Sprzedaże":
-                    helpText = "Lista aktualnie procedowanych zamówień. Umożliwia zmianę statusu i weryfikację postępu dla każdego zlecenia (np. z 'Gotowe do odbioru' na 'Zrealizowane').";
-                    break;
-                case "Ewidencja Sprzedaży":
-                    helpText = "Przeglądaj pełny rejestr wszystkich transakcji. Możesz tu filtrować zamówienia według statusu, salonu, doradcy lub zakresu dat. Tabela pozwala na szybki wgląd w szczegóły sprzedaży, takie jak przypisany pojazd, numer VIN, klient, doradca oraz aktualny status realizacji.";
-                    break;
-                case "Dodaj zamówienie":
-                    helpText = "Zacznij nową sprzedaż. Wybierz klienta (lub stwórz nowego), dopasuj odpowiedni pojazd, dobierz konfigurację opcjonalną i sfinalizuj transakcję.";
-                    break;
-                case "Zarządzanie Pojazdami":
-                    helpText = "Zarządzaj autami na placu. Możesz tu dodawać nowe pojazdy z bazy fabrycznej (Silnik + Model), określać, czy są nowe, czy używane, i podawać numery VIN.";
-                    break;
-                case "Usługi Serwisowe":
-                    helpText = "Warsztat mechaniczny. Serwisanci mogą tu przejmować nowe zlecenia (np. montaż akcesoriów), zmieniać ich statusy na robocze lub ostatecznie ukończone.";
-                    break;
-                case "Raporty":
-                    helpText = "Generuj zaawansowane PDF-y, aby poznać wydajność firmy. Raporty posiadają pełną analitykę, kolorowe wykresy i rankingi Twoich pracowników.";
-                    break;
-                case "Administracja":
-                    helpText = "Panel administratora do zarządzania bazą danych (np. dodawanie nowych salonów) i rejestrowania nowych kont pracowniczych z konkretnymi stanowiskami.";
-                    break;
+                helpText = SalonSamochodowy.Services.LocalizationHelper.GetString("Help_Default");
             }
 
             System.Windows.MessageBox.Show(
@@ -111,6 +88,48 @@ namespace SalonSamochodowy.Views
                 helpTitle,
                 System.Windows.MessageBoxButton.OK,
                 System.Windows.MessageBoxImage.Information);
+        }
+
+        private void LangPl_Click(object sender, RoutedEventArgs e)
+        {
+            SwitchLanguage("pl");
+        }
+
+        private void LangEn_Click(object sender, RoutedEventArgs e)
+        {
+            SwitchLanguage("en");
+        }
+
+        private void SwitchLanguage(string lang)
+        {
+            var dict = new ResourceDictionary();
+            dict.Source = new System.Uri($"pack://application:,,,/Resources/Languages/Strings.{lang}.xaml");
+
+            var merged = Application.Current.Resources.MergedDictionaries;
+            for (int i = merged.Count - 1; i >= 0; i--)
+            {
+                if (merged[i].Source != null && merged[i].Source.OriginalString.Contains("Strings."))
+                {
+                    merged.RemoveAt(i);
+                }
+            }
+
+            merged.Add(dict);
+
+            if (lang == "pl")
+            {
+                System.Threading.Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("pl-PL");
+                LangPlBtn.Opacity = 1.0;
+                LangEnBtn.Opacity = 0.4;
+            }
+            else
+            {
+                System.Threading.Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("en-US");
+                LangPlBtn.Opacity = 0.4;
+                LangEnBtn.Opacity = 1.0;
+            }
+
+            CommunityToolkit.Mvvm.Messaging.WeakReferenceMessenger.Default.Send(new SalonSamochodowy.Messages.LanguageChangedMessage());
         }
     }
 }

@@ -20,7 +20,7 @@ namespace SalonSamochodowy.Views
             DataContext = _vm;
 
             _vm.LoadFailed += msg => System.Windows.MessageBox.Show(
-                msg, "Usługi serwisowe",
+                msg, SalonSamochodowy.Services.LocalizationHelper.GetString("Services_PageTitle"),
                 System.Windows.MessageBoxButton.OK,
                 System.Windows.MessageBoxImage.Error);
 
@@ -28,7 +28,7 @@ namespace SalonSamochodowy.Views
 
             WeakReferenceMessenger.Default.Register<StartTourRequestMessage>(this, (r, m) =>
             {
-                if (m.PageName == "Usługi Serwisowe" && this.IsVisible)
+                if (m.PageName == nameof(ServicesPage) && this.IsVisible)
                 {
                     m.Reply(true);
                     StartTour();
@@ -49,17 +49,17 @@ namespace SalonSamochodowy.Views
             {
                 case 0:
                     TourPopup.PlacementTarget = ColPending;
-                    TourText.Text = "Krok 1/3: Zlecenia oczekujące na przypisanie do mechanika/montażysty.";
-                    TourNextBtn.Content = "Dalej";
+                    TourText.Text = SalonSamochodowy.Services.LocalizationHelper.GetString("Tour_Services_Step1");
+                    TourNextBtn.Content = SalonSamochodowy.Services.LocalizationHelper.GetString("Tour_Next");
                     break;
                 case 1:
                     TourPopup.PlacementTarget = ColInProgress;
-                    TourText.Text = "Krok 2/3: Zlecenia w trakcie realizacji. Pasek postępu pokazuje zaawansowanie prac.";
+                    TourText.Text = SalonSamochodowy.Services.LocalizationHelper.GetString("Tour_Services_Step2");
                     break;
                 case 2:
                     TourPopup.PlacementTarget = ColFinished;
-                    TourText.Text = "Krok 3/3: Zakończone zlecenia. Pojazd może już wrócić do Panelu Sprzedaży i czekać na wydanie klientowi.";
-                    TourNextBtn.Content = "Zakończ";
+                    TourText.Text = SalonSamochodowy.Services.LocalizationHelper.GetString("Tour_Services_Step3");
+                    TourNextBtn.Content = SalonSamochodowy.Services.LocalizationHelper.GetString("Tour_Finish");
                     break;
                 default:
                     return;

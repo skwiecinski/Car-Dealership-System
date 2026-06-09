@@ -28,7 +28,7 @@ namespace SalonSamochodowy.Views
 
             WeakReferenceMessenger.Default.Register<StartTourRequestMessage>(this, (r, m) =>
             {
-                if (m.PageName == "Ewidencja Sprzedaży" && this.IsVisible)
+                if (m.PageName == nameof(SalesRecordsPage) && this.IsVisible)
                 {
                     m.Reply(true);
                     StartTour();
@@ -49,17 +49,17 @@ namespace SalonSamochodowy.Views
             {
                 case 0:
                     TourPopup.PlacementTarget = FiltersSection;
-                    TourText.Text = "Krok 1/3: Użyj tych filtrów, aby zawęzić wyniki według statusu, salonu, doradcy lub zakresu dat.";
-                    TourNextBtn.Content = "Dalej";
+                    TourText.Text = SalonSamochodowy.Services.LocalizationHelper.GetString("Tour_SalesRecords_Step1");
+                    TourNextBtn.Content = SalonSamochodowy.Services.LocalizationHelper.GetString("Tour_Next");
                     break;
                 case 1:
                     TourPopup.PlacementTarget = TableSection;
-                    TourText.Text = "Krok 2/3: Tutaj znajduje się pełna lista transakcji spełniających podane kryteria.";
+                    TourText.Text = SalonSamochodowy.Services.LocalizationHelper.GetString("Tour_SalesRecords_Step2");
                     break;
                 case 2:
                     TourPopup.PlacementTarget = SummarySection;
-                    TourText.Text = "Krok 3/3: W tym miejscu zobaczysz podsumowanie - np. łączną kwotę sfinalizowanych zamówień.";
-                    TourNextBtn.Content = "Zakończ";
+                    TourText.Text = SalonSamochodowy.Services.LocalizationHelper.GetString("Tour_SalesRecords_Step3");
+                    TourNextBtn.Content = SalonSamochodowy.Services.LocalizationHelper.GetString("Tour_Finish");
                     break;
                 default:
                     return;

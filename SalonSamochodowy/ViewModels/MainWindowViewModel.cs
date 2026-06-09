@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using SalonSamochodowy.Entities;
 using SalonSamochodowy.Repositories;
 using SalonSamochodowy.Views;
@@ -16,11 +17,16 @@ namespace SalonSamochodowy.ViewModels
         public MainWindowViewModel(IUnitOfWork uow)
         {
             _uow = uow;
+            WeakReferenceMessenger.Default.Register(this, (MainWindowViewModel r, SalonSamochodowy.Messages.LanguageChangedMessage m) =>
+            {
+                r.OnPropertyChanged(nameof(DisplayRoleName));
+            });
         }
         public AppUser LoggedInUser { get; private set; }
 
         [ObservableProperty] private string userFullName = "";
         [ObservableProperty] private string roleName = "";
+        public string DisplayRoleName => RoleName == "—" ? "—" : SalonSamochodowy.Services.LocalizationHelper.GetString($"Role_{RoleName}");
 
         [ObservableProperty] private Visibility dashboardVisibility   = Visibility.Collapsed;
         [ObservableProperty] private Visibility clientsVisibility     = Visibility.Collapsed;

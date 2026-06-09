@@ -25,7 +25,7 @@ namespace SalonSamochodowy.ViewModels
             _uow = uow;
         }
 
-        [ObservableProperty] private string vehicleInfo = "Ładowanie...";
+        [ObservableProperty] private string vehicleInfo = SalonSamochodowy.Services.LocalizationHelper.GetString("Vehicles_Loading");
 
         public ObservableCollection<Feature> Features { get; } = new();
         [ObservableProperty] private Feature? selectedFeature;
@@ -67,7 +67,7 @@ namespace SalonSamochodowy.ViewModels
         {
             if (SelectedFeature == null || SelectedMechanic == null)
             {
-                ShowError?.Invoke("Wybierz opcję/usługę oraz serwisanta.");
+                ShowError?.Invoke(SalonSamochodowy.Services.LocalizationHelper.GetString("Vehicles_ValidationJob"));
                 return;
             }
 

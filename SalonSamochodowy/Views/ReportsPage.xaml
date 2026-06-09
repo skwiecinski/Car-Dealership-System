@@ -16,12 +16,12 @@
             </Grid.ColumnDefinitions>
             
             <StackPanel Grid.Column="0">
-                <TextBlock Text="Raporty i statystyki" FontSize="24" FontWeight="Bold" Foreground="#E2E2E2"/>
-                <TextBlock Text="Generuj kompleksowe raporty w formacie PDF" Foreground="#8A8D98" Margin="0,5,0,0"/>
+                <TextBlock Text="{DynamicResource Reports_Title}" FontSize="24" FontWeight="Bold" Foreground="#E2E2E2"/>
+                <TextBlock Text="{DynamicResource Reports_Subtitle}" Foreground="#8A8D98" Margin="0,5,0,0"/>
             </StackPanel>
 
             <StackPanel Grid.Column="1" VerticalAlignment="Center" Orientation="Horizontal">
-                <TextBlock Text="Zakres czasowy:" Foreground="#8A8D98" FontSize="14" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                <TextBlock Text="{DynamicResource Reports_Period}" Foreground="#8A8D98" FontSize="14" VerticalAlignment="Center" Margin="0,0,10,0"/>
                 <ComboBox ItemsSource="{Binding AvailablePeriods}" 
                           SelectedIndex="{Binding SelectedPeriodIndex, Mode=TwoWay}"
                           Width="200"/>
@@ -34,10 +34,10 @@
                 <Border Background="#22242C" CornerRadius="10" Padding="20" Margin="0,0,20,20" BorderBrush="#2D3038" BorderThickness="1">
                     <StackPanel>
                         <ui:SymbolIcon Symbol="DocumentBulletList24" FontSize="32" Foreground="#5B59E8" Margin="0,0,0,10" HorizontalAlignment="Left"/>
-                        <TextBlock Text="Statusy zamówień" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,10"/>
-                        <TextBlock Text="Generuje raport wszystkich zamówień, pogrupowanych według ich obecnego statusu operacyjnego." 
+                        <TextBlock Text="{DynamicResource Reports_OrderStatusTitle}" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                        <TextBlock Text="{DynamicResource Reports_OrderStatusDesc}" 
                                    Foreground="#8A8D98" TextWrapping="Wrap" Margin="0,0,0,20"/>
-                        <ui:Button Content="Generuj PDF" Appearance="Primary" HorizontalAlignment="Stretch" Command="{Binding GenerateOrdersReportCommand}"/>
+                        <ui:Button Content="{DynamicResource Reports_GeneratePDF}" Appearance="Primary" HorizontalAlignment="Stretch" Command="{Binding GenerateOrdersReportCommand}"/>
                     </StackPanel>
                 </Border>
 
@@ -45,8 +45,8 @@
                 <Border Background="#22242C" CornerRadius="10" Padding="20" Margin="0,0,20,20" BorderBrush="#2D3038" BorderThickness="1">
                     <StackPanel>
                         <ui:SymbolIcon Symbol="Person24" FontSize="32" Foreground="#ED6262" Margin="0,0,0,10" HorizontalAlignment="Left"/>
-                        <TextBlock Text="Zakupy klienta" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,10"/>
-                        <TextBlock Text="Wybierz klienta z bazy i wygeneruj imienny wykaz jego wszystkich zakupów (zamówienia i zlecenia)." 
+                        <TextBlock Text="{DynamicResource Reports_ClientPurchasesTitle}" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                        <TextBlock Text="{DynamicResource Reports_ClientPurchasesDesc}" 
                                    Foreground="#8A8D98" TextWrapping="Wrap" Margin="0,0,0,10"/>
                         
                         <ComboBox ItemsSource="{Binding AvailableClients}" 
@@ -54,7 +54,7 @@
                                   DisplayMemberPath="Display"
                                   Margin="0,0,0,15" />
 
-                        <ui:Button Content="Generuj PDF" Appearance="Primary" HorizontalAlignment="Stretch" Command="{Binding GenerateClientReportCommand}"/>
+                        <ui:Button Content="{DynamicResource Reports_GeneratePDF}" Appearance="Primary" HorizontalAlignment="Stretch" Command="{Binding GenerateClientReportCommand}"/>
                     </StackPanel>
                 </Border>
 
@@ -62,10 +62,10 @@
                 <Border Background="#22242C" CornerRadius="10" Padding="20" Margin="0,0,20,20" BorderBrush="#2D3038" BorderThickness="1">
                     <StackPanel>
                         <ui:SymbolIcon Symbol="DataBarHorizontal24" FontSize="32" Foreground="#4CAF50" Margin="0,0,0,10" HorizontalAlignment="Left"/>
-                        <TextBlock Text="Rankingi sprzedaży" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,10"/>
-                        <TextBlock Text="Porównawczy raport sprzedaży ze statystykami: najlepsi pracownicy, najlepiej prosperujące salony i wykresy." 
+                        <TextBlock Text="{DynamicResource Reports_SalesRankingsTitle}" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                        <TextBlock Text="{DynamicResource Reports_SalesRankingsDesc}" 
                                    Foreground="#8A8D98" TextWrapping="Wrap" Margin="0,0,0,20"/>
-                        <ui:Button Content="Generuj PDF" Appearance="Primary" HorizontalAlignment="Stretch" Command="{Binding GenerateRankingsReportCommand}"/>
+                        <ui:Button Content="{DynamicResource Reports_GeneratePDF}" Appearance="Primary" HorizontalAlignment="Stretch" Command="{Binding GenerateRankingsReportCommand}"/>
                     </StackPanel>
                 </Border>
 
@@ -73,10 +73,10 @@
                 <Border Background="#22242C" CornerRadius="10" Padding="20" Margin="0,0,20,20" BorderBrush="#2D3038" BorderThickness="1">
                     <StackPanel>
                         <ui:SymbolIcon Symbol="Database24" FontSize="32" Foreground="#FF9800" Margin="0,0,0,10" HorizontalAlignment="Left"/>
-                        <TextBlock Text="Kompleksowy raport" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,10"/>
-                        <TextBlock Text="Pełny, szczegółowy wykaz wszystkich salonów, pracowników, dostępnych pojazdów i historii klientów." 
+                        <TextBlock Text="{DynamicResource Reports_FullDumpTitle}" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                        <TextBlock Text="{DynamicResource Reports_FullDumpDesc}" 
                                    Foreground="#8A8D98" TextWrapping="Wrap" Margin="0,0,0,20"/>
-                        <ui:Button Content="Generuj PDF" Appearance="Primary" HorizontalAlignment="Stretch" Command="{Binding GenerateFullDumpReportCommand}"/>
+                        <ui:Button Content="{DynamicResource Reports_GeneratePDF}" Appearance="Primary" HorizontalAlignment="Stretch" Command="{Binding GenerateFullDumpReportCommand}"/>
                     </StackPanel>
                 </Border>
 
@@ -84,10 +84,10 @@
                 <Border Background="#22242C" CornerRadius="10" Padding="20" Margin="0,0,20,20" BorderBrush="#2D3038" BorderThickness="1">
                     <StackPanel>
                         <ui:SymbolIcon Symbol="Money24" FontSize="32" Foreground="#8BC34A" Margin="0,0,0,10" HorizontalAlignment="Left"/>
-                        <TextBlock Text="Przychody miesięczne" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,10"/>
-                        <TextBlock Text="Zestawienie słupkowe obrazujące przychody salonów z podziałem na poszczególne miesiące sprzedaży." 
+                        <TextBlock Text="{DynamicResource Reports_FinancialReportTitle}" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                        <TextBlock Text="{DynamicResource Reports_FinancialReportDesc}" 
                                    Foreground="#8A8D98" TextWrapping="Wrap" Margin="0,0,0,20"/>
-                        <ui:Button Content="Generuj PDF" Appearance="Primary" HorizontalAlignment="Stretch" Command="{Binding GenerateFinancialReportCommand}"/>
+                        <ui:Button Content="{DynamicResource Reports_GeneratePDF}" Appearance="Primary" HorizontalAlignment="Stretch" Command="{Binding GenerateFinancialReportCommand}"/>
                     </StackPanel>
                 </Border>
 
@@ -95,10 +95,10 @@
                 <Border Background="#22242C" CornerRadius="10" Padding="20" Margin="0,0,20,20" BorderBrush="#2D3038" BorderThickness="1">
                     <StackPanel>
                         <ui:SymbolIcon Symbol="VehicleCar24" FontSize="32" Foreground="#03A9F4" Margin="0,0,0,10" HorizontalAlignment="Left"/>
-                        <TextBlock Text="Popularność modeli" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,10"/>
-                        <TextBlock Text="Wykres prezentujący modele i marki samochodów, które cieszą się największym zainteresowaniem wśród klientów." 
+                        <TextBlock Text="{DynamicResource Reports_TrendsReportTitle}" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                        <TextBlock Text="{DynamicResource Reports_TrendsReportDesc}" 
                                    Foreground="#8A8D98" TextWrapping="Wrap" Margin="0,0,0,20"/>
-                        <ui:Button Content="Generuj PDF" Appearance="Primary" HorizontalAlignment="Stretch" Command="{Binding GenerateTrendsReportCommand}"/>
+                        <ui:Button Content="{DynamicResource Reports_GeneratePDF}" Appearance="Primary" HorizontalAlignment="Stretch" Command="{Binding GenerateTrendsReportCommand}"/>
                     </StackPanel>
                 </Border>
 
@@ -106,10 +106,10 @@
                 <Border Background="#22242C" CornerRadius="10" Padding="20" Margin="0,0,20,20" BorderBrush="#2D3038" BorderThickness="1">
                     <StackPanel>
                         <ui:SymbolIcon Symbol="Wrench24" FontSize="32" Foreground="#9C27B0" Margin="0,0,0,10" HorizontalAlignment="Left"/>
-                        <TextBlock Text="Wydajność serwisu" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,10"/>
-                        <TextBlock Text="Analiza wykonanych zleceń oraz graficzne zestawienie pracowników, którzy ukończyli najwięcej napraw i modyfikacji." 
+                        <TextBlock Text="{DynamicResource Reports_ServiceReportTitle}" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                        <TextBlock Text="{DynamicResource Reports_ServiceReportDesc}" 
                                    Foreground="#8A8D98" TextWrapping="Wrap" Margin="0,0,0,20"/>
-                        <ui:Button Content="Generuj PDF" Appearance="Primary" HorizontalAlignment="Stretch" Command="{Binding GenerateServiceReportCommand}"/>
+                        <ui:Button Content="{DynamicResource Reports_GeneratePDF}" Appearance="Primary" HorizontalAlignment="Stretch" Command="{Binding GenerateServiceReportCommand}"/>
                     </StackPanel>
                 </Border>
             </WrapPanel>
@@ -118,9 +118,9 @@
         <Popup x:Name="TourPopup" AllowsTransparency="True" StaysOpen="True" Placement="Bottom">
             <Border Background="#2D3038" BorderBrush="#5B59E8" BorderThickness="2" CornerRadius="8" Padding="15" Width="280">
                 <StackPanel>
-                    <TextBlock x:Name="TourText" Text="Tekst samouczka" TextWrapping="Wrap" Foreground="White" FontSize="14" Margin="0,0,0,10"/>
+                    <TextBlock x:Name="TourText" Text="{DynamicResource Tour_DefaultText}" TextWrapping="Wrap" Foreground="White" FontSize="14" Margin="0,0,0,10"/>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                        <ui:Button x:Name="TourNextBtn" Content="Dalej" Appearance="Primary" Click="TourNext_Click"/>
+                        <ui:Button x:Name="TourNextBtn" Content="{DynamicResource Tour_Next}" Appearance="Primary" Click="TourNext_Click"/>
                     </StackPanel>
                 </StackPanel>
             </Border>

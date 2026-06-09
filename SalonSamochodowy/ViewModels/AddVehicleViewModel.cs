@@ -108,7 +108,7 @@ namespace SalonSamochodowy.ViewModels
             }
             catch (Exception ex)
             {
-                ShowError?.Invoke($"Nie udało się pobrać danych słownikowych:\n{ex.Message}");
+                ShowError?.Invoke(string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Vehicles_DictionaryLoadError"), ex.Message));
             }
         }
 
@@ -133,12 +133,12 @@ namespace SalonSamochodowy.ViewModels
         {
             if (string.IsNullOrWhiteSpace(NewVehicle.VIN))
             {
-                ShowError?.Invoke("Uzupełnij numer VIN.");
+                ShowError?.Invoke(SalonSamochodowy.Services.LocalizationHelper.GetString("Vehicles_ValidationVIN"));
                 return;
             }
             if (SelectedModel == null || SelectedTrim == null || SelectedEngine == null || SelectedColor == null)
             {
-                ShowError?.Invoke("Wybierz model, wersję wyposażenia, silnik i kolor.");
+                ShowError?.Invoke(SalonSamochodowy.Services.LocalizationHelper.GetString("Vehicles_ValidationSpecs"));
                 return;
             }
 
@@ -151,7 +151,7 @@ namespace SalonSamochodowy.ViewModels
                 var existing = await uow.Vehicles.FindAsync(v => v.VIN == NewVehicle.VIN.Trim());
                 if (existing.Any())
                 {
-                    ShowError?.Invoke($"Pojazd z VIN \"{NewVehicle.VIN}\" już istnieje w bazie.");
+                    ShowError?.Invoke(string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Vehicles_VINExists"), NewVehicle.VIN));
                     return;
                 }
 
@@ -174,13 +174,13 @@ namespace SalonSamochodowy.ViewModels
 
                 await uow.CompleteAsync();
 
-                ShowSuccess?.Invoke("Pojazd został poprawnie dodany do katalogu.");
+                ShowSuccess?.Invoke(SalonSamochodowy.Services.LocalizationHelper.GetString("Vehicles_SuccessAdded"));
                 VehicleAdded?.Invoke();
                 CloseRequested?.Invoke();
             }
             catch (Exception ex)
             {
-                ShowError?.Invoke($"Błąd podczas zapisu: {ex.Message}\n\n{ex.InnerException?.Message}");
+                ShowError?.Invoke(string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Vehicles_SaveError"), ex.Message, ex.InnerException?.Message ?? ""));
             }
         }
 

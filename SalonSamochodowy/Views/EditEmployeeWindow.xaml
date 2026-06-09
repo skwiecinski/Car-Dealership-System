@@ -2,7 +2,7 @@
                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                  xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-                 Title="Edytuj dane pracownika"
+                 Title="{DynamicResource Admin_EditEmployeeTitle}"
                  Height="650" Width="460"
                  WindowStartupLocation="CenterOwner"
                  Background="#16181D"
@@ -10,14 +10,14 @@
                  ExtendsContentIntoTitleBar="True"
                  ResizeMode="NoResize">
     <Grid>
-        <ui:TitleBar Title="Edytuj dane pracownika" VerticalAlignment="Top"
+        <ui:TitleBar Title="{DynamicResource Admin_EditEmployeeTitle}" VerticalAlignment="Top"
                      ShowMaximize="False" ShowMinimize="False"/>
 
         <StackPanel Margin="32,56,32,24">
 
-            <TextBlock Text="Edytuj dane pracownika"
+            <TextBlock Text="{DynamicResource Admin_EditEmployeeTitle}"
                        FontSize="18" FontWeight="Bold" Margin="0,0,0,4"/>
-            <TextBlock Text="Zaktualizuj dane personalne, rolę oraz opcjonalnie hasło."
+            <TextBlock Text="{DynamicResource Admin_EditEmployeeSubtitle}"
                        FontSize="12" Foreground="#8A8D98" Margin="0,0,0,20"/>
 
             <Grid Margin="0,0,0,12">
@@ -27,30 +27,55 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <StackPanel Grid.Column="0">
-                    <TextBlock Text="Imię" Foreground="#8A8D98" FontSize="12" Margin="0,0,0,4"/>
+                    <TextBlock Text="{DynamicResource Admin_FirstName}" Foreground="#8A8D98" FontSize="12" Margin="0,0,0,4"/>
                     <ui:TextBox Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged}"/>
                 </StackPanel>
                 <StackPanel Grid.Column="2">
-                    <TextBlock Text="Nazwisko" Foreground="#8A8D98" FontSize="12" Margin="0,0,0,4"/>
+                    <TextBlock Text="{DynamicResource Admin_LastName}" Foreground="#8A8D98" FontSize="12" Margin="0,0,0,4"/>
                     <ui:TextBox Text="{Binding LastName, UpdateSourceTrigger=PropertyChanged}"/>
                 </StackPanel>
             </Grid>
 
-            <TextBlock Text="E-mail (login)" Foreground="#8A8D98" FontSize="12" Margin="0,0,0,4"/>
+            <TextBlock Text="{DynamicResource Admin_Email}" Foreground="#8A8D98" FontSize="12" Margin="0,0,0,4"/>
             <ui:TextBox Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}"
                         Margin="0,0,0,12"/>
 
-            <TextBlock Text="Rola w systemie" Foreground="#8A8D98" FontSize="12" Margin="0,0,0,4"/>
+            <TextBlock Text="{DynamicResource Admin_Role}" Foreground="#8A8D98" FontSize="12" Margin="0,0,0,4"/>
             <ComboBox Margin="0,0,0,12"
                       ItemsSource="{Binding AvailableRoles}"
-                      SelectedItem="{Binding RoleName, Mode=TwoWay}"/>
+                      SelectedItem="{Binding RoleName, Mode=TwoWay}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock>
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding}" Value="Sprzedawca">
+                                            <Setter Property="Text" Value="{DynamicResource Role_Salesman}" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding}" Value="Serwisant">
+                                            <Setter Property="Text" Value="{DynamicResource Role_Mechanic}" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding}" Value="Kierownik">
+                                            <Setter Property="Text" Value="{DynamicResource Role_Manager}" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding}" Value="Administrator">
+                                            <Setter Property="Text" Value="{DynamicResource Role_Admin}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
 
-            <TextBlock Text="Salon (wymagany dla pracowników)" Foreground="#8A8D98" FontSize="12" Margin="0,0,0,4"/>
+            <TextBlock Text="{DynamicResource Admin_DealershipRequired}" Foreground="#8A8D98" FontSize="12" Margin="0,0,0,4"/>
             <ComboBox Margin="0,0,0,12"
                       ItemsSource="{Binding AvailableDealerships}"
                       SelectedItem="{Binding SelectedDealership, Mode=TwoWay}"/>
 
-            <TextBlock Text="Nowe hasło (pozostaw puste, by nie zmieniać)" Foreground="#8A8D98" FontSize="12" Margin="0,0,0,4"/>
+            <TextBlock Text="{DynamicResource Admin_NewPassword}" Foreground="#8A8D98" FontSize="12" Margin="0,0,0,4"/>
             <ui:PasswordBox PasswordChanged="PasswordBox_PasswordChanged"
                             PlaceholderText="••••••••"
                             Margin="0,0,0,28"/>
@@ -62,11 +87,11 @@
                        Margin="0,0,0,12"/>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <ui:Button Content="Anuluj"
+                <ui:Button Content="{DynamicResource Global_Cancel}"
                            Appearance="Secondary"
                            Padding="16,6" Margin="0,0,8,0"
                            Command="{Binding CancelCommand}"/>
-                <ui:Button Content="Zapisz zmiany"
+                <ui:Button Content="{DynamicResource Global_SaveChanges}"
                            Appearance="Primary"
                            Icon="{ui:SymbolIcon Save24}"
                            Padding="16,6"

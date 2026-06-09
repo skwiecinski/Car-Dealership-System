@@ -3,7 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:local="clr-namespace:SalonSamochodowy.Views"
-    Title="Edytuj pojazd" Width="500" Height="620"
+    Title="{DynamicResource Vehicles_EditTitle}" Width="500" Height="620"
     WindowStartupLocation="CenterOwner"
     ResizeMode="NoResize" ExtendsContentIntoTitleBar="True">
 
@@ -46,10 +46,10 @@
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="18,0">
                 <Border Width="8" Height="8" CornerRadius="4"
                         Background="{StaticResource Accent}" Margin="0,0,10,0"/>
-                <TextBlock Text="Katalog Pojazdów"
+                <TextBlock Text="{DynamicResource Vehicles_Catalog}"
                            Foreground="{StaticResource TextPrimary}"
                            FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center"/>
-                <TextBlock Text=" · Edycja pojazdu"
+                <TextBlock Text="{DynamicResource Vehicles_Editing}"
                            Foreground="{StaticResource TextMuted}"
                            FontSize="13" VerticalAlignment="Center"/>
             </StackPanel>
@@ -61,21 +61,21 @@
 
                 <Border Style="{StaticResource SectionCard}">
                     <StackPanel>
-                        <TextBlock Text="DANE IDENTYFIKACYJNE" Style="{StaticResource SectionHeader}"/>
+                        <TextBlock Text="{DynamicResource Vehicles_IdentityData}" Style="{StaticResource SectionHeader}"/>
 
-                        <TextBlock Text="Numer VIN (17 znaków)"
+                        <TextBlock Text="{DynamicResource Vehicles_VINLabel}"
                                    Foreground="{StaticResource TextMuted}" FontSize="12" Margin="0,0,0,5"/>
                         <ui:TextBox Text="{Binding NewVehicle.VIN, UpdateSourceTrigger=PropertyChanged}"
                                     MaxLength="17" FontFamily="Segoe UI Mono"
                                     PlaceholderText="np. WBA3A5G59FNS00000"
                                     Margin="0,0,0,15"/>
 
-                        <TextBlock Text="Przebieg (km)"
+                        <TextBlock Text="{DynamicResource Vehicles_Mileage}"
                                    Foreground="{StaticResource TextMuted}" FontSize="12" Margin="0,0,0,5"/>
                         <ui:TextBox Text="{Binding NewVehicle.Mileage, UpdateSourceTrigger=PropertyChanged}"
                                     PlaceholderText="0" Margin="0,0,0,15"/>
 
-                        <CheckBox Content="Pojazd używany"
+                        <CheckBox Content="{DynamicResource Vehicles_IsUsed}"
                                   IsChecked="{Binding NewVehicle.IsUsed}"
                                   Foreground="{StaticResource TextPrimary}" Margin="0,0,0,15"/>
                     </StackPanel>
@@ -83,9 +83,9 @@
 
                 <Border Style="{StaticResource SectionCard}">
                     <StackPanel>
-                        <TextBlock Text="SPECYFIKACJA" Style="{StaticResource SectionHeader}"/>
+                        <TextBlock Text="{DynamicResource Vehicles_Specification}" Style="{StaticResource SectionHeader}"/>
 
-                        <TextBlock Text="Model pojazdu"
+                        <TextBlock Text="{DynamicResource Vehicles_ModelLabel}"
                                    Foreground="{StaticResource TextMuted}" FontSize="12" Margin="0,0,0,5"/>
                         <ComboBox ItemsSource="{Binding AvailableModels}"
                                   SelectedItem="{Binding SelectedModel}"
@@ -100,7 +100,7 @@
                             </ComboBox.ItemTemplate>
                         </ComboBox>
 
-                        <TextBlock Text="Wersja wyposażenia"
+                        <TextBlock Text="{DynamicResource Vehicles_TrimLevel}"
                                    Foreground="{StaticResource TextMuted}" FontSize="12" Margin="0,0,0,5"/>
                         <ComboBox ItemsSource="{Binding AvailableTrims}"
                                   SelectedItem="{Binding SelectedTrim}"
@@ -117,7 +117,7 @@
                             </ComboBox.ItemTemplate>
                         </ComboBox>
 
-                        <TextBlock Text="Silnik"
+                        <TextBlock Text="{DynamicResource Vehicles_Engine}"
                                    Foreground="{StaticResource TextMuted}" FontSize="12" Margin="0,0,0,5"/>
                         <ComboBox ItemsSource="{Binding AvailableEngines}"
                                   SelectedItem="{Binding SelectedEngine}"
@@ -144,10 +144,10 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <ui:Button Grid.Column="0" Content="Anuluj"
+                    <ui:Button Grid.Column="0" Content="{DynamicResource Global_Cancel}"
                                Command="{Binding CloseCommand}"
                                HorizontalAlignment="Stretch"/>
-                    <ui:Button Grid.Column="2" Content="Zapisz zmiany"
+                    <ui:Button Grid.Column="2" Content="{DynamicResource Global_SaveChanges}"
                                Appearance="Primary"
                                Command="{Binding SaveCommand}"
                                HorizontalAlignment="Stretch"/>

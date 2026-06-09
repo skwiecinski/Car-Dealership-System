@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using SalonSamochodowy.Entities;
 using SalonSamochodowy.Services;
 
@@ -21,17 +22,28 @@ namespace SalonSamochodowy.ViewModels
         public SalesRecordsViewModel(IOrderService orderService)
         {
             _orderService = orderService;
+
+            WeakReferenceMessenger.Default.Register(this, (SalesRecordsViewModel r, SalonSamochodowy.Messages.LanguageChangedMessage m) =>
+            {
+                r.BuildFilterLists();
+                r.ApplyFilters();
+                
+                // Refresh Records localization
+                var temp = r.Records.ToList();
+                r.Records.Clear();
+                foreach (var rec in temp) r.Records.Add(rec);
+            });
         }
 
         public ObservableCollection<SalesRecordRow> Records { get; } = new();
 
-        public ObservableCollection<string> StatusFilters { get; } = new();
-        public ObservableCollection<string> DealershipFilters { get; } = new();
-        public ObservableCollection<string> AdvisorFilters { get; } = new();
+        public ObservableCollection<FilterItem> StatusFilters { get; } = new();
+        public ObservableCollection<FilterItem> DealershipFilters { get; } = new();
+        public ObservableCollection<FilterItem> AdvisorFilters { get; } = new();
 
-        [ObservableProperty] private string? selectedStatus;
-        [ObservableProperty] private string? selectedDealership;
-        [ObservableProperty] private string? selectedAdvisor;
+        [ObservableProperty] private FilterItem? selectedStatus;
+        [ObservableProperty] private FilterItem? selectedDealership;
+        [ObservableProperty] private FilterItem? selectedAdvisor;
         [ObservableProperty] private DateTime? dateFrom;
         [ObservableProperty] private DateTime? dateTo;
 
@@ -41,9 +53,9 @@ namespace SalonSamochodowy.ViewModels
 
         public event Action<string>? LoadFailed;
 
-        private const string AllStatuses = "Wszystkie statusy";
-        private const string AllDealerships = "Wszystkie salony";
-        private const string AllAdvisors = "Wszyscy doradcy";
+        private string AllStatuses => SalonSamochodowy.Services.LocalizationHelper.GetString("Filter_AllStatuses");
+        private string AllDealerships => SalonSamochodowy.Services.LocalizationHelper.GetString("Filter_AllDealerships");
+        private string AllAdvisors => SalonSamochodowy.Services.LocalizationHelper.GetString("Filter_AllAdvisors");
 
         public async Task LoadDataAsync()
         {
@@ -64,7 +76,8 @@ namespace SalonSamochodowy.ViewModels
             }
             catch (Exception ex)
             {
-                LoadFailed?.Invoke($"Nie udało się załadować ewidencji sprzedaży:\n{ex.Message}\n\n{ex.InnerException?.Message}");
+                string msg = SalonSamochodowy.Services.LocalizationHelper.GetString("Msg_LoadSalesRecordsError");
+                LoadFailed?.Invoke(string.Format(msg, ex.Message, ex.InnerException?.Message));
             }
             finally
             {
@@ -74,30 +87,34 @@ namespace SalonSamochodowy.ViewModels
 
         private void BuildFilterLists()
         {
+            var oldStatus = SelectedStatus?.Value;
+            var oldDealership = SelectedDealership?.Value;
+            var oldAdvisor = SelectedAdvisor?.Value;
+
             StatusFilters.Clear();
-            StatusFilters.Add(AllStatuses);
+            StatusFilters.Add(new FilterItem(null, AllStatuses));
             foreach (var s in _allRecords.Select(r => r.Status).Distinct().OrderBy(s => s))
-                StatusFilters.Add(s);
+                StatusFilters.Add(new FilterItem(s, SalonSamochodowy.Services.LocalizationHelper.GetString(GetStatusKey(s))));
 
             DealershipFilters.Clear();
-            DealershipFilters.Add(AllDealerships);
+            DealershipFilters.Add(new FilterItem(null, AllDealerships));
             foreach (var d in _allRecords.Select(r => r.DealershipName).Distinct().OrderBy(d => d))
-                DealershipFilters.Add(d);
+                DealershipFilters.Add(new FilterItem(d, d));
 
             AdvisorFilters.Clear();
-            AdvisorFilters.Add(AllAdvisors);
+            AdvisorFilters.Add(new FilterItem(null, AllAdvisors));
             foreach (var a in _allRecords.Select(r => r.AdvisorName).Distinct().OrderBy(a => a))
-                AdvisorFilters.Add(a);
+                AdvisorFilters.Add(new FilterItem(a, a));
 
-            // Domyslne wartosci
-            if (SelectedStatus == null) SelectedStatus = AllStatuses;
-            if (SelectedDealership == null) SelectedDealership = AllDealerships;
-            if (SelectedAdvisor == null) SelectedAdvisor = AllAdvisors;
+            // Domyslne wartosci i przywracanie wyboru
+            SelectedStatus = StatusFilters.FirstOrDefault(x => x.Value == oldStatus) ?? StatusFilters.First();
+            SelectedDealership = DealershipFilters.FirstOrDefault(x => x.Value == oldDealership) ?? DealershipFilters.First();
+            SelectedAdvisor = AdvisorFilters.FirstOrDefault(x => x.Value == oldAdvisor) ?? AdvisorFilters.First();
         }
 
-        partial void OnSelectedStatusChanged(string? value) => ApplyFilters();
-        partial void OnSelectedDealershipChanged(string? value) => ApplyFilters();
-        partial void OnSelectedAdvisorChanged(string? value) => ApplyFilters();
+        partial void OnSelectedStatusChanged(FilterItem? value) => ApplyFilters();
+        partial void OnSelectedDealershipChanged(FilterItem? value) => ApplyFilters();
+        partial void OnSelectedAdvisorChanged(FilterItem? value) => ApplyFilters();
         partial void OnDateFromChanged(DateTime? value) => ApplyFilters();
         partial void OnDateToChanged(DateTime? value) => ApplyFilters();
 
@@ -105,14 +122,14 @@ namespace SalonSamochodowy.ViewModels
         {
             IEnumerable<SalesRecordRow> filtered = _allRecords;
 
-            if (!string.IsNullOrEmpty(SelectedStatus) && SelectedStatus != AllStatuses)
-                filtered = filtered.Where(r => r.Status == SelectedStatus);
+            if (SelectedStatus?.Value != null)
+                filtered = filtered.Where(r => r.Status == SelectedStatus.Value);
 
-            if (!string.IsNullOrEmpty(SelectedDealership) && SelectedDealership != AllDealerships)
-                filtered = filtered.Where(r => r.DealershipName == SelectedDealership);
+            if (SelectedDealership?.Value != null)
+                filtered = filtered.Where(r => r.DealershipName == SelectedDealership.Value);
 
-            if (!string.IsNullOrEmpty(SelectedAdvisor) && SelectedAdvisor != AllAdvisors)
-                filtered = filtered.Where(r => r.AdvisorName == SelectedAdvisor);
+            if (SelectedAdvisor?.Value != null)
+                filtered = filtered.Where(r => r.AdvisorName == SelectedAdvisor.Value);
 
             if (DateFrom.HasValue)
                 filtered = filtered.Where(r => r.OrderDate >= DateFrom.Value.Date);
@@ -129,16 +146,17 @@ namespace SalonSamochodowy.ViewModels
             EmptyVisibility = Records.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 
             var totalValue = list.Sum(r => r.FinalPrice);
-            var culture = new System.Globalization.CultureInfo("pl-PL");
-            SummaryText = $"Liczba transakcji: {list.Count}   •   Łączna wartość: {totalValue.ToString("C0", culture)}";
+            var culture = new System.Globalization.CultureInfo(SalonSamochodowy.Services.LocalizationHelper.GetString("Culture_CurrencyCode"));
+            string summaryFmt = SalonSamochodowy.Services.LocalizationHelper.GetString("SalesRecords_Summary");
+            SummaryText = string.Format(summaryFmt, list.Count, totalValue.ToString("C0", culture));
         }
 
         [RelayCommand]
         private void ClearFilters()
         {
-            SelectedStatus = AllStatuses;
-            SelectedDealership = AllDealerships;
-            SelectedAdvisor = AllAdvisors;
+            SelectedStatus = StatusFilters.FirstOrDefault();
+            SelectedDealership = DealershipFilters.FirstOrDefault();
+            SelectedAdvisor = AdvisorFilters.FirstOrDefault();
             DateFrom = null;
             DateTo = null;
         }
@@ -151,19 +169,19 @@ namespace SalonSamochodowy.ViewModels
             var model = o.Vehicle?.Trim?.Model;
             var vehicleName = model != null
                 ? $"{model.Brand} {model.ModelName} {o.Vehicle?.Trim?.TrimName}".Trim()
-                : "Nieznany pojazd";
+                : SalonSamochodowy.Services.LocalizationHelper.GetString("SalesRecords_UnknownVehicle");
 
             var clientUser = o.Client?.User;
             var clientName = clientUser != null
                 ? $"{clientUser.FirstName} {clientUser.LastName}".Trim()
-                : "Nieznany klient";
+                : SalonSamochodowy.Services.LocalizationHelper.GetString("SalesRecords_UnknownClient");
 
             var workerUser = o.Worker?.User;
             var advisorName = workerUser != null
                 ? $"{workerUser.FirstName} {workerUser.LastName}".Trim()
                 : "—";
 
-            var culture = new System.Globalization.CultureInfo("pl-PL");
+            var culture = new System.Globalization.CultureInfo(SalonSamochodowy.Services.LocalizationHelper.GetString("Culture_CurrencyCode"));
 
             return new SalesRecordRow
             {
@@ -192,6 +210,18 @@ namespace SalonSamochodowy.ViewModels
             OrderStatuses.Canceled                              => "#ED6262",
             _                                                   => "#8A8D98",
         };
+
+        public static string GetStatusKey(string dbStatus) => dbStatus switch
+        {
+            OrderStatuses.Pending => "Status_Pending",
+            OrderStatuses.InProgress => "Status_InProgress",
+            OrderStatuses.Finished => "Status_Finished",
+            OrderStatuses.FinishedAlt => "Status_FinishedAlt",
+            OrderStatuses.Reserved => "Status_Reserved",
+            OrderStatuses.Canceled => "Status_Canceled",
+            "Nowe" => "Status_New",
+            _ => $"Status_{dbStatus.Replace(" ", "")}"
+        };
     }
 
     public class SalesRecordRow
@@ -210,5 +240,20 @@ namespace SalonSamochodowy.ViewModels
         public string FinalPriceText { get; set; } = "";
         public string Status         { get; set; } = "";
         public string StatusColor    { get; set; } = "";
+        public string StatusDisplay => string.IsNullOrEmpty(Status) ? "" : SalonSamochodowy.Services.LocalizationHelper.GetString(SalesRecordsViewModel.GetStatusKey(Status));
+    }
+
+    public class FilterItem
+    {
+        public string? Value { get; }
+        public string DisplayValue { get; }
+        
+        public FilterItem(string? value, string displayValue)
+        {
+            Value = value;
+            DisplayValue = displayValue;
+        }
+
+        public override string ToString() => DisplayValue;
     }
 }

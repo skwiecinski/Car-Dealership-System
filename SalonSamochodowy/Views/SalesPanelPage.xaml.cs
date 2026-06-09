@@ -21,13 +21,13 @@ namespace SalonSamochodowy.Views
 
             _vm.LoadFailed += msg => System.Windows.MessageBox.Show(
                 msg, 
-                "Błąd Panelu Sprzedaży",
+                SalonSamochodowy.Services.LocalizationHelper.GetString("SalesPanel_ErrorTitle"),
                 System.Windows.MessageBoxButton.OK,
                 System.Windows.MessageBoxImage.Error);
 
             _vm.OperationCompleted += msg => System.Windows.MessageBox.Show(
                 msg, 
-                "Operacja Zakończona",
+                SalonSamochodowy.Services.LocalizationHelper.GetString("SalesPanel_SuccessTitle"),
                 System.Windows.MessageBoxButton.OK,
                 System.Windows.MessageBoxImage.Information);
 
@@ -35,7 +35,7 @@ namespace SalonSamochodowy.Views
 
             WeakReferenceMessenger.Default.Register<StartTourRequestMessage>(this, (r, m) =>
             {
-                if (m.PageName == "Trwające Sprzedaże" && this.IsVisible)
+                if (m.PageName == nameof(SalesPanelPage) && this.IsVisible)
                 {
                     m.Reply(true);
                     StartTour();
@@ -56,17 +56,17 @@ namespace SalonSamochodowy.Views
             {
                 case 0:
                     TourPopup.PlacementTarget = ColReserved;
-                    TourText.Text = "Krok 1/3: Tutaj pojawiają się pojazdy dopiero co zarezerwowane przez klientów.";
-                    TourNextBtn.Content = "Dalej";
+                    TourText.Text = SalonSamochodowy.Services.LocalizationHelper.GetString("Tour_SalesPanel_Step1");
+                    TourNextBtn.Content = SalonSamochodowy.Services.LocalizationHelper.GetString("Tour_Next");
                     break;
                 case 1:
                     TourPopup.PlacementTarget = ColServicing;
-                    TourText.Text = "Krok 2/3: Jeśli klient zażyczył sobie usług (np. oklejenie), pojazd trafia tutaj do serwisu.";
+                    TourText.Text = SalonSamochodowy.Services.LocalizationHelper.GetString("Tour_SalesPanel_Step2");
                     break;
                 case 2:
                     TourPopup.PlacementTarget = ColReady;
-                    TourText.Text = "Krok 3/3: Kiedy wszystkie usługi są wykonane, pojazd czeka tu na sfinalizowanie odbioru.";
-                    TourNextBtn.Content = "Zakończ";
+                    TourText.Text = SalonSamochodowy.Services.LocalizationHelper.GetString("Tour_SalesPanel_Step3");
+                    TourNextBtn.Content = SalonSamochodowy.Services.LocalizationHelper.GetString("Tour_Finish");
                     break;
                 default:
                     return;

@@ -11,14 +11,14 @@
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0" Margin="0,0,0,20">
-            <TextBlock Text="Administracja" FontSize="24" FontWeight="Bold" Foreground="#E2E2E2"/>
-            <TextBlock Text="Zarządzanie kontami pracowników i salonami" Foreground="#8A8D98" Margin="0,5,0,0"/>
+            <TextBlock Text="{DynamicResource Admin_PageTitle}" FontSize="24" FontWeight="Bold" Foreground="#E2E2E2"/>
+            <TextBlock Text="{DynamicResource Admin_Subtitle}" Foreground="#8A8D98" Margin="0,5,0,0"/>
         </StackPanel>
 
         <TabControl x:Name="AdminTabs" Grid.Row="1" Background="Transparent" BorderThickness="0" Foreground="White">
 
             <!-- ====== TAB: UŻYTKOWNICY ====== -->
-            <TabItem Header="Użytkownicy">
+            <TabItem Header="{DynamicResource Admin_TabUsers}">
                 <Border Background="#22242C" CornerRadius="0,10,10,10" Padding="20" BorderBrush="#2D3038" BorderThickness="1">
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -27,7 +27,7 @@
                         </Grid.ColumnDefinitions>
 
                         <StackPanel Grid.Column="0" Margin="0,0,30,0">
-                            <TextBlock Text="Dodaj nowego pracownika" FontSize="18" FontWeight="Bold" Margin="0,0,0,20"/>
+                            <TextBlock Text="{DynamicResource Admin_AddEmployeeTitle}" FontSize="18" FontWeight="Bold" Margin="0,0,0,20"/>
 
                             <Grid Margin="0,0,0,15">
                                 <Grid.ColumnDefinitions>
@@ -36,45 +36,45 @@
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
                                 <StackPanel Grid.Column="0">
-                                    <TextBlock Text="Imię" Foreground="#8A8D98" Margin="0,0,0,5"/>
+                                    <TextBlock Text="{DynamicResource Admin_FirstName}" Foreground="#8A8D98" Margin="0,0,0,5"/>
                                     <ui:TextBox Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Adam"/>
                                 </StackPanel>
                                 <StackPanel Grid.Column="2">
-                                    <TextBlock Text="Nazwisko" Foreground="#8A8D98" Margin="0,0,0,5"/>
+                                    <TextBlock Text="{DynamicResource Admin_LastName}" Foreground="#8A8D98" Margin="0,0,0,5"/>
                                     <ui:TextBox Text="{Binding LastName, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Nowak"/>
                                 </StackPanel>
                             </Grid>
 
-                            <TextBlock Text="Rola w systemie" Foreground="#8A8D98" Margin="0,0,0,5"/>
+                            <TextBlock Text="{DynamicResource Admin_Role}" Foreground="#8A8D98" Margin="0,0,0,5"/>
                             <ComboBox Margin="0,0,0,15"
                                       SelectedValue="{Binding RoleName, Mode=TwoWay}"
-                                      SelectedValuePath="Content">
-                                <ComboBoxItem Content="Sprzedawca"/>
-                                <ComboBoxItem Content="Serwisant"/>
-                                <ComboBoxItem Content="Kierownik"/>
-                                <ComboBoxItem Content="Administrator"/>
+                                      SelectedValuePath="Tag">
+                                <ComboBoxItem Tag="Sprzedawca" Content="{DynamicResource Role_Salesman}"/>
+                                <ComboBoxItem Tag="Serwisant" Content="{DynamicResource Role_Mechanic}"/>
+                                <ComboBoxItem Tag="Kierownik" Content="{DynamicResource Role_Manager}"/>
+                                <ComboBoxItem Tag="Administrator" Content="{DynamicResource Role_Admin}"/>
                             </ComboBox>
 
-                            <TextBlock Text="Salon (dla pracowników)" Foreground="#8A8D98" Margin="0,0,0,5"/>
+                            <TextBlock Text="{DynamicResource Admin_Dealership}" Foreground="#8A8D98" Margin="0,0,0,5"/>
                             <ComboBox Margin="0,0,0,15"
                                       ItemsSource="{Binding AvailableDealerships}"
                                       SelectedItem="{Binding SelectedDealershipForEmployee, Mode=TwoWay}"/>
 
-                            <TextBlock Text="Email (login)" Foreground="#8A8D98" Margin="0,0,0,5"/>
+                            <TextBlock Text="{DynamicResource Admin_Email}" Foreground="#8A8D98" Margin="0,0,0,5"/>
                             <ui:TextBox Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="anowak@salon.pl" Margin="0,0,0,15"/>
 
-                            <TextBlock Text="Hasło tymczasowe" Foreground="#8A8D98" Margin="0,0,0,5"/>
+                            <TextBlock Text="{DynamicResource Admin_Password}" Foreground="#8A8D98" Margin="0,0,0,5"/>
                             <ui:PasswordBox x:Name="TxtPassword" PlaceholderText="••••••••" Margin="0,0,0,25"/>
 
                             <ui:Button Appearance="Primary" Icon="{ui:SymbolIcon PersonAdd24}"
-                                       Content="Zarejestruj pracownika" HorizontalAlignment="Stretch"
+                                       Content="{DynamicResource Admin_RegisterEmployeeBtn}" HorizontalAlignment="Stretch"
                                        Command="{Binding RegisterEmployeeCommand}"/>
                         </StackPanel>
 
                         <Border Grid.Column="1" Background="#1C1E23" CornerRadius="8" Padding="15">
                             <StackPanel>
                                 <Grid Margin="0,0,0,15">
-                                    <TextBlock Text="Aktywne konta" FontWeight="SemiBold" FontSize="15" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{DynamicResource Admin_ActiveAccounts}" FontWeight="SemiBold" FontSize="15" VerticalAlignment="Center"/>
                                     <TextBlock Text="{Binding AccountsCountText}" Foreground="#8A8D98" FontSize="12"
                                                HorizontalAlignment="Right" VerticalAlignment="Center"/>
                                 </Grid>
@@ -87,22 +87,22 @@
                                           RowBackground="Transparent" AlternatingRowBackground="Transparent"
                                           HorizontalGridLinesBrush="#1AFFFFFF">
                                     <DataGrid.Columns>
-                                        <DataGridTextColumn Header="Pracownik" Binding="{Binding FullName}"       Width="*"/>
-                                        <DataGridTextColumn Header="E-mail"    Binding="{Binding Email}"          Width="*"/>
-                                        <DataGridTextColumn Header="Rola"      Binding="{Binding RoleName}"       Width="110"/>
-                                        <DataGridTextColumn Header="Salon"     Binding="{Binding DealershipName}" Width="*"/>
+                                        <DataGridTextColumn Header="{DynamicResource Admin_DataGridEmployee}" Binding="{Binding FullName}"       Width="*"/>
+                                        <DataGridTextColumn Header="{DynamicResource Admin_DataGridEmail}"    Binding="{Binding Email}"          Width="*"/>
+                                        <DataGridTextColumn Header="{DynamicResource Admin_DataGridRole}"      Binding="{Binding DisplayRoleName}"       Width="110"/>
+                                        <DataGridTextColumn Header="{DynamicResource Admin_DataGridDealership}"     Binding="{Binding DealershipName}" Width="*"/>
                                         <DataGridTemplateColumn Header="" Width="140">
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                                        <ui:Button Content="Edytuj"
+                                                        <ui:Button Content="{DynamicResource Global_Edit}"
                                                                    Appearance="Secondary"
                                                                    Padding="10,3"
                                                                    FontSize="12"
                                                                    Margin="0,2,5,2"
                                                                    Command="{Binding DataContext.EditEmployeeCommand, RelativeSource={RelativeSource AncestorType=Page}}"
                                                                    CommandParameter="{Binding}"/>
-                                                        <ui:Button Content="Usuń"
+                                                        <ui:Button Content="{DynamicResource Global_Delete}"
                                                                    Appearance="Danger"
                                                                    Padding="10,3"
                                                                    FontSize="12"
@@ -122,7 +122,7 @@
             </TabItem>
 
             <!-- ====== TAB: SALONY ====== -->
-            <TabItem Header="Salony">
+            <TabItem Header="{DynamicResource Admin_TabDealerships}">
                 <Border Background="#22242C" CornerRadius="0,10,10,10" Padding="20" BorderBrush="#2D3038" BorderThickness="1">
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -131,33 +131,33 @@
                         </Grid.ColumnDefinitions>
 
                         <StackPanel Grid.Column="0" Margin="0,0,30,0">
-                            <TextBlock Text="Dodaj nowy salon" FontSize="18" FontWeight="Bold" Margin="0,0,0,20"/>
+                            <TextBlock Text="{DynamicResource Admin_AddDealershipTitle}" FontSize="18" FontWeight="Bold" Margin="0,0,0,20"/>
 
-                            <TextBlock Text="Nazwa salonu" Foreground="#8A8D98" Margin="0,0,0,5"/>
+                            <TextBlock Text="{DynamicResource Admin_DealershipName}" Foreground="#8A8D98" Margin="0,0,0,5"/>
                             <ui:TextBox Text="{Binding NewSalonName, UpdateSourceTrigger=PropertyChanged}"
                                         PlaceholderText="np. Salon BMW Centrum" Margin="0,0,0,15"/>
 
-                            <TextBlock Text="Adres" Foreground="#8A8D98" Margin="0,0,0,5"/>
+                            <TextBlock Text="{DynamicResource Admin_Address}" Foreground="#8A8D98" Margin="0,0,0,5"/>
                             <ui:TextBox Text="{Binding NewSalonAddress, UpdateSourceTrigger=PropertyChanged}"
                                         PlaceholderText="ul. Centralna 1" Margin="0,0,0,15"/>
 
-                            <TextBlock Text="Miasto" Foreground="#8A8D98" Margin="0,0,0,5"/>
+                            <TextBlock Text="{DynamicResource Admin_City}" Foreground="#8A8D98" Margin="0,0,0,5"/>
                             <ui:TextBox Text="{Binding NewSalonCity, UpdateSourceTrigger=PropertyChanged}"
                                         PlaceholderText="Warszawa" Margin="0,0,0,15"/>
 
-                            <TextBlock Text="Właściciel" Foreground="#8A8D98" Margin="0,0,0,5"/>
+                            <TextBlock Text="{DynamicResource Admin_Owner}" Foreground="#8A8D98" Margin="0,0,0,5"/>
                             <ui:TextBox Text="{Binding NewSalonOwner, UpdateSourceTrigger=PropertyChanged}"
                                         PlaceholderText="Imię i nazwisko właściciela" Margin="0,0,0,25"/>
 
                             <ui:Button Appearance="Primary" Icon="{ui:SymbolIcon BuildingShop24}"
-                                       Content="Dodaj salon" HorizontalAlignment="Stretch"
+                                       Content="{DynamicResource Admin_AddDealershipBtn}" HorizontalAlignment="Stretch"
                                        Command="{Binding RegisterDealershipCommand}"/>
                         </StackPanel>
 
                         <Border Grid.Column="1" Background="#1C1E23" CornerRadius="8" Padding="15">
                             <StackPanel>
                                 <Grid Margin="0,0,0,15">
-                                    <TextBlock Text="Sieć salonów" FontWeight="SemiBold" FontSize="15" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{DynamicResource Admin_DealershipNetwork}" FontWeight="SemiBold" FontSize="15" VerticalAlignment="Center"/>
                                     <TextBlock Text="{Binding DealershipsCountText}" Foreground="#8A8D98" FontSize="12"
                                                HorizontalAlignment="Right" VerticalAlignment="Center"/>
                                 </Grid>
@@ -170,14 +170,14 @@
                                           RowBackground="Transparent" AlternatingRowBackground="Transparent"
                                           HorizontalGridLinesBrush="#1AFFFFFF">
                                     <DataGrid.Columns>
-                                        <DataGridTextColumn Header="Nazwa"      Binding="{Binding Name}"    Width="*"/>
-                                        <DataGridTextColumn Header="Adres"      Binding="{Binding Address}" Width="*"/>
-                                        <DataGridTextColumn Header="Miasto"     Binding="{Binding City}"    Width="*"/>
-                                        <DataGridTextColumn Header="Właściciel" Binding="{Binding Owner}"   Width="*"/>
+                                        <DataGridTextColumn Header="{DynamicResource Admin_DataGridName}"      Binding="{Binding Name}"    Width="*"/>
+                                        <DataGridTextColumn Header="{DynamicResource Admin_DataGridAddress}"      Binding="{Binding Address}" Width="*"/>
+                                        <DataGridTextColumn Header="{DynamicResource Admin_DataGridCity}"     Binding="{Binding City}"    Width="*"/>
+                                        <DataGridTextColumn Header="{DynamicResource Admin_DataGridOwner}" Binding="{Binding Owner}"   Width="*"/>
                                         <DataGridTemplateColumn Header="" Width="90">
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
-                                                    <ui:Button Content="Usuń"
+                                                    <ui:Button Content="{DynamicResource Global_Delete}"
                                                                Appearance="Danger"
                                                                Padding="10,3"
                                                                FontSize="12"
@@ -197,7 +197,7 @@
             </TabItem>
 
             <!-- ====== TAB: SŁOWNIKI ====== -->
-            <TabItem Header="Słowniki">
+            <TabItem Header="{DynamicResource Admin_TabDictionaries}">
                 <Border Background="#22242C" CornerRadius="0,10,10,10" Padding="20" BorderBrush="#2D3038" BorderThickness="1">
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -207,48 +207,48 @@
 
                         <StackPanel Grid.Column="0" Margin="0,0,20,0">
                             <!-- DODAWANIE MODELU -->
-                            <TextBlock Text="Modele" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10" Foreground="#E2E2E2"/>
+                            <TextBlock Text="{DynamicResource Admin_ModelsTitle}" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10" Foreground="#E2E2E2"/>
                             <ui:TextBox Text="{Binding NewModelBrand, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Marka (np. BMW)" Margin="0,0,0,5"/>
                             <ui:TextBox Text="{Binding NewModelName, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Nazwa modelu (np. X5)" Margin="0,0,0,5"/>
-                            <ui:Button Content="Dodaj model" Appearance="Primary" HorizontalAlignment="Stretch" Command="{Binding AddVehicleModelCommand}" Margin="0,0,0,20"/>
+                            <ui:Button Content="{DynamicResource Admin_AddModelBtn}" Appearance="Primary" HorizontalAlignment="Stretch" Command="{Binding AddVehicleModelCommand}" Margin="0,0,0,20"/>
 
                             <!-- DODAWANIE WERSJI WYPOSAŻENIA -->
-                            <TextBlock Text="Wersje wyposażenia (Trim Levels)" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10" Foreground="#E2E2E2"/>
+                            <TextBlock Text="{DynamicResource Admin_TrimsTitle}" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10" Foreground="#E2E2E2"/>
                             <ComboBox ItemsSource="{Binding DictModels}" SelectedItem="{Binding NewTrimSelectedModel, Mode=TwoWay}" DisplayMemberPath="ModelName" Margin="0,0,0,5"/>
                             <ui:TextBox Text="{Binding NewTrimName, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Nazwa (np. M-Sport)" Margin="0,0,0,5"/>
                             <ui:TextBox Text="{Binding NewTrimBasePrice, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Cena bazowa (PLN)" Margin="0,0,0,5"/>
-                            <ui:Button Content="Dodaj wersję" Appearance="Primary" HorizontalAlignment="Stretch" Command="{Binding AddTrimLevelCommand}" Margin="0,0,0,20"/>
+                            <ui:Button Content="{DynamicResource Admin_AddTrimBtn}" Appearance="Primary" HorizontalAlignment="Stretch" Command="{Binding AddTrimLevelCommand}" Margin="0,0,0,20"/>
 
                             <!-- DODAWANIE SILNIKA -->
-                            <TextBlock Text="Silniki" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10" Foreground="#E2E2E2"/>
+                            <TextBlock Text="{DynamicResource Admin_EnginesTitle}" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10" Foreground="#E2E2E2"/>
                             <ui:TextBox Text="{Binding NewEngineBrand, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Marka silnika" Margin="0,0,0,5"/>
                             <ui:TextBox Text="{Binding NewEngineName, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Nazwa (np. 2.0 TDI)" Margin="0,0,0,5"/>
                             <ui:TextBox Text="{Binding NewEngineSize, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Pojemność (np. 2.0L)" Margin="0,0,0,5"/>
                             <ui:TextBox Text="{Binding NewEnginePower, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Moc (KM)" Margin="0,0,0,5"/>
                             <ui:TextBox Text="{Binding NewEnginePrice, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Cena (PLN)" Margin="0,0,0,5"/>
-                            <ui:Button Content="Dodaj silnik" Appearance="Primary" HorizontalAlignment="Stretch" Command="{Binding AddEngineCommand}" Margin="0,0,0,20"/>
+                            <ui:Button Content="{DynamicResource Admin_AddEngineBtn}" Appearance="Primary" HorizontalAlignment="Stretch" Command="{Binding AddEngineCommand}" Margin="0,0,0,20"/>
 
                             <!-- DODAWANIE OPCJI/USŁUGI -->
-                            <TextBlock Text="Opcje i Usługi" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10" Foreground="#E2E2E2"/>
+                            <TextBlock Text="{DynamicResource Admin_FeaturesTitle}" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10" Foreground="#E2E2E2"/>
                             <ui:TextBox Text="{Binding NewFeatureName, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Nazwa opcji/usługi" Margin="0,0,0,5"/>
                             <ComboBox ItemsSource="{Binding FeatureCategories}" SelectedItem="{Binding NewFeatureCategory, Mode=TwoWay}" Margin="0,0,0,5"/>
                             <ui:TextBox Text="{Binding NewFeaturePrice, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Cena (PLN)" Margin="0,0,0,5"/>
-                            <ui:Button Content="Dodaj opcję" Appearance="Primary" HorizontalAlignment="Stretch" Command="{Binding AddFeatureCommand}"/>
+                            <ui:Button Content="{DynamicResource Admin_AddFeatureBtn}" Appearance="Primary" HorizontalAlignment="Stretch" Command="{Binding AddFeatureCommand}"/>
                         </StackPanel>
 
                         <!-- LISTY SŁOWNIKÓW -->
                         <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
                             <StackPanel>
                                 <!-- Modele -->
-                                <TextBlock Text="Modele pojazdów" FontWeight="SemiBold" FontSize="15" Margin="0,0,0,5"/>
+                                <TextBlock Text="{DynamicResource Admin_ListModelsTitle}" FontWeight="SemiBold" FontSize="15" Margin="0,0,0,5"/>
                                 <DataGrid ItemsSource="{Binding DictModels}" AutoGenerateColumns="False" IsReadOnly="True" Background="#1C1E23" BorderThickness="0" Foreground="White" RowBackground="Transparent" AlternatingRowBackground="Transparent" HorizontalGridLinesBrush="#1AFFFFFF" MaxHeight="200" Margin="0,0,0,20">
                                     <DataGrid.Columns>
-                                        <DataGridTextColumn Header="Marka" Binding="{Binding Brand}" Width="100"/>
-                                        <DataGridTextColumn Header="Model" Binding="{Binding ModelName}" Width="*"/>
+                                        <DataGridTextColumn Header="{DynamicResource Admin_DataGridBrand}" Binding="{Binding Brand}" Width="100"/>
+                                        <DataGridTextColumn Header="{DynamicResource Admin_DataGridModel}" Binding="{Binding ModelName}" Width="*"/>
                                         <DataGridTemplateColumn Width="70">
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
-                                                    <ui:Button Content="Usuń" Appearance="Danger" Padding="5,2" Command="{Binding DataContext.DeleteVehicleModelCommand, RelativeSource={RelativeSource AncestorType=Page}}" CommandParameter="{Binding}"/>
+                                                    <ui:Button Content="{DynamicResource Global_Delete}" Appearance="Danger" Padding="5,2" Command="{Binding DataContext.DeleteVehicleModelCommand, RelativeSource={RelativeSource AncestorType=Page}}" CommandParameter="{Binding}"/>
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
@@ -256,17 +256,17 @@
                                 </DataGrid>
 
                                 <!-- Trims -->
-                                <TextBlock Text="Wersje wyposażenia" FontWeight="SemiBold" FontSize="15" Margin="0,0,0,5"/>
+                                <TextBlock Text="{DynamicResource Admin_ListTrimsTitle}" FontWeight="SemiBold" FontSize="15" Margin="0,0,0,5"/>
                                 <DataGrid ItemsSource="{Binding DictTrims}" AutoGenerateColumns="False" IsReadOnly="True" Background="#1C1E23" BorderThickness="0" Foreground="White" RowBackground="Transparent" AlternatingRowBackground="Transparent" HorizontalGridLinesBrush="#1AFFFFFF" MaxHeight="200" Margin="0,0,0,20">
                                     <DataGrid.Columns>
-                                        <DataGridTextColumn Header="Marka" Binding="{Binding Model.Brand}" Width="100"/>
-                                        <DataGridTextColumn Header="Model" Binding="{Binding Model.ModelName}" Width="100"/>
-                                        <DataGridTextColumn Header="Wersja" Binding="{Binding TrimName}" Width="*"/>
-                                        <DataGridTextColumn Header="Cena bazowa" Binding="{Binding BasePrice}" Width="100"/>
+                                        <DataGridTextColumn Header="{DynamicResource Admin_DataGridBrand}" Binding="{Binding Model.Brand}" Width="100"/>
+                                        <DataGridTextColumn Header="{DynamicResource Admin_DataGridModel}" Binding="{Binding Model.ModelName}" Width="100"/>
+                                        <DataGridTextColumn Header="{DynamicResource Admin_DataGridTrim}" Binding="{Binding TrimName}" Width="*"/>
+                                        <DataGridTextColumn Header="{DynamicResource Admin_DataGridBasePrice}" Binding="{Binding BasePrice}" Width="100"/>
                                         <DataGridTemplateColumn Width="70">
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
-                                                    <ui:Button Content="Usuń" Appearance="Danger" Padding="5,2" Command="{Binding DataContext.DeleteTrimLevelCommand, RelativeSource={RelativeSource AncestorType=Page}}" CommandParameter="{Binding}"/>
+                                                    <ui:Button Content="{DynamicResource Global_Delete}" Appearance="Danger" Padding="5,2" Command="{Binding DataContext.DeleteTrimLevelCommand, RelativeSource={RelativeSource AncestorType=Page}}" CommandParameter="{Binding}"/>
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
@@ -274,18 +274,18 @@
                                 </DataGrid>
 
                                 <!-- Silniki -->
-                                <TextBlock Text="Silniki" FontWeight="SemiBold" FontSize="15" Margin="0,0,0,5"/>
+                                <TextBlock Text="{DynamicResource Admin_EnginesTitle}" FontWeight="SemiBold" FontSize="15" Margin="0,0,0,5"/>
                                 <DataGrid ItemsSource="{Binding DictEngines}" AutoGenerateColumns="False" IsReadOnly="True" Background="#1C1E23" BorderThickness="0" Foreground="White" RowBackground="Transparent" AlternatingRowBackground="Transparent" HorizontalGridLinesBrush="#1AFFFFFF" MaxHeight="200" Margin="0,0,0,20">
                                     <DataGrid.Columns>
-                                        <DataGridTextColumn Header="Marka" Binding="{Binding Brand}" Width="100"/>
-                                        <DataGridTextColumn Header="Silnik" Binding="{Binding EngineName}" Width="*"/>
-                                        <DataGridTextColumn Header="Pojemność" Binding="{Binding EngineSize}" Width="80"/>
-                                        <DataGridTextColumn Header="Moc" Binding="{Binding Power}" Width="80"/>
-                                        <DataGridTextColumn Header="Cena" Binding="{Binding Price}" Width="80"/>
+                                        <DataGridTextColumn Header="{DynamicResource Admin_DataGridBrand}" Binding="{Binding Brand}" Width="100"/>
+                                        <DataGridTextColumn Header="{DynamicResource Admin_EnginesTitle}" Binding="{Binding EngineName}" Width="*"/>
+                                        <DataGridTextColumn Header="{DynamicResource Admin_DataGridEngineSize}" Binding="{Binding EngineSize}" Width="80"/>
+                                        <DataGridTextColumn Header="{DynamicResource Admin_DataGridPower}" Binding="{Binding Power}" Width="80"/>
+                                        <DataGridTextColumn Header="{DynamicResource Admin_DataGridPrice}" Binding="{Binding Price}" Width="80"/>
                                         <DataGridTemplateColumn Width="70">
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
-                                                    <ui:Button Content="Usuń" Appearance="Danger" Padding="5,2" Command="{Binding DataContext.DeleteEngineCommand, RelativeSource={RelativeSource AncestorType=Page}}" CommandParameter="{Binding}"/>
+                                                    <ui:Button Content="{DynamicResource Global_Delete}" Appearance="Danger" Padding="5,2" Command="{Binding DataContext.DeleteEngineCommand, RelativeSource={RelativeSource AncestorType=Page}}" CommandParameter="{Binding}"/>
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
@@ -293,16 +293,16 @@
                                 </DataGrid>
 
                                 <!-- Opcje -->
-                                <TextBlock Text="Opcje i Usługi" FontWeight="SemiBold" FontSize="15" Margin="0,0,0,5"/>
+                                <TextBlock Text="{DynamicResource Admin_FeaturesTitle}" FontWeight="SemiBold" FontSize="15" Margin="0,0,0,5"/>
                                 <DataGrid ItemsSource="{Binding DictFeatures}" AutoGenerateColumns="False" IsReadOnly="True" Background="#1C1E23" BorderThickness="0" Foreground="White" RowBackground="Transparent" AlternatingRowBackground="Transparent" HorizontalGridLinesBrush="#1AFFFFFF" MaxHeight="200">
                                     <DataGrid.Columns>
-                                        <DataGridTextColumn Header="Kategoria" Binding="{Binding Category}" Width="120"/>
-                                        <DataGridTextColumn Header="Nazwa opcji" Binding="{Binding FeatureName}" Width="*"/>
-                                        <DataGridTextColumn Header="Cena" Binding="{Binding Price}" Width="80"/>
+                                        <DataGridTextColumn Header="{DynamicResource Admin_DataGridCategory}" Binding="{Binding Category}" Width="120"/>
+                                        <DataGridTextColumn Header="{DynamicResource Admin_DataGridFeatureName}" Binding="{Binding FeatureName}" Width="*"/>
+                                        <DataGridTextColumn Header="{DynamicResource Admin_DataGridPrice}" Binding="{Binding Price}" Width="80"/>
                                         <DataGridTemplateColumn Width="70">
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
-                                                    <ui:Button Content="Usuń" Appearance="Danger" Padding="5,2" Command="{Binding DataContext.DeleteFeatureCommand, RelativeSource={RelativeSource AncestorType=Page}}" CommandParameter="{Binding}"/>
+                                                    <ui:Button Content="{DynamicResource Global_Delete}" Appearance="Danger" Padding="5,2" Command="{Binding DataContext.DeleteFeatureCommand, RelativeSource={RelativeSource AncestorType=Page}}" CommandParameter="{Binding}"/>
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
@@ -319,7 +319,7 @@
         <Popup x:Name="TourPopup" AllowsTransparency="True" StaysOpen="True" Placement="Bottom">
             <Border Background="#2D3038" BorderBrush="#5B59E8" BorderThickness="2" CornerRadius="8" Padding="15" Width="280">
                 <StackPanel>
-                    <TextBlock x:Name="TourText" Text="Tekst samouczka" TextWrapping="Wrap" Foreground="White" FontSize="14" Margin="0,0,0,10"/>
+                    <TextBlock x:Name="TourText" Text="{DynamicResource Tour_Admin_Step1}" TextWrapping="Wrap" Foreground="White" FontSize="14" Margin="0,0,0,10"/>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                         <ui:Button x:Name="TourNextBtn" Content="Dalej" Appearance="Primary" Click="TourNext_Click"/>
                     </StackPanel>

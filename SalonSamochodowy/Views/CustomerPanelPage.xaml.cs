@@ -27,7 +27,7 @@ namespace SalonSamochodowy.Views
 
             WeakReferenceMessenger.Default.Register<StartTourRequestMessage>(this, (r, m) =>
             {
-                if (m.PageName == "Moje Zamówienia" && this.IsVisible)
+                if (m.PageName == nameof(CustomerPanelPage) && this.IsVisible)
                 {
                     m.Reply(true);
                     StartTour();

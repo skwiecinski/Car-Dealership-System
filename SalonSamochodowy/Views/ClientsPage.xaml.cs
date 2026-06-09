@@ -19,7 +19,7 @@ namespace SalonSamochodowy.Views
             DataContext = _vm;
 
             _vm.LoadFailed += msg => System.Windows.MessageBox.Show(
-                msg, "Klienci",
+                msg, SalonSamochodowy.Services.LocalizationHelper.GetString("Clients_Title"),
                 System.Windows.MessageBoxButton.OK,
                 System.Windows.MessageBoxImage.Error);
 
@@ -48,9 +48,11 @@ namespace SalonSamochodowy.Views
 
             _vm.DeleteClientRequested += async selected =>
             {
+                string msgFmt = SalonSamochodowy.Services.LocalizationHelper.GetString("Msg_ConfirmDeleteClient");
+                string title = SalonSamochodowy.Services.LocalizationHelper.GetString("Clients_Delete");
                 var result = System.Windows.MessageBox.Show(
-                    $"Czy na pewno chcesz usunąć klienta {selected.FullName}?", 
-                    "Usuń klienta", 
+                    string.Format(msgFmt, selected.FullName), 
+                    title, 
                     System.Windows.MessageBoxButton.YesNo, 
                     System.Windows.MessageBoxImage.Warning);
                     
@@ -66,7 +68,7 @@ namespace SalonSamochodowy.Views
 
             WeakReferenceMessenger.Default.Register<StartTourRequestMessage>(this, (r, m) =>
             {
-                if (m.PageName == "Klienci i Sprzedaż" && this.IsVisible)
+                if (m.PageName == nameof(ClientsPage) && this.IsVisible)
                 {
                     m.Reply(true);
                     StartTour();
@@ -87,13 +89,13 @@ namespace SalonSamochodowy.Views
             {
                 case 0:
                     TourPopup.PlacementTarget = BtnNewClient;
-                    TourText.Text = "Krok 1/2: Kliknij tutaj, aby dodać nowego klienta do bazy.";
-                    TourNextBtn.Content = "Dalej";
+                    TourText.Text = SalonSamochodowy.Services.LocalizationHelper.GetString("Tour_Clients_Step1");
+                    TourNextBtn.Content = SalonSamochodowy.Services.LocalizationHelper.GetString("Tour_Next");
                     break;
                 case 1:
                     TourPopup.PlacementTarget = ClientsTable;
-                    TourText.Text = "Krok 2/2: W tej tabeli znajdziesz wszystkich zapisanych klientów. Po kliknięciu na wiersz zobaczysz opcje zarządzania po prawej stronie.";
-                    TourNextBtn.Content = "Zakończ";
+                    TourText.Text = SalonSamochodowy.Services.LocalizationHelper.GetString("Tour_Clients_Step2");
+                    TourNextBtn.Content = SalonSamochodowy.Services.LocalizationHelper.GetString("Tour_Finish");
                     break;
                 default:
                     return;

@@ -43,22 +43,22 @@ namespace SalonSamochodowy.ViewModels
 
             if (string.IsNullOrWhiteSpace(fn))
             {
-                ShowWarning?.Invoke("Podaj imię i nazwisko lub nazwę firmy.");
+                ShowWarning?.Invoke(SalonSamochodowy.Services.LocalizationHelper.GetString("Msg_ProvideName"));
                 return;
             }
             if (IsCompany && string.IsNullOrWhiteSpace(nip))
             {
-                ShowWarning?.Invoke("Dla klienta firmowego NIP jest wymagany.");
+                ShowWarning?.Invoke(SalonSamochodowy.Services.LocalizationHelper.GetString("Msg_ProvideNIP"));
                 return;
             }
             if (string.IsNullOrWhiteSpace(em))
             {
-                ShowWarning?.Invoke("E-mail jest wymagany.");
+                ShowWarning?.Invoke(SalonSamochodowy.Services.LocalizationHelper.GetString("Msg_ProvideEmail"));
                 return;
             }
             if (!IsValidEmail(em))
             {
-                ShowWarning?.Invoke("Podany adres e-mail jest niepoprawny.");
+                ShowWarning?.Invoke(SalonSamochodowy.Services.LocalizationHelper.GetString("Msg_InvalidEmail"));
                 return;
             }
 
@@ -68,7 +68,7 @@ namespace SalonSamochodowy.ViewModels
 
                 if (await _clientService.EmailExistsAsync(em))
                 {
-                    ShowWarning?.Invoke("Użytkownik z takim adresem e-mail już istnieje.");
+                    ShowWarning?.Invoke(SalonSamochodowy.Services.LocalizationHelper.GetString("Msg_EmailExistsAddClient"));
                     return;
                 }
 
@@ -100,7 +100,7 @@ namespace SalonSamochodowy.ViewModels
             }
             catch (Exception ex)
             {
-                ShowError?.Invoke($"Nie udało się zapisać klienta do bazy:\n{ex.Message}\n\n{ex.InnerException?.Message}");
+                ShowError?.Invoke(string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Msg_SaveClientError"), $"{ex.Message}\n\n{ex.InnerException?.Message}"));
             }
         }
 

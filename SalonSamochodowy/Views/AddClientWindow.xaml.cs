@@ -18,12 +18,12 @@ namespace SalonSamochodowy.Views
             DataContext = _vm;
 
             _vm.ShowWarning += msg => System.Windows.MessageBox.Show(
-                msg, "Nowy klient",
+                msg, SalonSamochodowy.Services.LocalizationHelper.GetString("Clients_NewTitle"),
                 System.Windows.MessageBoxButton.OK,
                 System.Windows.MessageBoxImage.Warning);
 
             _vm.ShowError += msg => System.Windows.MessageBox.Show(
-                msg, "Nowy klient",
+                msg, SalonSamochodowy.Services.LocalizationHelper.GetString("Clients_NewTitle"),
                 System.Windows.MessageBoxButton.OK,
                 System.Windows.MessageBoxImage.Error);
 

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using SalonSamochodowy.Entities;
 using SalonSamochodowy.Repositories;
 using SalonSamochodowy.Services;
@@ -37,16 +38,16 @@ namespace SalonSamochodowy.ViewModels
         [ObservableProperty] private ObservableCollection<ClientItem> availableClients = new();
         [ObservableProperty] private ClientItem? selectedClient;
 
-        [ObservableProperty] private ObservableCollection<string> availablePeriods = new()
+        [ObservableProperty] private ObservableCollection<LocalizedItem> availablePeriods = new()
         {
-            "Wszystko (Cała historia)",
-            "Ostatni dzień",
-            "Ostatni tydzień",
-            "Ostatnie 2 tygodnie",
-            "Ostatni miesiąc",
-            "Ostatnie 3 miesiące",
-            "Ostatnie pół roku",
-            "Ostatni rok"
+            new LocalizedItem { LocKey = "Period_All" },
+            new LocalizedItem { LocKey = "Period_LastDay" },
+            new LocalizedItem { LocKey = "Period_LastWeek" },
+            new LocalizedItem { LocKey = "Period_Last2Weeks" },
+            new LocalizedItem { LocKey = "Period_LastMonth" },
+            new LocalizedItem { LocKey = "Period_Last3Months" },
+            new LocalizedItem { LocKey = "Period_Last6Months" },
+            new LocalizedItem { LocKey = "Period_LastYear" }
         };
         [ObservableProperty] private int selectedPeriodIndex = 0;
 
@@ -70,6 +71,15 @@ namespace SalonSamochodowy.ViewModels
         {
             _uow = uow;
             _reportService = reportService;
+
+            WeakReferenceMessenger.Default.Register(this, (ReportsPageViewModel r, SalonSamochodowy.Messages.LanguageChangedMessage m) =>
+            {
+                var idx = r.SelectedPeriodIndex;
+                var temp = r.AvailablePeriods.ToList();
+                r.AvailablePeriods.Clear();
+                foreach (var p in temp) r.AvailablePeriods.Add(p);
+                r.SelectedPeriodIndex = idx;
+            });
         }
 
         public async Task LoadDataAsync()
@@ -100,7 +110,9 @@ namespace SalonSamochodowy.ViewModels
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Błąd generowania raportu: {ex.Message}", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
+                string msgError = SalonSamochodowy.Services.LocalizationHelper.GetString("Msg_ReportError");
+                string titleError = SalonSamochodowy.Services.LocalizationHelper.GetString("Msg_Error");
+                MessageBox.Show(string.Format(msgError, ex.Message), titleError, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -109,7 +121,9 @@ namespace SalonSamochodowy.ViewModels
         {
             if (SelectedClient == null)
             {
-                MessageBox.Show("Proszę wybrać klienta z listy.", "Informacja", MessageBoxButton.OK, MessageBoxImage.Information);
+                string msgInfo = SalonSamochodowy.Services.LocalizationHelper.GetString("Msg_SelectClientFirst");
+                string titleInfo = SalonSamochodowy.Services.LocalizationHelper.GetString("Msg_Info");
+                MessageBox.Show(msgInfo, titleInfo, MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
@@ -126,7 +140,9 @@ namespace SalonSamochodowy.ViewModels
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Błąd generowania raportu: {ex.Message}", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
+                string msgError = SalonSamochodowy.Services.LocalizationHelper.GetString("Msg_ReportError");
+                string titleError = SalonSamochodowy.Services.LocalizationHelper.GetString("Msg_Error");
+                MessageBox.Show(string.Format(msgError, ex.Message), titleError, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -148,7 +164,9 @@ namespace SalonSamochodowy.ViewModels
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Błąd generowania raportu: {ex.Message}", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
+                string msgError = SalonSamochodowy.Services.LocalizationHelper.GetString("Msg_ReportError");
+                string titleError = SalonSamochodowy.Services.LocalizationHelper.GetString("Msg_Error");
+                MessageBox.Show(string.Format(msgError, ex.Message), titleError, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -181,7 +199,9 @@ namespace SalonSamochodowy.ViewModels
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Błąd generowania raportu: {ex.Message}", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
+                string msgError = SalonSamochodowy.Services.LocalizationHelper.GetString("Msg_ReportError");
+                string titleError = SalonSamochodowy.Services.LocalizationHelper.GetString("Msg_Error");
+                MessageBox.Show(string.Format(msgError, ex.Message), titleError, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -199,7 +219,9 @@ namespace SalonSamochodowy.ViewModels
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Błąd generowania raportu: {ex.Message}", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
+                string msgError = SalonSamochodowy.Services.LocalizationHelper.GetString("Msg_ReportError");
+                string titleError = SalonSamochodowy.Services.LocalizationHelper.GetString("Msg_Error");
+                MessageBox.Show(string.Format(msgError, ex.Message), titleError, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -217,7 +239,9 @@ namespace SalonSamochodowy.ViewModels
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Błąd generowania raportu: {ex.Message}", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
+                string msgError = SalonSamochodowy.Services.LocalizationHelper.GetString("Msg_ReportError");
+                string titleError = SalonSamochodowy.Services.LocalizationHelper.GetString("Msg_Error");
+                MessageBox.Show(string.Format(msgError, ex.Message), titleError, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -235,7 +259,9 @@ namespace SalonSamochodowy.ViewModels
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Błąd generowania raportu: {ex.Message}", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
+                string msgError = SalonSamochodowy.Services.LocalizationHelper.GetString("Msg_ReportError");
+                string titleError = SalonSamochodowy.Services.LocalizationHelper.GetString("Msg_Error");
+                MessageBox.Show(string.Format(msgError, ex.Message), titleError, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

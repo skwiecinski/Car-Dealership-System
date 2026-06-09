@@ -7,7 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.EntityFrameworkCore.Query.Internal;
+using CommunityToolkit.Mvvm.Messaging;
 using SalonSamochodowy.Entities;
 using SalonSamochodowy.Repositories;
 using SalonSamochodowy.Services;
@@ -50,13 +50,24 @@ public partial class CreateOrderViewModel : ObservableObject
     public ObservableCollection<SprzedawcaItem> ListaSprzedawcow { get; } = new();
     [ObservableProperty] private SprzedawcaItem? wybranySprzedawca;
 
-    public List<string> FormyPlatnosci { get; } = new() { "Gotówka", "Kredyt", "Leasing" };
-    [ObservableProperty] private string? wybranaFormaPlatnosci;
+    public List<LocalizedItem> FormyPlatnosci { get; } = new() 
+    { 
+        new LocalizedItem { DbValue = "Gotówka", LocKey = "Payment_Cash" },
+        new LocalizedItem { DbValue = "Kredyt", LocKey = "Payment_Credit" },
+        new LocalizedItem { DbValue = "Leasing", LocKey = "Payment_Leasing" }
+    };
+    [ObservableProperty] private LocalizedItem? wybranaFormaPlatnosci;
 
     [ObservableProperty] private decimal cenaFinalna = 0m;
 
-    public List<string> StatusyZamowienia { get; } = new() { "Nowe", "W realizacji", "Zrealizowane", "Anulowane" };
-    [ObservableProperty] private string wybranyStatus = "Nowe";
+    public List<LocalizedItem> StatusyZamowienia { get; } = new() 
+    { 
+        new LocalizedItem { DbValue = "Nowe", LocKey = "Status_New" },
+        new LocalizedItem { DbValue = "W realizacji", LocKey = "Status_InProgress" },
+        new LocalizedItem { DbValue = "Zrealizowane", LocKey = "Status_Finished" },
+        new LocalizedItem { DbValue = "Anulowane", LocKey = "Status_Canceled" }
+    };
+    [ObservableProperty] private LocalizedItem? wybranyStatus;
 
     [ObservableProperty] private string uwagi = "";
 
@@ -80,6 +91,31 @@ public partial class CreateOrderViewModel : ObservableObject
         _orderService = orderService;
         _clientService = clientService;
         _jobService = jobService;
+        
+        WybranyStatus = StatusyZamowienia.First();
+        WybranaFormaPlatnosci = FormyPlatnosci.First();
+
+        WeakReferenceMessenger.Default.Register(this, (CreateOrderViewModel r, SalonSamochodowy.Messages.LanguageChangedMessage m) =>
+        {
+            var st = r.WybranyStatus?.LocKey;
+            var fp = r.WybranaFormaPlatnosci?.LocKey;
+
+            var tempPlatnosci = r.FormyPlatnosci.ToList();
+            r.FormyPlatnosci.Clear();
+            foreach (var p in tempPlatnosci) r.FormyPlatnosci.Add(p);
+            r.OnPropertyChanged(nameof(FormyPlatnosci));
+            if (fp != null) r.WybranaFormaPlatnosci = r.FormyPlatnosci.FirstOrDefault(x => x.LocKey == fp);
+
+            var tempStatusy = r.StatusyZamowienia.ToList();
+            r.StatusyZamowienia.Clear();
+            foreach (var s in tempStatusy) r.StatusyZamowienia.Add(s);
+            r.OnPropertyChanged(nameof(StatusyZamowienia));
+            if (st != null) r.WybranyStatus = r.StatusyZamowienia.FirstOrDefault(x => x.LocKey == st);
+
+            var tempOpcje = r.DodatkoweOpcje.ToList();
+            r.DodatkoweOpcje.Clear();
+            foreach (var o in tempOpcje) r.DodatkoweOpcje.Add(o);
+        });
     }
 
     public async Task LoadFromDbAsync()
@@ -136,14 +172,16 @@ public partial class CreateOrderViewModel : ObservableObject
                 DodatkoweOpcje.Add(new DodatkowaOpcja
                 {
                     FeatureID = f.FeatureID,
-                    Nazwa     = f.Price > 0 ? $"{f.FeatureName} ({f.Category}) - {f.Price:N0} zł" : $"{f.FeatureName} ({f.Category})",
-                    Kategoria = f.Category
+                    FeatureName = f.FeatureName,
+                    Kategoria = f.Category,
+                    Cena = f.Price
                 });
             }
         }
         catch (Exception ex)
         {
-            ShowError?.Invoke($"Nie udało się załadować danych z bazy:\n{ex.Message}\n\n{ex.InnerException?.Message}");
+            string msg = SalonSamochodowy.Services.LocalizationHelper.GetString("Msg_LoadDataError");
+            ShowError?.Invoke(string.Format(msg, ex.Message, ex.InnerException?.Message));
         }
     }
 
@@ -176,7 +214,8 @@ public partial class CreateOrderViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            ShowError?.Invoke($"Błąd ładowania modeli/silników: {ex.Message}");
+            string msg = SalonSamochodowy.Services.LocalizationHelper.GetString("Msg_LoadModelsError");
+            ShowError?.Invoke(string.Format(msg, ex.Message));
         }
     }
 
@@ -193,7 +232,8 @@ public partial class CreateOrderViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            ShowError?.Invoke($"Błąd ładowania wersji: {ex.Message}");
+            string msg = SalonSamochodowy.Services.LocalizationHelper.GetString("Msg_LoadTrimsError");
+            ShowError?.Invoke(string.Format(msg, ex.Message));
         }
     }
 
@@ -204,22 +244,22 @@ public partial class CreateOrderViewModel : ObservableObject
         {
             if (WybranaWersja == null || WybranySilnik == null)
             {
-                ShowWarning?.Invoke("Wybierz model, wersję i silnik pojazdu.");
+                ShowWarning?.Invoke(SalonSamochodowy.Services.LocalizationHelper.GetString("Msg_SelectVehicleDetails"));
                 return;
             }
             if (WybranySprzedawca == null)
             {
-                ShowWarning?.Invoke("Wybierz sprzedawcę.");
+                ShowWarning?.Invoke(SalonSamochodowy.Services.LocalizationHelper.GetString("Msg_SelectSeller"));
                 return;
             }
             if (WybranySerwisant == null)
             {
-                ShowWarning?.Invoke("Wybierz serwisanta.");
+                ShowWarning?.Invoke(SalonSamochodowy.Services.LocalizationHelper.GetString("Msg_SelectMechanic"));
                 return;
             }
             if (WybranyKolor == null)
             {
-                ShowWarning?.Invoke("Wybierz kolor pojazdu.");
+                ShowWarning?.Invoke(SalonSamochodowy.Services.LocalizationHelper.GetString("Msg_SelectColor"));
                 return;
             }
 
@@ -228,7 +268,7 @@ public partial class CreateOrderViewModel : ObservableObject
             {
                 if (WybranyKlient == null)
                 {
-                    ShowWarning?.Invoke("Wybierz klienta z listy.");
+                    ShowWarning?.Invoke(SalonSamochodowy.Services.LocalizationHelper.GetString("Msg_SelectClient"));
                     return;
                 }
                 clientId = WybranyKlient.ClientID;
@@ -237,13 +277,13 @@ public partial class CreateOrderViewModel : ObservableObject
             {
                 if (string.IsNullOrWhiteSpace(NowyImie) || string.IsNullOrWhiteSpace(NowyEmail))
                 {
-                    ShowWarning?.Invoke("Wypełnij imię i e-mail nowego klienta.");
+                    ShowWarning?.Invoke(SalonSamochodowy.Services.LocalizationHelper.GetString("Msg_FillClientInfo"));
                     return;
                 }
 
                 if (await _clientService.EmailExistsAsync(NowyEmail.Trim()))
                 {
-                    ShowWarning?.Invoke("Użytkownik z takim e-mailem już istnieje. Wybierz go z listy istniejących klientów.");
+                    ShowWarning?.Invoke(SalonSamochodowy.Services.LocalizationHelper.GetString("Msg_EmailExists"));
                     return;
                 }
 
@@ -252,7 +292,7 @@ public partial class CreateOrderViewModel : ObservableObject
             }
 
             var salon = await _catalogService.GetMainDealershipAsync();
-            if (salon == null) throw new Exception("Brak salonu w bazie.");
+            if (salon == null) throw new Exception(SalonSamochodowy.Services.LocalizationHelper.GetString("Msg_NoDealership"));
             var vehicle = new Vehicle
             {
                 VIN          = string.IsNullOrWhiteSpace(VIN) ? GenerateVin() : VIN.Trim(),
@@ -288,7 +328,7 @@ public partial class CreateOrderViewModel : ObservableObject
                 WorkerID     = WybranySprzedawca.WorkerID,
                 OrderDate    = DataZamowienia == default ? DateTime.Now : DataZamowienia,
                 FinalPrice   = cena,
-                Status       = WybranyStatus,
+                Status       = WybranyStatus?.DbValue ?? "Nowe",
                 DealershipID = salon.DealershipID
             };
 
@@ -299,14 +339,16 @@ public partial class CreateOrderViewModel : ObservableObject
 
             await _orderService.CreateOrderAsync(order);
 
-            ShowInfo?.Invoke($"Zamówienie zapisane.\nNumer: {order.OrderID}\nCena: {order.FinalPrice:N0} zł");
+            string msgSaved = SalonSamochodowy.Services.LocalizationHelper.GetString("Msg_OrderSaved");
+            ShowInfo?.Invoke(string.Format(msgSaved, order.OrderID, order.FinalPrice));
 
             ResetForm();
             await LoadFromDbAsync();
         }
         catch (Exception ex)
         {
-            ShowError?.Invoke($"Nie udało się zapisać zamówienia:\n{ex.Message}\n\n{ex.InnerException?.Message}");
+            string msgError = SalonSamochodowy.Services.LocalizationHelper.GetString("Msg_OrderSaveError");
+            ShowError?.Invoke(string.Format(msgError, ex.Message, ex.InnerException?.Message));
         }
     }
 
@@ -387,9 +429,25 @@ public class SprzedawcaItem
 public class DodatkowaOpcja
 {
     public int FeatureID { get; set; }
-    public string Nazwa { get; set; } = "";
+    public string FeatureName { get; set; } = "";
     public string Kategoria { get; set; } = "";
+    public decimal Cena { get; set; }
     public bool Zaznaczona { get; set; }
+
+    public string DisplayNazwa
+    {
+        get
+        {
+            var localizedName = SalonSamochodowy.Services.LocalizationHelper.GetString($"Feature_{FeatureName.Replace(" ", "_")}");
+            var localizedCategory = SalonSamochodowy.Services.LocalizationHelper.GetString($"Category_{Kategoria.Replace(" ", "_")}");
+            if (localizedCategory == $"Category_{Kategoria.Replace(" ", "_")}") 
+                localizedCategory = Kategoria; // Fallback to raw category if translation not found
+
+            if (Cena > 0)
+                return $"{localizedName} ({localizedCategory}) - {Cena:N0} zł";
+            return $"{localizedName} ({localizedCategory})";
+        }
+    }
 }
 
 public class SerwisantItem
@@ -398,4 +456,11 @@ public class SerwisantItem
     public int UserID { get; set; }
     public string FullName { get; set; } = "";
     public override string ToString() => FullName;
+}
+
+public class LocalizedItem
+{
+    public string DbValue { get; set; } = "";
+    public string LocKey { get; set; } = "";
+    public override string ToString() => SalonSamochodowy.Services.LocalizationHelper.GetString(LocKey);
 }

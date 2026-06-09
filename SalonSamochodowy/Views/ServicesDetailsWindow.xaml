@@ -1,9 +1,9 @@
-﻿<ui:FluentWindow
+<ui:FluentWindow
     x:Class="SalonSamochodowy.Views.ServicesDetailsWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-    Title="Szczegóły zlecenia serwisowego"
+    Title="{DynamicResource ServicesDetails_Title}"
     Width="620" Height="660"
     MinWidth="560" MinHeight="560"
     WindowStartupLocation="CenterOwner"
@@ -116,7 +116,7 @@
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="18,0">
                 <Border Width="8" Height="8" CornerRadius="4"
                         Background="{StaticResource Accent}" Margin="0,0,10,0"/>
-                <TextBlock Text="Zlecenie serwisowe"
+                <TextBlock Text="{DynamicResource ServicesDetails_Header}"
                            Foreground="{StaticResource TextPrimary}"
                            FontSize="13" FontWeight="SemiBold" FontFamily="Segoe UI"
                            VerticalAlignment="Center"/>
@@ -147,7 +147,7 @@
                     </Grid.ColumnDefinitions>
 
                     <StackPanel VerticalAlignment="Center">
-                        <TextBlock Text="UTWORZONE" Style="{StaticResource LabelStyle}" Margin="0,0,0,2"/>
+                        <TextBlock Text="{DynamicResource ServicesDetails_Created}" Style="{StaticResource LabelStyle}" Margin="0,0,0,2"/>
                         <TextBlock Text="{Binding CreatedAt}"
                                    Foreground="{StaticResource TextPrimary}"
                                    FontSize="14" FontFamily="Segoe UI"/>
@@ -168,14 +168,14 @@
                 <!-- CZYNNOŚĆ / WYPOSAŻENIE -->
                 <Border Style="{StaticResource SectionCard}">
                     <StackPanel>
-                        <TextBlock Text="🔧  CZYNNOŚĆ SERWISOWA" Style="{StaticResource SectionHeader}"/>
+                        <TextBlock Text="{DynamicResource ServicesDetails_ServiceAction}" Style="{StaticResource SectionHeader}"/>
 
                         <Grid Style="{StaticResource InfoRow}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="120"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="Wyposażenie" Style="{StaticResource LabelStyle}"/>
+                            <TextBlock Text="{DynamicResource ServicesDetails_Equipment}" Style="{StaticResource LabelStyle}"/>
                             <TextBlock Grid.Column="1" Text="{Binding FeatureName}"
                                        Style="{StaticResource ValueStyle}"
                                        FontSize="15" FontWeight="SemiBold"/>
@@ -186,7 +186,7 @@
                                 <ColumnDefinition Width="120"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="Kategoria" Style="{StaticResource LabelStyle}"/>
+                            <TextBlock Text="{DynamicResource ServicesDetails_Category}" Style="{StaticResource LabelStyle}"/>
                             <Border Background="#252D40" CornerRadius="6" Padding="10,4"
                                     HorizontalAlignment="Left" Grid.Column="1">
                                 <TextBlock Text="{Binding FeatureCategory}"
@@ -199,14 +199,14 @@
                 <!-- POJAZD -->
                 <Border Style="{StaticResource SectionCard}">
                     <StackPanel>
-                        <TextBlock Text="🚗  POJAZD" Style="{StaticResource SectionHeader}"/>
+                        <TextBlock Text="{DynamicResource ServicesDetails_Vehicle}" Style="{StaticResource SectionHeader}"/>
 
                         <Grid Style="{StaticResource InfoRow}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="120"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="Model" Style="{StaticResource LabelStyle}"/>
+                            <TextBlock Text="{DynamicResource Vehicles_ModelLabel}" Style="{StaticResource LabelStyle}"/>
                             <TextBlock Grid.Column="1" Text="{Binding VehicleModel}"
                                        Style="{StaticResource ValueStyle}"/>
                         </Grid>
@@ -216,7 +216,7 @@
                                 <ColumnDefinition Width="120"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="Silnik" Style="{StaticResource LabelStyle}"/>
+                            <TextBlock Text="{DynamicResource Vehicles_Engine}" Style="{StaticResource LabelStyle}"/>
                             <TextBlock Grid.Column="1" Text="{Binding VehicleEngine}"
                                        Style="{StaticResource ValueStyle}"/>
                         </Grid>
@@ -226,7 +226,7 @@
                                 <ColumnDefinition Width="120"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="VIN" Style="{StaticResource LabelStyle}"/>
+                            <TextBlock Text="{DynamicResource Vehicles_VIN}" Style="{StaticResource LabelStyle}"/>
                             <TextBlock Grid.Column="1" Text="{Binding VehicleVin}"
                                        Style="{StaticResource ValueStyle}"
                                        FontFamily="Segoe UI Mono" FontSize="12"/>
@@ -237,7 +237,7 @@
                                 <ColumnDefinition Width="120"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="Status auta" Style="{StaticResource LabelStyle}"/>
+                            <TextBlock Text="{DynamicResource ServicesDetails_VehicleStatus}" Style="{StaticResource LabelStyle}"/>
                             <TextBlock Grid.Column="1" Text="{Binding VehicleStatus}"
                                        Style="{StaticResource ValueStyle}"
                                        Foreground="#8A8EAD"/>
@@ -248,14 +248,14 @@
                 <!-- SERWISANT -->
                 <Border Style="{StaticResource SectionCard}">
                     <StackPanel>
-                        <TextBlock Text="👤  SERWISANT" Style="{StaticResource SectionHeader}"/>
+                        <TextBlock Text="{DynamicResource ServicesDetails_MechanicInfo}" Style="{StaticResource SectionHeader}"/>
 
                         <Grid Style="{StaticResource InfoRow}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="120"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="Imię i nazwisko" Style="{StaticResource LabelStyle}"/>
+                            <TextBlock Text="{DynamicResource ServicesDetails_FullName}" Style="{StaticResource LabelStyle}"/>
                             <TextBlock Grid.Column="1" Text="{Binding WorkerName}"
                                        Style="{StaticResource ValueStyle}"
                                        FontWeight="SemiBold"/>
@@ -266,7 +266,7 @@
                                 <ColumnDefinition Width="120"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="E-mail" Style="{StaticResource LabelStyle}"/>
+                            <TextBlock Text="{DynamicResource ServicesDetails_Email}" Style="{StaticResource LabelStyle}"/>
                             <TextBlock Grid.Column="1" Text="{Binding WorkerEmail}"
                                        Style="{StaticResource ValueStyle}"
                                        Foreground="#8A8EAD"/>
@@ -277,7 +277,7 @@
                                 <ColumnDefinition Width="120"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="Salon" Style="{StaticResource LabelStyle}"/>
+                            <TextBlock Text="{DynamicResource ServicesDetails_Dealership}" Style="{StaticResource LabelStyle}"/>
                             <TextBlock Grid.Column="1" Text="{Binding DealershipName}"
                                        Style="{StaticResource ValueStyle}"/>
                         </Grid>
@@ -287,7 +287,7 @@
                 <!-- ZMIANA STATUSU -->
                 <Border Style="{StaticResource SectionCard}">
                     <StackPanel>
-                        <TextBlock Text="⚡  ZMIEŃ STATUS" Style="{StaticResource SectionHeader}"/>
+                        <TextBlock Text="{DynamicResource ServicesDetails_ChangeStatus}" Style="{StaticResource SectionHeader}"/>
 
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -305,7 +305,7 @@
                                     IsEnabled="{Binding CanMoveToPending}"
                                     Background="#332A12" BorderBrush="#D3A125"
                                     Foreground="#F0B82B"
-                                    Content="⏳  Oczekujące"/>
+                                    Content="{DynamicResource ServicesDetails_SetPending}"/>
 
                             <!-- W trakcie -->
                             <Button Grid.Column="2"
@@ -314,7 +314,7 @@
                                     IsEnabled="{Binding CanMoveToInProgress}"
                                     Background="#1A2540" BorderBrush="#3B82F6"
                                     Foreground="#60A5FA"
-                                    Content="🔄  W trakcie"/>
+                                    Content="{DynamicResource ServicesDetails_SetInProgress}"/>
 
                             <!-- Zakończone -->
                             <Button Grid.Column="4"
@@ -323,7 +323,7 @@
                                     IsEnabled="{Binding CanMoveToFinished}"
                                     Background="#112C1E" BorderBrush="#2D9A4A"
                                     Foreground="#44C767"
-                                    Content="✅  Zakończone"/>
+                                    Content="{DynamicResource ServicesDetails_SetFinished}"/>
                         </Grid>
                     </StackPanel>
                 </Border>
@@ -349,7 +349,7 @@
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
                     </Button.Template>
-                    <TextBlock Text="Zamknij" Foreground="{StaticResource TextMuted}"
+                    <TextBlock Text="{DynamicResource Global_Close}" Foreground="{StaticResource TextMuted}"
                                FontSize="13" FontFamily="Segoe UI"/>
                 </Button>
 

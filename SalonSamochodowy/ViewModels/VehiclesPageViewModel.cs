@@ -21,10 +21,10 @@ namespace SalonSamochodowy.ViewModels
             _uow = uow;
         _vehicleService = vehicleService;
         }
-        public ObservableCollection<string> Brands { get; } = new() { "Wszystkie marki" };
-        public ObservableCollection<string> Models { get; } = new() { "Wszystkie modele" };
-        public ObservableCollection<string> Engines { get; } = new() { "Dowolny" };
-        public ObservableCollection<string> Colors { get; } = new() { "Dowolny" };
+        public ObservableCollection<string> Brands { get; } = new() { SalonSamochodowy.Services.LocalizationHelper.GetString("Vehicles_AllBrands") };
+        public ObservableCollection<string> Models { get; } = new() { SalonSamochodowy.Services.LocalizationHelper.GetString("Vehicles_AllModels") };
+        public ObservableCollection<string> Engines { get; } = new() { SalonSamochodowy.Services.LocalizationHelper.GetString("Vehicles_Any") };
+        public ObservableCollection<string> Colors { get; } = new() { SalonSamochodowy.Services.LocalizationHelper.GetString("Vehicles_Any") };
 
         [ObservableProperty] private string? selectedBrand;
         [ObservableProperty] private string? selectedModel;
@@ -45,7 +45,7 @@ namespace SalonSamochodowy.ViewModels
                 var models = (await uow.VehicleModels.GetAllAsync()).ToList();
 
                 Brands.Clear();
-                Brands.Add("Wszystkie marki");
+                Brands.Add(SalonSamochodowy.Services.LocalizationHelper.GetString("Vehicles_AllBrands"));
                 foreach (var b in models.Select(m => m.Brand).Distinct().OrderBy(b => b))
                     Brands.Add(b);
                 SelectedBrand = Brands[0];
@@ -53,14 +53,14 @@ namespace SalonSamochodowy.ViewModels
                 ReloadModelCombo(models);
 
                 Engines.Clear();
-                Engines.Add("Dowolny");
+                Engines.Add(SalonSamochodowy.Services.LocalizationHelper.GetString("Vehicles_Any"));
                 var engines = (await uow.Engines.GetAllAsync()).OrderBy(e => e.Power);
                 foreach (var en in engines)
-                    Engines.Add($"{en.EngineName} • {en.Power} KM");
+                    Engines.Add(string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Vehicles_EngineFormat"), en.EngineName, en.Power));
                 SelectedEngine = Engines[0];
 
                 Colors.Clear();
-                Colors.Add("Dowolny");
+                Colors.Add(SalonSamochodowy.Services.LocalizationHelper.GetString("Vehicles_Any"));
                 var colors = (await uow.Features.FindAsync(f => f.Category == "Kolor"))
                     .Select(f => f.FeatureName)
                     .Distinct();
@@ -70,7 +70,7 @@ namespace SalonSamochodowy.ViewModels
             }
             catch (Exception ex)
             {
-                LoadFailed?.Invoke($"Nie udało się załadować filtrów:\n{ex.Message}");
+                LoadFailed?.Invoke(string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Vehicles_FilterLoadError"), ex.Message));
             }
         }
 
@@ -93,9 +93,9 @@ namespace SalonSamochodowy.ViewModels
         private void ReloadModelCombo(IList<VehicleModel> models)
         {
             Models.Clear();
-            Models.Add("Wszystkie modele");
+            Models.Add(SalonSamochodowy.Services.LocalizationHelper.GetString("Vehicles_AllModels"));
 
-            var filtered = !string.IsNullOrEmpty(SelectedBrand) && SelectedBrand != "Wszystkie marki"
+            var filtered = !string.IsNullOrEmpty(SelectedBrand) && SelectedBrand != SalonSamochodowy.Services.LocalizationHelper.GetString("Vehicles_AllBrands")
                 ? models.Where(m => m.Brand == SelectedBrand)
                 : models;
 
@@ -154,21 +154,21 @@ namespace SalonSamochodowy.ViewModels
                     if (model == null) continue;
                     var engine = await uow.Engines.GetByIdAsync(v.EngineID);
 
-                    if (!string.IsNullOrEmpty(SelectedBrand) && SelectedBrand != "Wszystkie marki"
+                    if (!string.IsNullOrEmpty(SelectedBrand) && SelectedBrand != SalonSamochodowy.Services.LocalizationHelper.GetString("Vehicles_AllBrands")
                         && model.Brand != SelectedBrand) continue;
 
-                    if (!string.IsNullOrEmpty(SelectedModel) && SelectedModel != "Wszystkie modele"
+                    if (!string.IsNullOrEmpty(SelectedModel) && SelectedModel != SalonSamochodowy.Services.LocalizationHelper.GetString("Vehicles_AllModels")
                         && $"{model.Brand} {model.ModelName}" != SelectedModel) continue;
 
-                    if (!string.IsNullOrEmpty(SelectedEngine) && SelectedEngine != "Dowolny"
-                        && engine != null && $"{engine.EngineName} • {engine.Power} KM" != SelectedEngine) continue;
+                    if (!string.IsNullOrEmpty(SelectedEngine) && SelectedEngine != SalonSamochodowy.Services.LocalizationHelper.GetString("Vehicles_Any")
+                        && engine != null && string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Vehicles_EngineFormat"), engine.EngineName, engine.Power) != SelectedEngine) continue;
 
                     var (bg, bd, fg) = StatusColors(v.Status);
                     var price = trim.BasePrice + (engine?.Price ?? 0m);
 
                     var vehicleFeatures = await uow.VehicleFeatures.FindAsync(vf => vf.VehicleID == v.VehicleID);
                     var featureNames = new List<string>();
-                    string colorVal = "Brak";
+                    string colorVal = SalonSamochodowy.Services.LocalizationHelper.GetString("Vehicles_None");
                     foreach (var vf in vehicleFeatures)
                     {
                         var f = await uow.Features.GetByIdAsync(vf.FeatureID);
@@ -181,19 +181,27 @@ namespace SalonSamochodowy.ViewModels
                         }
                     }
 
-                    if (!string.IsNullOrEmpty(SelectedColor) && SelectedColor != "Dowolny"
+                    if (!string.IsNullOrEmpty(SelectedColor) && SelectedColor != SalonSamochodowy.Services.LocalizationHelper.GetString("Vehicles_Any")
                         && colorVal != SelectedColor) continue;
 
-                    var extraFeatures = featureNames.Any() ? string.Join(", ", featureNames) : "Brak";
+                    var extraFeatures = featureNames.Any() ? string.Join(", ", featureNames) : SalonSamochodowy.Services.LocalizationHelper.GetString("Vehicles_None");
+
+                    string displayStatus = v.Status switch
+                    {
+                        "Dostępny" => SalonSamochodowy.Services.LocalizationHelper.GetString("Vehicles_StatusAvailable"),
+                        "Zarezerwowany" => SalonSamochodowy.Services.LocalizationHelper.GetString("Vehicles_StatusReserved"),
+                        "Sprzedany" => SalonSamochodowy.Services.LocalizationHelper.GetString("Vehicles_StatusSold"),
+                        _ => v.Status
+                    };
 
                     VehicleList.Add(new VehicleItem
                     {
                         VehicleID             = v.VehicleID,
                         FullName              = $"{model.Brand} {model.ModelName} {trim.TrimName}",
-                        EngineInfo            = engine != null ? $"Silnik: {engine.EngineName} ({engine.Power} KM)" : "Silnik: —",
+                        EngineInfo            = engine != null ? string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Vehicles_EngineFormat"), engine.EngineName, engine.Power) : SalonSamochodowy.Services.LocalizationHelper.GetString("Vehicles_EngineNone"),
                         VIN                   = v.VIN,
                         Price                 = $"{price:N0} PLN",
-                        Status                = v.Status,
+                        Status                = displayStatus,
                         StatusBackgroundColor = bg,
                         StatusBorderColor     = bd,
                         StatusTextColor       = fg,
@@ -205,7 +213,7 @@ namespace SalonSamochodowy.ViewModels
             }
             catch (Exception ex)
             {
-                LoadFailed?.Invoke($"Nie udało się załadować pojazdów:\n{ex.Message}\n\n{ex.InnerException?.Message}");
+                LoadFailed?.Invoke(string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Vehicles_VehiclesLoadError"), ex.Message, ex.InnerException?.Message ?? ""));
             }
         }
 

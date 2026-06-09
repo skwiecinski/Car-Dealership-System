@@ -25,9 +25,9 @@
                 </Grid.RowDefinitions>
 
                 <StackPanel Grid.Row="0" Margin="0,0,0,12" HorizontalAlignment="Stretch">
-                <TextBlock Text="Dodaj zamówienie"
+                <TextBlock Text="{DynamicResource Order_AddTitle}"
                            FontSize="20" FontWeight="Bold"/>
-                <TextBlock Text="Wypełnij dane klienta, wybór pojazdu i warunki zamówienia"
+                <TextBlock Text="{DynamicResource Order_AddSubtitle}"
                            FontSize="12" Opacity="0.6" Margin="0,2,0,0"/>
             </StackPanel>
 
@@ -45,26 +45,26 @@
                              HorizontalContentAlignment="Stretch"
                              VerticalContentAlignment="Stretch">
                         <StackPanel>
-                            <TextBlock Text="Klient" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,12"/>
+                            <TextBlock Text="{DynamicResource Order_Client}" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,12"/>
 
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
                                 <RadioButton x:Name="RbExistingClient"
-                                             Content="Istniejący klient"
+                                             Content="{DynamicResource Order_ExistingClient}"
                                              IsChecked="{Binding CzyIstniejacyKlient}"
                                              GroupName="ClientMode" Margin="0,0,16,0"/>
                                 <RadioButton x:Name="RbNewClient"
-                                             Content="Nowy klient"
+                                             Content="{DynamicResource Order_NewClient}"
                                              GroupName="ClientMode"/>
                             </StackPanel>
 
                             <StackPanel Visibility="{Binding IsChecked, ElementName=RbExistingClient, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <TextBlock Text="Wybierz klienta" Margin="0,0,0,4"/>
+                                <TextBlock Text="{DynamicResource Order_SelectClient}" Margin="0,0,0,4"/>
                                 <ComboBox ItemsSource="{Binding ListaKlientow}"
                                           SelectedItem="{Binding WybranyKlient}"
                                           IsEditable="True"
                                           Margin="0,0,0,8"
                                           HorizontalAlignment="Stretch"/>
-                                <TextBlock Text="Wpisz fragment imienia, nazwiska lub e-maila, aby filtrować"
+                                <TextBlock Text="{DynamicResource Order_ClientFilterHint}"
                                            FontSize="11" Opacity="0.5"/>
                             </StackPanel>
 
@@ -76,20 +76,19 @@
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
                                     <StackPanel Grid.Column="0">
-                                        <TextBlock Text="Imię" Margin="0,0,0,4"/>
+                                        <TextBlock Text="{DynamicResource Order_FirstName}" Margin="0,0,0,4"/>
                                         <ui:TextBox Text="{Binding NowyImie, UpdateSourceTrigger=PropertyChanged}"
-                                                    PlaceholderText="Jan" HorizontalAlignment="Stretch"/>
+                                                    HorizontalAlignment="Stretch"/>
                                     </StackPanel>
                                     <StackPanel Grid.Column="2">
-                                        <TextBlock Text="Nazwisko" Margin="0,0,0,4"/>
+                                        <TextBlock Text="{DynamicResource Order_LastName}" Margin="0,0,0,4"/>
                                         <ui:TextBox Text="{Binding NowyNazwisko, UpdateSourceTrigger=PropertyChanged}"
-                                                    PlaceholderText="Kowalski" HorizontalAlignment="Stretch"/>
+                                                    HorizontalAlignment="Stretch"/>
                                     </StackPanel>
                                 </Grid>
 
-                                <TextBlock Text="E-mail" Margin="0,0,0,4"/>
+                                <TextBlock Text="{DynamicResource Order_Email}" Margin="0,0,0,4"/>
                                 <ui:TextBox Text="{Binding NowyEmail, UpdateSourceTrigger=PropertyChanged}"
-                                            PlaceholderText="jan.kowalski@example.com"
                                             Margin="0,0,0,8" HorizontalAlignment="Stretch"/>
 
                                 <Grid>
@@ -99,14 +98,14 @@
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
                                     <StackPanel Grid.Column="0">
-                                        <TextBlock Text="Telefon" Margin="0,0,0,4"/>
+                                        <TextBlock Text="{DynamicResource Order_Phone}" Margin="0,0,0,4"/>
                                         <ui:TextBox Text="{Binding NowyTelefon, UpdateSourceTrigger=PropertyChanged}"
-                                                    PlaceholderText="+48 600 000 000" HorizontalAlignment="Stretch"/>
+                                                    HorizontalAlignment="Stretch"/>
                                     </StackPanel>
                                     <StackPanel Grid.Column="2">
-                                        <TextBlock Text="NIP (opcjonalnie)" Margin="0,0,0,4"/>
+                                        <TextBlock Text="{DynamicResource Order_NIP}" Margin="0,0,0,4"/>
                                         <ui:TextBox Text="{Binding NowyNIP, UpdateSourceTrigger=PropertyChanged}"
-                                                    PlaceholderText="1234567890" HorizontalAlignment="Stretch"/>
+                                                    HorizontalAlignment="Stretch"/>
                                     </StackPanel>
                                 </Grid>
                             </StackPanel>
@@ -118,19 +117,19 @@
                              HorizontalContentAlignment="Stretch"
                              VerticalContentAlignment="Stretch">
                         <StackPanel>
-                            <TextBlock Text="Wyposażenie dodatkowe" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,12"/>
+                            <TextBlock Text="{DynamicResource Order_ExtraFeatures}" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,12"/>
 
                             <ItemsControl ItemsSource="{Binding DodatkoweOpcje}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <CheckBox Content="{Binding Nazwa}"
+                                        <CheckBox Content="{Binding DisplayNazwa}"
                                                   IsChecked="{Binding Zaznaczona}"
                                                   Margin="0,4"/>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
 
-                            <TextBlock Text="Lista zostanie wypełniona po wyborze wersji wyposażenia"
+                            <TextBlock Text="{DynamicResource Order_FeaturesHint}"
                                        FontSize="11" Opacity="0.5" Margin="0,8,0,0"/>
                         </StackPanel>
                     </ui:Card>
@@ -143,7 +142,7 @@
                              HorizontalContentAlignment="Stretch"
                              VerticalContentAlignment="Stretch">
                         <StackPanel>
-                            <TextBlock Text="Pojazd" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,12"/>
+                            <TextBlock Text="{DynamicResource Order_Vehicle}" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,12"/>
 
                             <Grid Margin="0,0,0,8">
                                 <Grid.ColumnDefinitions>
@@ -152,13 +151,13 @@
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
                                 <StackPanel Grid.Column="0">
-                                    <TextBlock Text="Marka" Margin="0,0,0,4"/>
+                                    <TextBlock Text="{DynamicResource Order_Brand}" Margin="0,0,0,4"/>
                                     <ComboBox ItemsSource="{Binding Marki}"
                                               SelectedItem="{Binding WybranaMarka, Mode=TwoWay}"
                                               HorizontalAlignment="Stretch"/>
                                 </StackPanel>
                                 <StackPanel Grid.Column="2">
-                                    <TextBlock Text="Model" Margin="0,0,0,4"/>
+                                    <TextBlock Text="{DynamicResource Order_Model}" Margin="0,0,0,4"/>
                                     <ComboBox ItemsSource="{Binding Modele}"
                                               SelectedItem="{Binding WybranyModel, Mode=TwoWay}"
                                               HorizontalAlignment="Stretch"/>
@@ -172,13 +171,13 @@
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
                                 <StackPanel Grid.Column="0">
-                                    <TextBlock Text="Wersja wyposażenia" Margin="0,0,0,4"/>
+                                    <TextBlock Text="{DynamicResource Order_Trim}" Margin="0,0,0,4"/>
                                     <ComboBox ItemsSource="{Binding Wersje}"
                                               SelectedItem="{Binding WybranaWersja}"
                                               HorizontalAlignment="Stretch"/>
                                 </StackPanel>
                                 <StackPanel Grid.Column="2">
-                                    <TextBlock Text="Silnik" Margin="0,0,0,4"/>
+                                    <TextBlock Text="{DynamicResource Order_Engine}" Margin="0,0,0,4"/>
                                     <ComboBox ItemsSource="{Binding Silniki}"
                                               SelectedItem="{Binding WybranySilnik}"
                                               HorizontalAlignment="Stretch"/>
@@ -192,27 +191,26 @@
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
                                 <StackPanel Grid.Column="0">
-                                    <TextBlock Text="Kolor" Margin="0,0,0,4"/>
+                                    <TextBlock Text="{DynamicResource Order_Color}" Margin="0,0,0,4"/>
                                     <ComboBox ItemsSource="{Binding DostępneKolory}"
                                               SelectedItem="{Binding WybranyKolor}"
                                               DisplayMemberPath="FeatureName"
                                               HorizontalAlignment="Stretch"/>
                                 </StackPanel>
                                 <StackPanel Grid.Column="2">
-                                    <TextBlock Text="VIN" Margin="0,0,0,4"/>
+                                    <TextBlock Text="{DynamicResource Order_VIN}" Margin="0,0,0,4"/>
                                     <ui:TextBox Text="{Binding VIN, UpdateSourceTrigger=PropertyChanged}"
-                                                PlaceholderText="17 znaków"
                                                 MaxLength="17"
                                                 HorizontalAlignment="Stretch"/>
                                 </StackPanel>
                             </Grid>
 
-                            <CheckBox Content="Pojazd używany"
+                            <CheckBox Content="{DynamicResource Order_UsedVehicle}"
                                       IsChecked="{Binding CzyUzywany}"
                                       Margin="0,4,0,8"/>
 
                             <StackPanel Visibility="{Binding CzyUzywany, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <TextBlock Text="Przebieg (km)" Margin="0,0,0,4"/>
+                                <TextBlock Text="{DynamicResource Order_Mileage}" Margin="0,0,0,4"/>
                                 <ui:NumberBox Value="{Binding Przebieg}"
                                               Minimum="0"
                                               ClearButtonEnabled="False"
@@ -226,7 +224,7 @@
                              HorizontalContentAlignment="Stretch"
                              VerticalContentAlignment="Stretch">
                         <StackPanel>
-                            <TextBlock Text="Warunki zamówienia" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,12"/>
+                            <TextBlock Text="{DynamicResource Order_Conditions}" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,12"/>
 
                             <Grid Margin="0,0,0,8">
                                 <Grid.ColumnDefinitions>
@@ -235,12 +233,12 @@
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
                                 <StackPanel Grid.Column="0">
-                                    <TextBlock Text="Data zamówienia" Margin="0,0,0,4"/>
+                                    <TextBlock Text="{DynamicResource Order_OrderDate}" Margin="0,0,0,4"/>
                                     <DatePicker SelectedDate="{Binding DataZamowienia}"
                                                 HorizontalAlignment="Stretch"/>
                                 </StackPanel>
                                 <StackPanel Grid.Column="2">
-                                    <TextBlock Text="Sprzedawca" Margin="0,0,0,4"/>
+                                    <TextBlock Text="{DynamicResource Order_Seller}" Margin="0,0,0,4"/>
                                     <ComboBox ItemsSource="{Binding ListaSprzedawcow}"
                                               SelectedItem="{Binding WybranySprzedawca}"
                                               HorizontalAlignment="Stretch"/>
@@ -254,13 +252,13 @@
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
                                 <StackPanel Grid.Column="0">
-                                    <TextBlock Text="Forma płatności" Margin="0,0,0,4"/>
+                                    <TextBlock Text="{DynamicResource Order_PaymentMethod}" Margin="0,0,0,4"/>
                                     <ComboBox ItemsSource="{Binding FormyPlatnosci}"
                                               SelectedItem="{Binding WybranaFormaPlatnosci}"
                                               HorizontalAlignment="Stretch"/>
                                 </StackPanel>
                                 <StackPanel Grid.Column="2">
-                                    <TextBlock Text="Status" Margin="0,0,0,4"/>
+                                    <TextBlock Text="{DynamicResource Order_Status}" Margin="0,0,0,4"/>
                                     <ComboBox ItemsSource="{Binding StatusyZamowienia}"
                                               SelectedItem="{Binding WybranyStatus}"
                                               HorizontalAlignment="Stretch"/>
@@ -274,23 +272,22 @@
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
                                     <StackPanel Grid.Column="0">
-                                        <TextBlock Text="Serwisant (instalacja wyposażenia)" Margin="0,0,0,4"/>
+                                        <TextBlock Text="{DynamicResource Order_Mechanic}" Margin="0,0,0,4"/>
                                         <ComboBox ItemsSource="{Binding ListaSerwisantow}"
                                                   SelectedItem="{Binding WybranySerwisant}"
                                                   HorizontalAlignment="Stretch"/>
                                     </StackPanel>
                                 </Grid>
 
-                                <TextBlock Text="Cena finalna (zł)" Margin="0,0,0,4"/>
+                                <TextBlock Text="{DynamicResource Order_FinalPrice}" Margin="0,0,0,4"/>
                             <ui:NumberBox Value="{Binding CenaFinalna}"
                                           Minimum="0"
                                           ClearButtonEnabled="False"
                                           Margin="0,0,0,8"
                                           HorizontalAlignment="Stretch"/>
 
-                            <TextBlock Text="Uwagi" Margin="0,0,0,4"/>
+                            <TextBlock Text="{DynamicResource Order_Notes}" Margin="0,0,0,4"/>
                             <ui:TextBox Text="{Binding Uwagi, UpdateSourceTrigger=PropertyChanged}"
-                                        PlaceholderText="Dodatkowe informacje, ustalenia z klientem..."
                                         AcceptsReturn="True"
                                         TextWrapping="Wrap"
                                         Height="80"
@@ -311,12 +308,12 @@
                 MinHeight="68"
                 HorizontalAlignment="Stretch">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                <ui:Button Content="Anuluj"
+                <ui:Button Content="{DynamicResource Order_Cancel}"
                            Appearance="Secondary"
                            Padding="20,8"
                            Margin="0,0,8,0"
                            Command="{Binding CancelCommand}"/>
-                <ui:Button Content="Zapisz zamówienie"
+                <ui:Button Content="{DynamicResource Order_Save}"
                            Appearance="Primary"
                            Icon="{ui:SymbolIcon Save24}"
                            Padding="20,8"
@@ -327,9 +324,9 @@
     <Popup x:Name="TourPopup" AllowsTransparency="True" StaysOpen="True" Placement="Bottom">
         <Border Background="#2D3038" BorderBrush="#5B59E8" BorderThickness="2" CornerRadius="8" Padding="15" Width="280">
             <StackPanel>
-                <TextBlock x:Name="TourText" Text="Tekst samouczka" TextWrapping="Wrap" Foreground="White" FontSize="14" Margin="0,0,0,10"/>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                    <ui:Button x:Name="TourNextBtn" Content="Dalej" Appearance="Primary" Click="TourNext_Click"/>
+                    <TextBlock x:Name="TourText" Text="{DynamicResource Tour_DefaultText}" TextWrapping="Wrap" Foreground="White" FontSize="14" Margin="0,0,0,10"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <ui:Button x:Name="TourNextBtn" Content="{DynamicResource Tour_Next}" Appearance="Primary" Click="TourNext_Click"/>
                 </StackPanel>
             </StackPanel>
         </Border>

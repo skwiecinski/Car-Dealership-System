@@ -57,20 +57,20 @@ namespace SalonSamochodowy.ViewModels
         {
             if (string.IsNullOrWhiteSpace(FirstName) || string.IsNullOrWhiteSpace(LastName))
             {
-                ShowError("Imię i nazwisko są wymagane.");
+                ShowError(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_ValNameEdit"));
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(Email) || !IsValidEmail(Email))
             {
-                ShowError("Podaj poprawny adres e-mail.");
+                ShowError(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_ValEmailEdit"));
                 return;
             }
 
             var isWorkerRole = RoleName == "Sprzedawca" || RoleName == "Serwisant" || RoleName == "Kierownik";
             if (isWorkerRole && SelectedDealership == null)
             {
-                ShowError("Wybierz salon dla tego pracownika.");
+                ShowError(SalonSamochodowy.Services.LocalizationHelper.GetString("Admin_ValDealershipEdit"));
                 return;
             }
 

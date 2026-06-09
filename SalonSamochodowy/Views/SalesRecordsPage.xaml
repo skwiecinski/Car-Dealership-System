@@ -24,8 +24,8 @@
         <!-- ===== Header ===== -->
         <Grid Grid.Row="0" Margin="0,0,0,16">
             <StackPanel>
-                <TextBlock Text="Ewidencja Sprzedaży" FontSize="24" FontWeight="Bold" Foreground="#E2E2E2"/>
-                <TextBlock Text="Rejestr wszystkich transakcji: pojazd, klient, doradca i salon" Foreground="#8A8D98" Margin="0,4,0,0"/>
+                <TextBlock Text="{DynamicResource SalesRecords_Title}" FontSize="24" FontWeight="Bold" Foreground="#E2E2E2"/>
+                <TextBlock Text="{DynamicResource SalesRecords_Subtitle}" Foreground="#8A8D98" Margin="0,4,0,0"/>
             </StackPanel>
             <ProgressBar IsIndeterminate="True"
                          HorizontalAlignment="Right" VerticalAlignment="Center"
@@ -52,31 +52,31 @@
                 </Grid.ColumnDefinitions>
 
                 <StackPanel Grid.Column="0">
-                    <TextBlock Text="Status" Foreground="#8A8D98" FontSize="11" Margin="0,0,0,4"/>
+                    <TextBlock Text="{DynamicResource SalesRecords_Status}" Foreground="#8A8D98" FontSize="11" Margin="0,0,0,4"/>
                     <ComboBox ItemsSource="{Binding StatusFilters}" SelectedItem="{Binding SelectedStatus, Mode=TwoWay}" HorizontalAlignment="Stretch"/>
                 </StackPanel>
 
                 <StackPanel Grid.Column="2">
-                    <TextBlock Text="Salon" Foreground="#8A8D98" FontSize="11" Margin="0,0,0,4"/>
+                    <TextBlock Text="{DynamicResource SalesRecords_Dealership}" Foreground="#8A8D98" FontSize="11" Margin="0,0,0,4"/>
                     <ComboBox ItemsSource="{Binding DealershipFilters}" SelectedItem="{Binding SelectedDealership, Mode=TwoWay}" HorizontalAlignment="Stretch"/>
                 </StackPanel>
 
                 <StackPanel Grid.Column="4">
-                    <TextBlock Text="Doradca" Foreground="#8A8D98" FontSize="11" Margin="0,0,0,4"/>
+                    <TextBlock Text="{DynamicResource SalesRecords_Advisor}" Foreground="#8A8D98" FontSize="11" Margin="0,0,0,4"/>
                     <ComboBox ItemsSource="{Binding AdvisorFilters}" SelectedItem="{Binding SelectedAdvisor, Mode=TwoWay}" HorizontalAlignment="Stretch"/>
                 </StackPanel>
 
                 <StackPanel Grid.Column="6">
-                    <TextBlock Text="Od" Foreground="#8A8D98" FontSize="11" Margin="0,0,0,4"/>
+                    <TextBlock Text="{DynamicResource SalesRecords_DateFrom}" Foreground="#8A8D98" FontSize="11" Margin="0,0,0,4"/>
                     <DatePicker SelectedDate="{Binding DateFrom, Mode=TwoWay}" Width="130"/>
                 </StackPanel>
 
                 <StackPanel Grid.Column="8">
-                    <TextBlock Text="Do" Foreground="#8A8D98" FontSize="11" Margin="0,0,0,4"/>
+                    <TextBlock Text="{DynamicResource SalesRecords_DateTo}" Foreground="#8A8D98" FontSize="11" Margin="0,0,0,4"/>
                     <DatePicker SelectedDate="{Binding DateTo, Mode=TwoWay}" Width="130"/>
                 </StackPanel>
 
-                <ui:Button Grid.Column="10" Content="Wyczyść" Appearance="Secondary"
+                <ui:Button Grid.Column="10" Content="{DynamicResource SalesRecords_ClearFilters}" Appearance="Secondary"
                            VerticalAlignment="Bottom" Icon="{ui:SymbolIcon Dismiss24}"
                            Command="{Binding ClearFiltersCommand}"/>
             </Grid>
@@ -95,25 +95,25 @@
                           HorizontalGridLinesBrush="#1AFFFFFF"
                           CanUserAddRows="False" SelectionChanged="DataGrid_SelectionChanged">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Kod"     Binding="{Binding OrderCode}"      Width="Auto"/>
-                        <DataGridTextColumn Header="Data"    Binding="{Binding OrderDateText}"  Width="Auto"/>
-                        <DataGridTextColumn Header="Pojazd"  Binding="{Binding VehicleName}"    Width="*"/>
-                        <DataGridTextColumn Header="VIN"     Binding="{Binding Vin}"            Width="Auto" FontFamily="Consolas"/>
-                        <DataGridTextColumn Header="Klient"  Binding="{Binding ClientName}"     Width="*"/>
-                        <DataGridTextColumn Header="Doradca" Binding="{Binding AdvisorName}"    Width="*"/>
-                        <DataGridTextColumn Header="Salon"   Binding="{Binding DealershipName}" Width="*"/>
-                        <DataGridTemplateColumn Header="Status" Width="Auto">
+                        <DataGridTextColumn Header="{DynamicResource SalesRecords_ColCode}"     Binding="{Binding OrderCode}"      Width="Auto"/>
+                        <DataGridTextColumn Header="{DynamicResource SalesRecords_ColDate}"    Binding="{Binding OrderDateText}"  Width="Auto"/>
+                        <DataGridTextColumn Header="{DynamicResource SalesRecords_ColVehicle}"  Binding="{Binding VehicleName}"    Width="*"/>
+                        <DataGridTextColumn Header="{DynamicResource SalesRecords_ColVIN}"     Binding="{Binding Vin}"            Width="Auto" FontFamily="Consolas"/>
+                        <DataGridTextColumn Header="{DynamicResource SalesRecords_ColClient}"  Binding="{Binding ClientName}"     Width="*"/>
+                        <DataGridTextColumn Header="{DynamicResource SalesRecords_ColAdvisor}" Binding="{Binding AdvisorName}"    Width="*"/>
+                        <DataGridTextColumn Header="{DynamicResource SalesRecords_ColDealership}"   Binding="{Binding DealershipName}" Width="*"/>
+                        <DataGridTemplateColumn Header="{DynamicResource SalesRecords_ColStatus}" Width="Auto">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Border CornerRadius="4" Padding="8,3" Margin="2"
                                             Background="#1C1E23" BorderThickness="1"
                                             BorderBrush="{Binding StatusColor}">
-                                        <TextBlock Text="{Binding Status}" Foreground="{Binding StatusColor}" FontSize="11" FontWeight="SemiBold"/>
+                                        <TextBlock Text="{Binding StatusDisplay}" Foreground="{Binding StatusColor}" FontSize="11" FontWeight="SemiBold"/>
                                     </Border>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTextColumn Header="Kwota" Binding="{Binding FinalPriceText}" Width="*">
+                        <DataGridTextColumn Header="{DynamicResource SalesRecords_ColPrice}" Binding="{Binding FinalPriceText}" Width="*">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="Foreground" Value="#44C767"/>
@@ -125,7 +125,7 @@
                     </DataGrid.Columns>
                 </DataGrid>
 
-                <TextBlock Text="Brak transakcji spełniających kryteria"
+                <TextBlock Text="{DynamicResource SalesRecords_NoRecords}"
                            Foreground="#8A8D98" FontSize="14" FontStyle="Italic"
                            HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,40,0,0"
                            Visibility="{Binding EmptyVisibility}"/>
@@ -140,9 +140,9 @@
         <Popup x:Name="TourPopup" AllowsTransparency="True" StaysOpen="True" Placement="Bottom">
             <Border Background="#2D3038" BorderBrush="#5B59E8" BorderThickness="2" CornerRadius="8" Padding="15" Width="280">
                 <StackPanel>
-                    <TextBlock x:Name="TourText" Text="Tekst samouczka" TextWrapping="Wrap" Foreground="White" FontSize="14" Margin="0,0,0,10"/>
+                    <TextBlock x:Name="TourText" Text="{DynamicResource Tour_DefaultText}" TextWrapping="Wrap" Foreground="White" FontSize="14" Margin="0,0,0,10"/>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                        <ui:Button x:Name="TourNextBtn" Content="Dalej" Appearance="Primary" Click="TourNext_Click"/>
+                        <ui:Button x:Name="TourNextBtn" Content="{DynamicResource Tour_Next}" Appearance="Primary" Click="TourNext_Click"/>
                     </StackPanel>
                 </StackPanel>
             </Border>
