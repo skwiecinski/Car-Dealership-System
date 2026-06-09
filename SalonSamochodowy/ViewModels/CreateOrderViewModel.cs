@@ -281,6 +281,12 @@ public partial class CreateOrderViewModel : ObservableObject
                     return;
                 }
 
+                if (!IsValidEmail(NowyEmail.Trim()))
+                {
+                    ShowWarning?.Invoke(SalonSamochodowy.Services.LocalizationHelper.GetString("Msg_InvalidEmail"));
+                    return;
+                }
+
                 if (await _clientService.EmailExistsAsync(NowyEmail.Trim()))
                 {
                     ShowWarning?.Invoke(SalonSamochodowy.Services.LocalizationHelper.GetString("Msg_EmailExists"));
@@ -449,6 +455,16 @@ public class DodatkowaOpcja
                 return $"{localizedName} ({localizedCategory}) - {Cena:N0} zł";
             return $"{localizedName} ({localizedCategory})";
         }
+    }
+
+    private static bool IsValidEmail(string email)
+    {
+        if (!System.Net.Mail.MailAddress.TryCreate(email, out var address))
+            return false;
+
+        var domain = address.Host;
+        var dotIndex = domain.IndexOf('.');
+        return dotIndex > 0 && dotIndex < domain.Length - 1;
     }
 }
 
