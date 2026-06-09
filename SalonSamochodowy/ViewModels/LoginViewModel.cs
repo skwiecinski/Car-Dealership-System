@@ -23,6 +23,9 @@ namespace SalonSamochodowy.ViewModels
         [ObservableProperty]
         private string errorMessage = "";
 
+        [ObservableProperty]
+        private bool isLoading;
+
         public event Action<AppUser>? LoginSucceeded;
         public event Action? ExitRequested;
 
@@ -46,14 +49,25 @@ namespace SalonSamochodowy.ViewModels
                 return;
             }
 
-            var loggedUser = await _authService.LoginAsync(emailTrim, password);
-            if (loggedUser == null)
+            IsLoading = true;
+            try
             {
-                ErrorMessage = "Niepoprawny e-mail lub hasło.";
-                return;
-            }
+                // Dodajemy małe opóźnienie dla lepszego efektu wizualnego
+                await Task.Delay(500);
 
-            LoginSucceeded?.Invoke(loggedUser);
+                var loggedUser = await _authService.LoginAsync(emailTrim, password);
+                if (loggedUser == null)
+                {
+                    ErrorMessage = "Niepoprawny e-mail lub hasło.";
+                    return;
+                }
+
+                LoginSucceeded?.Invoke(loggedUser);
+            }
+            finally
+            {
+                IsLoading = false;
+            }
         }
 
         [RelayCommand]

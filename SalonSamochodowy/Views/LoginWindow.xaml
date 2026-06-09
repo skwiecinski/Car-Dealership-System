@@ -6,8 +6,29 @@
                  WindowStartupLocation="CenterScreen"
                  Background="#16181D"
                  ExtendsContentIntoTitleBar="True"
-                 WindowStyle="SingleBorderWindow">
+                 WindowStyle="SingleBorderWindow"
+                 Opacity="0">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </Window.Resources>
+
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="Window.Loaded">
+            <BeginStoryboard>
+                <Storyboard>
+                    <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.6" />
+                    <ThicknessAnimation Storyboard.TargetProperty="Margin" Storyboard.TargetName="MainContentGrid" From="0,20,0,-20" To="0,0,0,0" Duration="0:0:0.6">
+                        <ThicknessAnimation.EasingFunction>
+                            <CubicEase EasingMode="EaseOut" />
+                        </ThicknessAnimation.EasingFunction>
+                    </ThicknessAnimation>
+                </Storyboard>
+            </BeginStoryboard>
+        </EventTrigger>
+    </Window.Triggers>
+
     <Grid>
+        <Grid x:Name="MainContentGrid">
         <ui:TitleBar Title="{DynamicResource Login_Header}" VerticalAlignment="Top" />
 
         <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,50,20,0" Panel.ZIndex="100">
@@ -79,5 +100,15 @@
                        Foreground="#8A8D98"
                        Command="{Binding ExitCommand}"/>
         </StackPanel>
+        </Grid>
+
+        <!-- Ekran ładowania -->
+        <Grid x:Name="LoadingOverlay" Background="#D916181D" Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}" Panel.ZIndex="200">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <ui:ProgressRing IsIndeterminate="True" Width="60" Height="60" Foreground="#5B59E8" />
+                <TextBlock Text="Logowanie..." Foreground="White" FontSize="16" FontWeight="SemiBold" Margin="0,20,0,0" HorizontalAlignment="Center" />
+            </StackPanel>
+        </Grid>
+
     </Grid>
 </ui:FluentWindow>
