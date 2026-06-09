@@ -1,5 +1,14 @@
 Salon Samochodowy
 
+## Instalacja środowiska (Przejście na SQL Server)
+
+**Instrukcja instalacji:**
+1. Uruchom **Visual Studio Installer**.
+2. Przy swojej wersji Visual Studio kliknij **Modify**.
+3. Przejdź do zakładki **Pojedyncze składniki**
+4. Wyszukaj i zaznacz **SQL Server Express 2019 LocalDB**
+5. Kliknij *Modyfikuj/Zainstaluj*
+
 ## Pracowanie z bazą danych
 
 Architektura jest opartana wzorcach **Repository** oraz **Unit of Work**. Dzięki temu nie musimy pisać zapytań SQL, cała komunikacja odbywa się za pomocoą dwóch mechanizmów.
