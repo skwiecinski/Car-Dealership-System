@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using SalonSamochodowy.Entities;
 using SalonSamochodowy.Services;
@@ -9,112 +10,157 @@ namespace SalonSamochodowy
     {
         public static void Seed(AppDbContext context)
         {
+            Random rnd = new Random(1337); // Stałe ziarno dla powtarzalności generowanych danych
+
+            // 1. Roles
             if (!context.AppRoles.Any())
             {
                 context.AppRoles.AddRange(
-                    new AppRole { RoleName = "Administrator", PermissionLevel = 0 },
-                    new AppRole { RoleName = "Kierownik", PermissionLevel = 1 },
-                    new AppRole { RoleName = "Sprzedawca", PermissionLevel = 2 },
-                    new AppRole { RoleName = "Serwisant", PermissionLevel = 3 },
-                    new AppRole { RoleName = "Klient", PermissionLevel = 4 }
+                    new AppRole { RoleName = RoleNames.Admin, PermissionLevel = 0 },
+                    new AppRole { RoleName = RoleNames.Kierownik, PermissionLevel = 1 },
+                    new AppRole { RoleName = RoleNames.Sprzedawca, PermissionLevel = 2 },
+                    new AppRole { RoleName = RoleNames.Serwisant, PermissionLevel = 3 },
+                    new AppRole { RoleName = RoleNames.Klient, PermissionLevel = 4 }
                 );
                 context.SaveChanges();
             }
 
-            if (!context.AppUsers.Any())
+            var rAdmin = context.AppRoles.First(r => r.RoleName == RoleNames.Admin);
+            var rKierownik = context.AppRoles.First(r => r.RoleName == RoleNames.Kierownik);
+            var rSprzedawca = context.AppRoles.First(r => r.RoleName == RoleNames.Sprzedawca);
+            var rSerwisant = context.AppRoles.First(r => r.RoleName == RoleNames.Serwisant);
+            var rKlient = context.AppRoles.First(r => r.RoleName == RoleNames.Klient);
+
+            // 2. Base Admin user
+            if (!context.AppUsers.Any(u => u.RoleID == rAdmin.RoleID))
             {
-                var rAdmin = context.AppRoles.First(r => r.RoleName == "Administrator");
-                var rKierownik = context.AppRoles.First(r => r.RoleName == "Kierownik");
-                var rSprzedawca = context.AppRoles.First(r => r.RoleName == "Sprzedawca");
-                var rSerwisant = context.AppRoles.First(r => r.RoleName == "Serwisant");
-                var rKlient = context.AppRoles.First(r => r.RoleName == "Klient");
-
-                context.AppUsers.AddRange(
-                    new AppUser { FirstName = "Anna", LastName = "Adminowa", Email = "admin@salon.pl", PasswordHash = AuthService.HashPassword("admin123"), RoleID = rAdmin.RoleID, BirthDate = new DateTime(1980, 1, 15) },
-                    new AppUser { FirstName = "Wiesław", LastName = "Kierowniczy", Email = "kierownik@salon.pl", PasswordHash = AuthService.HashPassword("kierownik123"), RoleID = rKierownik.RoleID, BirthDate = new DateTime(1977, 12, 3) },
-                    new AppUser { FirstName = "Tomasz", LastName = "Sprzedażowy", Email = "sprzedawca@salon.pl", PasswordHash = AuthService.HashPassword("sprzedawca123"), RoleID = rSprzedawca.RoleID, BirthDate = new DateTime(1990, 5, 10) },
-                    new AppUser { FirstName = "Piotr", LastName = "Serwisowy", Email = "serwis@salon.pl", PasswordHash = AuthService.HashPassword("serwis123"), RoleID = rSerwisant.RoleID, BirthDate = new DateTime(1985, 8, 20) },
-                    new AppUser { FirstName = "Jan", LastName = "Kowalski", Email = "klient@wp.pl", PasswordHash = AuthService.HashPassword("klient123"), RoleID = rKlient.RoleID, BirthDate = new DateTime(1995, 2, 14) }
-                );
+                context.AppUsers.Add(new AppUser { FirstName = "Anna", LastName = "Adminowa", Email = "admin@salon.pl", PasswordHash = AuthService.HashPassword("123"), RoleID = rAdmin.RoleID, BirthDate = new DateTime(1980, 1, 15) });
                 context.SaveChanges();
             }
 
+            // 3. Dealerships
             if (!context.Dealerships.Any())
             {
-                context.Dealerships.Add(new Dealership { Name = "Główny Salon", Address = "ul. Akademicka 16", City = "Gliwice", Owner = "Sigma Boy" });
+                context.Dealerships.AddRange(
+                    new Dealership { Name = "Salon Gliwice (Centrala)", Address = "ul. Akademicka 16", City = "Gliwice", Owner = "Zarząd" },
+                    new Dealership { Name = "Salon Katowice Premium", Address = "ul. Chorzowska 50", City = "Katowice", Owner = "Zarząd" },
+                    new Dealership { Name = "Salon Kraków", Address = "ul. Jasnogórska 2", City = "Kraków", Owner = "Zarząd" }
+                );
                 context.SaveChanges();
             }
 
-            if (!context.Workers.Any() && !context.Clients.Any())
+            var dealerships = context.Dealerships.ToList();
+
+            // 4. Base dictionary data
+            var firstNames = new[] { "Piotr", "Michał", "Anna", "Katarzyna", "Tomasz", "Jan", "Kamil", "Marek", "Ewa", "Karolina", "Adam", "Marcin", "Mateusz", "Agnieszka", "Magdalena", "Jakub", "Maciej", "Paweł", "Monika", "Julia", "Zofia", "Hanna", "Krzysztof", "Szymon", "Bartosz" };
+            var lastNames = new[] { "Kowalski", "Nowak", "Wiśniewski", "Wójcik", "Kowalczyk", "Kamiński", "Lewandowski", "Zieliński", "Szymański", "Woźniak", "Dąbrowski", "Kozłowski", "Jankowski", "Mazur", "Wojciechowski", "Kwiatkowski", "Krawczyk", "Kaczmarek", "Piotrowski", "Grabowski" };
+
+            // 5. Generate Workers (Managers, Sellers, Mechanics)
+            if (!context.Workers.Any())
             {
-                var rKierownik = context.AppRoles.First(r => r.RoleName == "Kierownik");
-                var rSprzedawca = context.AppRoles.First(r => r.RoleName == "Sprzedawca");
-                var rSerwisant = context.AppRoles.First(r => r.RoleName == "Serwisant");
+                var workersToInsert = new List<Worker>();
+                var usersToInsert = new List<AppUser>();
 
-                context.AppUsers.AddRange(
-                    new AppUser { FirstName = "Robert", LastName = "Nowy-Kierownik", Email = "kierownik2@salon.pl", PasswordHash = AuthService.HashPassword("123"), RoleID = rKierownik.RoleID, BirthDate = new DateTime(1982, 4, 11) },
-                    new AppUser { FirstName = "Karolina", LastName = "Bystra", Email = "sprzedawca2@salon.pl", PasswordHash = AuthService.HashPassword("123"), RoleID = rSprzedawca.RoleID, BirthDate = new DateTime(1993, 7, 22) },
-                    new AppUser { FirstName = "Michał", LastName = "Dobry", Email = "sprzedawca3@salon.pl", PasswordHash = AuthService.HashPassword("123"), RoleID = rSprzedawca.RoleID, BirthDate = new DateTime(1995, 11, 5) },
-                    new AppUser { FirstName = "Dawid", LastName = "Klucz", Email = "serwis2@salon.pl", PasswordHash = AuthService.HashPassword("123"), RoleID = rSerwisant.RoleID, BirthDate = new DateTime(1988, 1, 30) },
-                    new AppUser { FirstName = "Krzysztof", LastName = "Smar", Email = "serwis3@salon.pl", PasswordHash = AuthService.HashPassword("123"), RoleID = rSerwisant.RoleID, BirthDate = new DateTime(1991, 9, 15) }
-                );
+                // Helper to create worker
+                Worker CreateWorker(string fname, string lname, string email, AppRole role, Dealership ds, decimal payroll)
+                {
+                    var user = new AppUser { FirstName = fname, LastName = lname, Email = email, PasswordHash = AuthService.HashPassword("123"), RoleID = role.RoleID, BirthDate = new DateTime(rnd.Next(1970, 2000), rnd.Next(1, 13), rnd.Next(1, 28)) };
+                    usersToInsert.Add(user);
+                    return new Worker { User = user, DealershipID = ds.DealershipID, Payroll = payroll, EndOfContractDate = new DateTime(2028, 12, 31) };
+                }
+
+                int sellerId = 1;
+                int mechId = 1;
+
+                foreach (var ds in dealerships)
+                {
+                    // 1 Manager per dealership
+                    var manFn = firstNames[rnd.Next(firstNames.Length)];
+                    var manLn = lastNames[rnd.Next(lastNames.Length)];
+                    workersToInsert.Add(CreateWorker(manFn, manLn, $"kierownik.{ds.City.ToLower()}@salon.pl", rKierownik, ds, 10000m));
+
+                    // 5-8 Sellers per dealership
+                    int numSellers = rnd.Next(5, 9);
+                    for (int i = 0; i < numSellers; i++)
+                    {
+                        var fn = firstNames[rnd.Next(firstNames.Length)];
+                        var ln = lastNames[rnd.Next(lastNames.Length)];
+                        workersToInsert.Add(CreateWorker(fn, ln, $"sprzedawca{sellerId++}@salon.pl", rSprzedawca, ds, rnd.Next(5000, 8000)));
+                    }
+
+                    // 5-8 Mechanics per dealership
+                    int numMechs = rnd.Next(5, 9);
+                    for (int i = 0; i < numMechs; i++)
+                    {
+                        var fn = firstNames[rnd.Next(firstNames.Length)];
+                        var ln = lastNames[rnd.Next(lastNames.Length)];
+                        workersToInsert.Add(CreateWorker(fn, ln, $"serwis{mechId++}@salon.pl", rSerwisant, ds, rnd.Next(5500, 7500)));
+                    }
+                }
+
+                // Add test accounts explicitly for easy testing
+                workersToInsert.Add(CreateWorker("Wiesław", "Testowy", "kierownik@salon.pl", rKierownik, dealerships[0], 12000m));
+                workersToInsert.Add(CreateWorker("Tomasz", "Testowy", "sprzedawca@salon.pl", rSprzedawca, dealerships[0], 7000m));
+                workersToInsert.Add(CreateWorker("Piotr", "Testowy", "serwis@salon.pl", rSerwisant, dealerships[0], 6500m));
+
+                context.AppUsers.AddRange(usersToInsert);
+                context.Workers.AddRange(workersToInsert);
                 context.SaveChanges();
+            }
 
-                var uKierownik = context.AppUsers.First(u => u.Email == "kierownik@salon.pl");
-                var uSprzedawca = context.AppUsers.First(u => u.Email == "sprzedawca@salon.pl");
-                var uSerwisant = context.AppUsers.First(u => u.Email == "serwis@salon.pl");
-                var uKlient = context.AppUsers.First(u => u.Email == "klient@wp.pl");
-                
-                var newKierownik = context.AppUsers.First(u => u.Email == "kierownik2@salon.pl");
-                var newSprzedawca1 = context.AppUsers.First(u => u.Email == "sprzedawca2@salon.pl");
-                var newSprzedawca2 = context.AppUsers.First(u => u.Email == "sprzedawca3@salon.pl");
-                var newSerwisant1 = context.AppUsers.First(u => u.Email == "serwis2@salon.pl");
-                var newSerwisant2 = context.AppUsers.First(u => u.Email == "serwis3@salon.pl");
+            // 6. Generate Clients
+            if (!context.Clients.Any())
+            {
+                var clientsToInsert = new List<Client>();
+                var usersToInsert = new List<AppUser>();
 
-                var salon = context.Dealerships.First();
+                // Explicit test client
+                var testUser = new AppUser { FirstName = "Jan", LastName = "Testowy", Email = "klient@wp.pl", PasswordHash = AuthService.HashPassword("123"), RoleID = rKlient.RoleID, BirthDate = new DateTime(1990, 5, 5) };
+                usersToInsert.Add(testUser);
+                clientsToInsert.Add(new Client { User = testUser, NIP = "1234567890", Phone = "111-222-333" });
 
-                context.Workers.AddRange(
-                    new Worker { UserID = uKierownik.UserID,  Payroll = 9000m, EndOfContractDate = new DateTime(2028, 12, 31), DealershipID = salon.DealershipID },
-                    new Worker { UserID = uSprzedawca.UserID, Payroll = 6000m, EndOfContractDate = new DateTime(2027, 12, 31), DealershipID = salon.DealershipID },
-                    new Worker { UserID = uSerwisant.UserID,  Payroll = 5500m, EndOfContractDate = new DateTime(2026, 12, 31), DealershipID = salon.DealershipID },
-                    new Worker { UserID = newKierownik.UserID, Payroll = 8500m, EndOfContractDate = new DateTime(2028, 12, 31), DealershipID = salon.DealershipID },
-                    new Worker { UserID = newSprzedawca1.UserID, Payroll = 5800m, EndOfContractDate = new DateTime(2027, 12, 31), DealershipID = salon.DealershipID },
-                    new Worker { UserID = newSprzedawca2.UserID, Payroll = 5900m, EndOfContractDate = new DateTime(2027, 12, 31), DealershipID = salon.DealershipID },
-                    new Worker { UserID = newSerwisant1.UserID, Payroll = 5200m, EndOfContractDate = new DateTime(2026, 12, 31), DealershipID = salon.DealershipID },
-                    new Worker { UserID = newSerwisant2.UserID, Payroll = 5400m, EndOfContractDate = new DateTime(2026, 12, 31), DealershipID = salon.DealershipID }
+                for (int i = 0; i < 80; i++)
+                {
+                    var fn = firstNames[rnd.Next(firstNames.Length)];
+                    var ln = lastNames[rnd.Next(lastNames.Length)];
+                    var user = new AppUser { FirstName = fn, LastName = ln, Email = $"klient{i}@example.com", PasswordHash = AuthService.HashPassword("123"), RoleID = rKlient.RoleID, BirthDate = new DateTime(rnd.Next(1960, 2002), rnd.Next(1, 13), rnd.Next(1, 28)) };
+                    usersToInsert.Add(user);
+                    clientsToInsert.Add(new Client { User = user, NIP = rnd.NextDouble() > 0.7 ? rnd.Next(1000000000, int.MaxValue).ToString() : "", Phone = $"{rnd.Next(100, 999)}-{rnd.Next(100, 999)}-{rnd.Next(100, 999)}" });
+                }
+
+                context.AppUsers.AddRange(usersToInsert);
+                context.Clients.AddRange(clientsToInsert);
+                context.SaveChanges();
+            }
+
+            // 7. Base vehicle catalogs (Models, Engines, Features, Trims)
+            if (!context.VehicleModels.Any())
+            {
+                context.VehicleModels.AddRange(
+                    new VehicleModel { Brand = "BMW", ModelName = "Seria 1" },
+                    new VehicleModel { Brand = "BMW", ModelName = "Seria 3" },
+                    new VehicleModel { Brand = "BMW", ModelName = "Seria 5" },
+                    new VehicleModel { Brand = "BMW", ModelName = "X1" },
+                    new VehicleModel { Brand = "BMW", ModelName = "X3" },
+                    new VehicleModel { Brand = "BMW", ModelName = "X5" },
+                    new VehicleModel { Brand = "Mini", ModelName = "Cooper" },
+                    new VehicleModel { Brand = "Mini", ModelName = "Countryman" }
                 );
-
-                context.Clients.Add(new Client { UserID = uKlient.UserID, NIP = "1234567890", Phone = "987-654-321" });
                 context.SaveChanges();
             }
 
             if (!context.Engines.Any())
             {
                 context.Engines.AddRange(
-                    new Engine { Brand = "BMW",  EngineName = "1.5 TwinPower Turbo",         EngineSize = "1.5L", Power = 140, Price = 0m },
-                    new Engine { Brand = "BMW",  EngineName = "2.0 TwinPower Turbo Benzyna", EngineSize = "2.0L", Power = 184, Price = 8000m },
-                    new Engine { Brand = "BMW",  EngineName = "2.0 TwinPower Turbo Diesel",  EngineSize = "2.0L", Power = 190, Price = 10000m },
-                    new Engine { Brand = "BMW",  EngineName = "3.0 TwinPower Turbo Diesel",  EngineSize = "3.0L", Power = 286, Price = 22000m },
-                    new Engine { Brand = "BMW",  EngineName = "3.0 TwinPower Turbo Benzyna", EngineSize = "3.0L", Power = 333, Price = 24000m },
-                    new Engine { Brand = "BMW",  EngineName = "M xDrive 4.4 V8",             EngineSize = "4.4L", Power = 530, Price = 60000m },
-                    new Engine { Brand = "Mini", EngineName = "1.5 Cooper",                  EngineSize = "1.5L", Power = 136, Price = 0m },
-                    new Engine { Brand = "Mini", EngineName = "2.0 Cooper S",                EngineSize = "2.0L", Power = 178, Price = 9000m },
-                    new Engine { Brand = "Mini", EngineName = "2.0 John Cooper Works",       EngineSize = "2.0L", Power = 231, Price = 18000m }
-                );
-                context.SaveChanges();
-            }
-
-            if (!context.VehicleModels.Any())
-            {
-                context.VehicleModels.AddRange(
-                    new VehicleModel { Brand = "BMW",  ModelName = "Seria 1" },
-                    new VehicleModel { Brand = "BMW",  ModelName = "Seria 3" },
-                    new VehicleModel { Brand = "BMW",  ModelName = "Seria 5" },
-                    new VehicleModel { Brand = "BMW",  ModelName = "X1" },
-                    new VehicleModel { Brand = "BMW",  ModelName = "X3" },
-                    new VehicleModel { Brand = "BMW",  ModelName = "X5" },
-                    new VehicleModel { Brand = "Mini", ModelName = "Cooper" },
-                    new VehicleModel { Brand = "Mini", ModelName = "Countryman" }
+                    new Engine { Brand = "BMW", EngineName = "1.5 TwinPower Turbo", EngineSize = "1.5L", Power = 140, Price = 0m },
+                    new Engine { Brand = "BMW", EngineName = "2.0 TwinPower Turbo Benzyna", EngineSize = "2.0L", Power = 184, Price = 8000m },
+                    new Engine { Brand = "BMW", EngineName = "2.0 TwinPower Turbo Diesel", EngineSize = "2.0L", Power = 190, Price = 10000m },
+                    new Engine { Brand = "BMW", EngineName = "3.0 TwinPower Turbo Diesel", EngineSize = "3.0L", Power = 286, Price = 22000m },
+                    new Engine { Brand = "BMW", EngineName = "3.0 TwinPower Turbo Benzyna", EngineSize = "3.0L", Power = 333, Price = 24000m },
+                    new Engine { Brand = "BMW", EngineName = "M xDrive 4.4 V8", EngineSize = "4.4L", Power = 530, Price = 60000m },
+                    new Engine { Brand = "Mini", EngineName = "1.5 Cooper", EngineSize = "1.5L", Power = 136, Price = 0m },
+                    new Engine { Brand = "Mini", EngineName = "2.0 Cooper S", EngineSize = "2.0L", Power = 178, Price = 9000m },
+                    new Engine { Brand = "Mini", EngineName = "2.0 John Cooper Works", EngineSize = "2.0L", Power = 231, Price = 18000m }
                 );
                 context.SaveChanges();
             }
@@ -122,14 +168,18 @@ namespace SalonSamochodowy
             if (!context.Features.Any())
             {
                 context.Features.AddRange(
-                    new Feature { FeatureName = "Lakier metalik",        Category = "Wygląd", Price = 3000m },
-                    new Feature { FeatureName = "Czujniki parkowania",   Category = "Akcesoria", Price = 5000m },
-                    new Feature { FeatureName = "Kamera cofania",        Category = "Akcesoria", Price = 2000m },
-                    new Feature { FeatureName = "Alarm",                 Category = "Bezpieczeństwo", Price = 1500m },
+                    new Feature { FeatureName = "Lakier metalik", Category = "Wygląd", Price = 3000m },
+                    new Feature { FeatureName = "Czujniki parkowania", Category = "Akcesoria", Price = 5000m },
+                    new Feature { FeatureName = "Kamera cofania", Category = "Akcesoria", Price = 2000m },
+                    new Feature { FeatureName = "Alarm", Category = "Bezpieczeństwo", Price = 1500m },
                     new Feature { FeatureName = "Klimatyzacja 2-strefowa", Category = "Komfort", Price = 2500m },
-                    new Feature { FeatureName = "Skórzane fotele",       Category = "Wnętrze", Price = 6000m },
-                    new Feature { FeatureName = "Nawigacja",             Category = "Multimedia", Price = 4000m },
-                    new Feature { FeatureName = "Pakiet sportowy M",     Category = "Wygląd", Price = 12000m }
+                    new Feature { FeatureName = "Skórzane fotele", Category = "Wnętrze", Price = 6000m },
+                    new Feature { FeatureName = "Nawigacja", Category = "Multimedia", Price = 4000m },
+                    new Feature { FeatureName = "Pakiet sportowy M", Category = "Wygląd", Price = 12000m },
+                    new Feature { FeatureName = "Alpejska Biel (bazowy)", Category = "Kolor", Price = 0m },
+                    new Feature { FeatureName = "Czarny Szafir metalik", Category = "Kolor", Price = 3500m },
+                    new Feature { FeatureName = "Szary Melbourne metalik", Category = "Kolor", Price = 3500m },
+                    new Feature { FeatureName = "Niebieski Phytonic metalik", Category = "Kolor", Price = 4000m }
                 );
                 context.SaveChanges();
             }
@@ -146,15 +196,15 @@ namespace SalonSamochodowy
                         "Seria 1" => 145000m,
                         "Seria 3" => 195000m,
                         "Seria 5" => 285000m,
-                        "X1"      => 175000m,
-                        "X3"      => 240000m,
-                        "X5"      => 380000m,
+                        "X1" => 175000m,
+                        "X3" => 240000m,
+                        "X5" => 380000m,
                         _ => 200000m
                     };
                     context.TrimLevels.AddRange(
-                        new TrimLevel { ModelID = m.ModelID, TrimName = "Basic",     BasePrice = basePrice },
+                        new TrimLevel { ModelID = m.ModelID, TrimName = "Basic", BasePrice = basePrice },
                         new TrimLevel { ModelID = m.ModelID, TrimName = "Advantage", BasePrice = basePrice + 18000m },
-                        new TrimLevel { ModelID = m.ModelID, TrimName = "M-Sport",   BasePrice = basePrice + 42000m }
+                        new TrimLevel { ModelID = m.ModelID, TrimName = "M-Sport", BasePrice = basePrice + 42000m }
                     );
                 }
                 foreach (var m in modelsMini)
@@ -162,172 +212,198 @@ namespace SalonSamochodowy
                     decimal basePrice = m.ModelName == "Countryman" ? 165000m : 130000m;
                     context.TrimLevels.AddRange(
                         new TrimLevel { ModelID = m.ModelID, TrimName = "Classic", BasePrice = basePrice },
-                        new TrimLevel { ModelID = m.ModelID, TrimName = "Sport",   BasePrice = basePrice + 25000m }
+                        new TrimLevel { ModelID = m.ModelID, TrimName = "Sport", BasePrice = basePrice + 25000m }
                     );
                 }
                 context.SaveChanges();
             }
 
+            // 8. Seeding Vehicles, Orders and Jobs
             if (!context.Vehicles.Any())
             {
-                var salon = context.Dealerships.First();
-                var silnik = context.Engines.First();
-                var trim = context.TrimLevels.First();
-
-                var auto = new Vehicle { VIN = "1FA6P8CF7L1234567", TrimID = trim.TrimID, EngineID = silnik.EngineID, Mileage = 10, IsUsed = false, DealershipID = salon.DealershipID, Status = "Dostępny" };
-                context.Vehicles.Add(auto);
-                context.SaveChanges();
-
-                var featurePark = context.Features.First(f => f.FeatureName == "Czujniki parkowania");
-                context.VehicleFeatures.Add(new VehicleFeature { VehicleID = auto.VehicleID, FeatureID = featurePark.FeatureID, PurchasePrice = 1500m });
-                context.SaveChanges();
-            }
-
-            if (!context.SalesOrders.Any())
-            {
-                var auto = context.Vehicles.First();
-                var klient = context.Clients.First();
-                var salon = context.Dealerships.First();
-
-                var uSprzedawca = context.AppUsers.First(u => u.Email == "sprzedawca@salon.pl");
-                var uSerwisant = context.AppUsers.First(u => u.Email == "serwis@salon.pl");
-                var wSprzedawca = context.Workers.First(w => w.UserID == uSprzedawca.UserID);
-                var wSerwisant = context.Workers.First(w => w.UserID == uSerwisant.UserID);
-
-                var featurePark = context.Features.First(f => f.FeatureName == "Czujniki parkowania");
-
-                context.SalesOrders.Add(new SalesOrder
-                {
-                    VehicleID = auto.VehicleID,
-                    ClientID = klient.ClientID,
-                    WorkerID = wSprzedawca.WorkerID,
-                    OrderDate = DateTime.Now,
-                    FinalPrice = 251500m,
-                    Status = "W realizacji",
-                    DealershipID = salon.DealershipID
-                });
-
-                context.Jobs.Add(new Job
-                {
-                    VehicleID = auto.VehicleID,
-                    WorkerID = wSerwisant.WorkerID,
-                    FeatureID = featurePark.FeatureID,
-                    Status = "Oczekujące",
-                    CreatedAt = DateTime.Now
-                });
-
-                context.SaveChanges();
-            }
-
-            if (!context.Features.Any(f => f.Category == "Kolor"))
-            {
-                context.Features.AddRange(
-                    new Feature { FeatureName = "Alpejska Biel (bazowy)", Category = "Kolor", Price = 0m },
-                    new Feature { FeatureName = "Czarny Szafir metalik",   Category = "Kolor", Price = 3500m },
-                    new Feature { FeatureName = "Szary Melbourne metalik",Category = "Kolor", Price = 3500m },
-                    new Feature { FeatureName = "Niebieski Phytonic metalik", Category = "Kolor", Price = 4000m }
-                );
-                context.SaveChanges();
-            }
-
-            var baseColor = context.Features.FirstOrDefault(f => f.FeatureName == "Alpejska Biel (bazowy)");
-            if (baseColor != null)
-            {
-                var vehiclesWithoutColor = context.Vehicles
-                    .Where(v => !context.VehicleFeatures.Any(vf => vf.VehicleID == v.VehicleID && vf.Feature.Category == "Kolor"))
-                    .ToList();
-
-                foreach (var v in vehiclesWithoutColor)
-                {
-                    context.VehicleFeatures.Add(new VehicleFeature
-                    {
-                        VehicleID = v.VehicleID,
-                        FeatureID = baseColor.FeatureID,
-                        PurchasePrice = 0m
-                    });
-                }
-                context.SaveChanges();
-            }
-
-            if (context.SalesOrders.Count() < 10)
-            {
-                var rKlient = context.AppRoles.First(r => r.RoleName == "Klient");
-                var uSprzedawca = context.AppUsers.First(u => u.Email == "sprzedawca@salon.pl");
-                var uSerwisant = context.AppUsers.First(u => u.Email == "serwis@salon.pl");
-                var wSprzedawca = context.Workers.First(w => w.UserID == uSprzedawca.UserID);
-                var wSerwisant = context.Workers.First(w => w.UserID == uSerwisant.UserID);
-
-                var salon = context.Dealerships.First();
                 var trims = context.TrimLevels.ToList();
                 var engines = context.Engines.ToList();
-                var features = context.Features.ToList();
+                var features = context.Features.Where(f => f.Category != "Kolor").ToList();
+                var colors = context.Features.Where(f => f.Category == "Kolor").ToList();
+                var clients = context.Clients.ToList();
 
-                var klienciUsers = new List<AppUser>
+                var allSellers = context.Workers.Where(w => w.User.RoleID == rSprzedawca.RoleID).ToList();
+                var allMechanics = context.Workers.Where(w => w.User.RoleID == rSerwisant.RoleID).ToList();
+
+                var vehiclesToInsert = new List<Vehicle>();
+                var vehicleFeaturesToInsert = new List<VehicleFeature>();
+                var ordersToInsert = new List<SalesOrder>();
+                var jobsToInsert = new List<Job>();
+                
+                // Generate 250 vehicles (some sold, some available, some in progress)
+                for (int i = 0; i < 250; i++)
                 {
-                    new AppUser { FirstName = "Marek", LastName = "Nowak", Email = "m.nowak@gmail.com", PasswordHash = AuthService.HashPassword("klient123"), RoleID = rKlient.RoleID, BirthDate = new DateTime(1980, 5, 5) },
-                    new AppUser { FirstName = "Ewa", LastName = "Wiśniewska", Email = "ewa.w@wp.pl", PasswordHash = AuthService.HashPassword("klient123"), RoleID = rKlient.RoleID, BirthDate = new DateTime(1992, 11, 10) },
-                    new AppUser { FirstName = "Piotr", LastName = "Zieliński", Email = "piotrz@onet.pl", PasswordHash = AuthService.HashPassword("klient123"), RoleID = rKlient.RoleID, BirthDate = new DateTime(1975, 2, 20) }
-                };
-                context.AppUsers.AddRange(klienciUsers);
-                context.SaveChanges();
+                    var ds = dealerships[rnd.Next(dealerships.Count)];
+                    var trim = trims[rnd.Next(trims.Count)];
+                    
+                    var compatibleEngines = engines.Where(e => e.Brand == context.VehicleModels.First(m => m.ModelID == trim.ModelID).Brand).ToList();
+                    var engine = compatibleEngines[rnd.Next(compatibleEngines.Count)];
 
-                var klienci = new List<Client>
-                {
-                    new Client { UserID = klienciUsers[0].UserID, Phone = "111-222-333" },
-                    new Client { UserID = klienciUsers[1].UserID, Phone = "444-555-666" },
-                    new Client { UserID = klienciUsers[2].UserID, Phone = "777-888-999" }
-                };
-                context.Clients.AddRange(klienci);
-                context.SaveChanges();
+                    // Status distribution: ~60% Sold (orders finished), ~20% Available, ~10% InProgress, ~10% Pending
+                    int randStat = rnd.Next(100);
+                    string vehicleStatus = "Dostępny";
+                    string? orderStatus = null;
+                    DateTime? orderDate = null;
 
-                var allClients = context.Clients.ToList();
-                Random rand = new Random(1234); // stałe ziarno dla powtarzalności
-
-                for (int i = 1; i <= 30; i++)
-                {
-                    var trim = trims[rand.Next(trims.Count)];
-                    var engine = engines[rand.Next(engines.Count)];
+                    if (randStat < 60)
+                    {
+                        vehicleStatus = "Sprzedany";
+                        orderStatus = rnd.NextDouble() > 0.5 ? OrderStatuses.Finished : OrderStatuses.FinishedAlt;
+                        orderDate = DateTime.Now.AddDays(-rnd.Next(1, 180)); // 6 months back
+                    }
+                    else if (randStat < 75)
+                    {
+                        vehicleStatus = "Dostępny"; // Not sold, maybe it was canceled previously? 
+                        if (rnd.NextDouble() > 0.7) 
+                        {
+                            orderStatus = OrderStatuses.Canceled;
+                            orderDate = DateTime.Now.AddDays(-rnd.Next(1, 100));
+                        }
+                    }
+                    else if (randStat < 85)
+                    {
+                        vehicleStatus = "Zarezerwowany";
+                        orderStatus = OrderStatuses.InProgress;
+                        orderDate = DateTime.Now.AddDays(-rnd.Next(0, 14)); // recent
+                    }
+                    else
+                    {
+                        vehicleStatus = "Zarezerwowany";
+                        orderStatus = OrderStatuses.Pending;
+                        orderDate = DateTime.Now.AddDays(-rnd.Next(0, 5));
+                    }
 
                     var auto = new Vehicle
                     {
-                        VIN = $"WBA{rand.Next(10000, 99999)}A{rand.Next(1000000, 9999999)}",
+                        VIN = $"WBA{rnd.Next(10000, 99999)}A{rnd.Next(1000000, 9999999)}",
                         TrimID = trim.TrimID,
                         EngineID = engine.EngineID,
-                        Mileage = rand.Next(0, 150000),
-                        IsUsed = rand.NextDouble() > 0.5,
-                        DealershipID = salon.DealershipID,
-                        Status = "Sprzedany"
+                        Mileage = rnd.NextDouble() > 0.7 ? rnd.Next(5000, 150000) : rnd.Next(0, 50),
+                        IsUsed = rnd.NextDouble() > 0.7,
+                        DealershipID = ds.DealershipID,
+                        Status = vehicleStatus
                     };
-                    context.Vehicles.Add(auto);
-                    context.SaveChanges();
+                    vehiclesToInsert.Add(auto);
+                }
+                context.Vehicles.AddRange(vehiclesToInsert);
+                context.SaveChanges();
 
-                    var date = DateTime.Now.AddMonths(-rand.Next(0, 12)).AddDays(-rand.Next(1, 28));
+                // Now add features and orders
+                decimal CalculateTotal(Vehicle v)
+                {
+                    var basePrice = context.TrimLevels.First(t => t.TrimID == v.TrimID).BasePrice;
+                    var enginePrice = context.Engines.First(e => e.EngineID == v.EngineID).Price;
+                    return basePrice + enginePrice;
+                }
 
-                    var order = new SalesOrder
+                foreach (var auto in vehiclesToInsert)
+                {
+                    decimal extraFeaturesPrice = 0;
+                    
+                    // Color
+                    var color = colors[rnd.Next(colors.Count)];
+                    vehicleFeaturesToInsert.Add(new VehicleFeature { VehicleID = auto.VehicleID, FeatureID = color.FeatureID, PurchasePrice = color.Price });
+                    extraFeaturesPrice += color.Price;
+
+                    // Extra features
+                    int featureCount = rnd.Next(0, 4);
+                    var selectedFeatures = features.OrderBy(x => rnd.Next()).Take(featureCount).ToList();
+                    foreach (var f in selectedFeatures)
                     {
-                        VehicleID = auto.VehicleID,
-                        ClientID = allClients[rand.Next(allClients.Count)].ClientID,
-                        WorkerID = wSprzedawca.WorkerID,
-                        OrderDate = date,
-                        FinalPrice = trim.BasePrice + engine.Price + rand.Next(5000, 20000),
-                        Status = OrderStatuses.Finished,
-                        DealershipID = salon.DealershipID
-                    };
-                    context.SalesOrders.Add(order);
+                        vehicleFeaturesToInsert.Add(new VehicleFeature { VehicleID = auto.VehicleID, FeatureID = f.FeatureID, PurchasePrice = f.Price });
+                        extraFeaturesPrice += f.Price;
+                    }
 
-                    var numJobs = rand.Next(1, 4);
-                    for (int j = 0; j < numJobs; j++)
+                    // Create Order if it has an orderStatus mapped in the initial loop
+                    if (auto.Status == "Sprzedany" || auto.Status == "Zarezerwowany" || rnd.NextDouble() > 0.8)
                     {
-                        context.Jobs.Add(new Job
+                        string orderStatus = OrderStatuses.Finished;
+                        DateTime orderDate = DateTime.Now.AddDays(-rnd.Next(1, 180));
+
+                        if (auto.Status == "Sprzedany") orderStatus = rnd.NextDouble() > 0.5 ? OrderStatuses.Finished : OrderStatuses.FinishedAlt;
+                        else if (auto.Status == "Zarezerwowany") orderStatus = rnd.NextDouble() > 0.5 ? OrderStatuses.InProgress : OrderStatuses.Pending;
+                        else { orderStatus = OrderStatuses.Canceled; orderDate = DateTime.Now.AddDays(-rnd.Next(1, 100)); } // Available but had canceled order
+
+                        if (auto.Status == "Zarezerwowany") orderDate = DateTime.Now.AddDays(-rnd.Next(0, 14)); // recent
+
+                        var client = clients[rnd.Next(clients.Count)];
+                        
+                        // Select seller from the same dealership
+                        var dsSellers = allSellers.Where(w => w.DealershipID == auto.DealershipID).ToList();
+                        var seller = dsSellers.Any() ? dsSellers[rnd.Next(dsSellers.Count)] : allSellers[rnd.Next(allSellers.Count)];
+
+                        var finalPrice = CalculateTotal(auto) + extraFeaturesPrice - rnd.Next(0, 15)*1000m; // some discount
+
+                        var order = new SalesOrder
                         {
                             VehicleID = auto.VehicleID,
-                            WorkerID = wSerwisant.WorkerID,
-                            FeatureID = features[rand.Next(features.Count)].FeatureID,
-                            Status = JobStatuses.Finished,
-                            CreatedAt = date.AddDays(-rand.Next(1, 5))
+                            ClientID = client.ClientID,
+                            WorkerID = seller.WorkerID,
+                            OrderDate = orderDate,
+                            FinalPrice = finalPrice > 0 ? finalPrice : 50000m,
+                            Status = orderStatus,
+                            DealershipID = auto.DealershipID
+                        };
+                        ordersToInsert.Add(order);
+                    }
+                }
+
+                context.VehicleFeatures.AddRange(vehicleFeaturesToInsert);
+                context.SalesOrders.AddRange(ordersToInsert);
+                context.SaveChanges();
+
+                // Generate Service Jobs
+                foreach (var order in ordersToInsert)
+                {
+                    if (order.Status == OrderStatuses.Canceled) continue;
+
+                    // 0-3 service jobs per order
+                    int jobsCount = rnd.Next(0, 4);
+                    var colorFeatureIds = colors.Select(c => c.FeatureID).ToList();
+                    var orderFeatures = vehicleFeaturesToInsert
+                        .Where(vf => vf.VehicleID == order.VehicleID && !colorFeatureIds.Contains(vf.FeatureID))
+                        .Take(jobsCount)
+                        .ToList();
+
+                    var dsMechanics = allMechanics.Where(m => m.DealershipID == order.DealershipID).ToList();
+                    var mechanic = dsMechanics.Any() ? dsMechanics[rnd.Next(dsMechanics.Count)] : allMechanics[rnd.Next(allMechanics.Count)];
+
+                    bool allJobsDoneForThisActiveOrder = rnd.NextDouble() > 0.7; // 30% szans, że serwis już skończył robotę
+
+                    foreach (var vf in orderFeatures)
+                    {
+                        string jobStatus = JobStatuses.Finished;
+                        DateTime createdAt = order.OrderDate.AddDays(rnd.Next(0, 3));
+
+                        if (order.Status == OrderStatuses.Pending || order.Status == OrderStatuses.InProgress)
+                        {
+                            if (allJobsDoneForThisActiveOrder)
+                            {
+                                jobStatus = JobStatuses.Finished;
+                            }
+                            else
+                            {
+                                jobStatus = rnd.NextDouble() > 0.5 ? JobStatuses.InProgress : JobStatuses.Pending;
+                            }
+                        }
+
+                        jobsToInsert.Add(new Job
+                        {
+                            VehicleID = order.VehicleID,
+                            WorkerID = mechanic.WorkerID,
+                            FeatureID = vf.FeatureID,
+                            Status = jobStatus,
+                            CreatedAt = createdAt
                         });
                     }
                 }
+                
+                context.Jobs.AddRange(jobsToInsert);
                 context.SaveChanges();
             }
         }

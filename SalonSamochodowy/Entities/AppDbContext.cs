@@ -25,7 +25,7 @@ namespace SalonSamochodowy.Entities
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=SalonSamochodowy_v5;Trusted_Connection=True;MultipleActiveResultSets=true");
+                optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=SalonSamochodowy_v7;Trusted_Connection=True;MultipleActiveResultSets=true");
             }
         }
         
