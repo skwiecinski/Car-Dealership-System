@@ -300,7 +300,8 @@ namespace SalonSamochodowy.Services
                         {
                             inner.Item().PaddingBottom(5).Text("Podsumowanie statystyczne").FontSize(14).SemiBold();
                             inner.Item().Text($"Zarejestrowane Salony: {dealerships.Count()}");
-                            inner.Item().Text($"Dostępne Pojazdy: {vehicles.Count()}");
+                            inner.Item().Text($"Dostępne Pojazdy: {vehicles.Count(v => v.Status != "Sprzedany")}");
+                            inner.Item().Text($"Sprzedane Pojazdy: {vehicles.Count(v => v.Status == "Sprzedany")}");
                             inner.Item().Text($"Klienci w bazie: {clients.Count()}");
                             inner.Item().Text($"Zatrudnieni Pracownicy: {workers.Count()}");
                             inner.Item().Text($"Przetworzone Zamówienia: {orders.Count()}");
@@ -321,13 +322,16 @@ namespace SalonSamochodowy.Services
                             }
                         });
 
-                        // Pojazdy
-                        column.Item().PaddingBottom(10).Text($"Pojazdy").FontSize(16).SemiBold();
+                        var availableVehicles = vehicles.Where(v => v.Status != "Sprzedany").ToList();
+                        var soldVehicles = vehicles.Where(v => v.Status == "Sprzedany").ToList();
+
+                        // Pojazdy Dostępne
+                        column.Item().PaddingBottom(10).Text($"Dostępne Pojazdy ({availableVehicles.Count})").FontSize(16).SemiBold();
                         column.Item().PaddingBottom(20).Table(t =>
                         {
                             t.ColumnsDefinition(c => { c.ConstantColumn(40); c.RelativeColumn(); c.ConstantColumn(60); c.RelativeColumn(); c.ConstantColumn(80); });
                             t.Header(h => { h.Cell().Text("ID").SemiBold(); h.Cell().Text("Model").SemiBold(); h.Cell().Text("Stan").SemiBold(); h.Cell().Text("VIN").SemiBold(); h.Cell().AlignRight().Text("Cena bazowa").SemiBold(); });
-                            foreach(var v in vehicles)
+                            foreach(var v in availableVehicles)
                             {
                                 t.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(2).Text(v.VehicleID.ToString());
                                 t.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(2).Text($"{v.Trim?.Model?.Brand} {v.Trim?.Model?.ModelName}");
@@ -336,6 +340,25 @@ namespace SalonSamochodowy.Services
                                 t.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(2).AlignRight().Text($"{v.Trim?.BasePrice:C2}");
                             }
                         });
+
+                        // Pojazdy Sprzedane
+                        if (soldVehicles.Any())
+                        {
+                            column.Item().PaddingBottom(10).Text($"Sprzedane Pojazdy ({soldVehicles.Count})").FontSize(16).SemiBold();
+                            column.Item().PaddingBottom(20).Table(t =>
+                            {
+                                t.ColumnsDefinition(c => { c.ConstantColumn(40); c.RelativeColumn(); c.ConstantColumn(60); c.RelativeColumn(); c.ConstantColumn(80); });
+                                t.Header(h => { h.Cell().Text("ID").SemiBold(); h.Cell().Text("Model").SemiBold(); h.Cell().Text("Stan").SemiBold(); h.Cell().Text("VIN").SemiBold(); h.Cell().AlignRight().Text("Cena bazowa").SemiBold(); });
+                                foreach(var v in soldVehicles)
+                                {
+                                    t.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(2).Text(v.VehicleID.ToString());
+                                    t.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(2).Text($"{v.Trim?.Model?.Brand} {v.Trim?.Model?.ModelName}");
+                                    t.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(2).Text(v.IsUsed ? "Używany" : "Nowy");
+                                    t.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(2).Text(v.VIN);
+                                    t.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(2).AlignRight().Text($"{v.Trim?.BasePrice:C2}");
+                                }
+                            });
+                        }
 
                         // Klienci
                         column.Item().PaddingBottom(10).Text($"Klienci").FontSize(16).SemiBold();
