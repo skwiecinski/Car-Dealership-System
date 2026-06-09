@@ -388,6 +388,16 @@ public partial class CreateOrderViewModel : ObservableObject
         for (int i = 0; i < 17; i++) sb.Append(chars[rnd.Next(chars.Length)]);
         return sb.ToString();
     }
+
+    private static bool IsValidEmail(string email)
+    {
+        if (!System.Net.Mail.MailAddress.TryCreate(email, out var address))
+            return false;
+
+        var domain = address.Host;
+        var dotIndex = domain.IndexOf('.');
+        return dotIndex > 0 && dotIndex < domain.Length - 1;
+    }
 }
 
 public class KlientItem
@@ -457,15 +467,6 @@ public class DodatkowaOpcja
         }
     }
 
-    private static bool IsValidEmail(string email)
-    {
-        if (!System.Net.Mail.MailAddress.TryCreate(email, out var address))
-            return false;
-
-        var domain = address.Host;
-        var dotIndex = domain.IndexOf('.');
-        return dotIndex > 0 && dotIndex < domain.Length - 1;
-    }
 }
 
 public class SerwisantItem
