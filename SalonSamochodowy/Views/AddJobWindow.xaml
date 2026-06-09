@@ -26,7 +26,8 @@
                             <Run Text="{Binding FeatureName}"/>
                             <Run Text=" (" Foreground="#8A8D98"/>
                             <Run Text="{Binding Category}" Foreground="#8A8D98"/>
-                            <Run Text=")" Foreground="#8A8D98"/>
+                            <Run Text=") - " Foreground="#8A8D98"/>
+                            <Run Text="{Binding Price, StringFormat={}{0:N0} zł}" Foreground="White" FontWeight="SemiBold"/>
                         </TextBlock>
                     </DataTemplate>
                 </ComboBox.ItemTemplate>

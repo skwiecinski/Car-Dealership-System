@@ -232,6 +232,7 @@
                             <TextBlock Text="Opcje i Usługi" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10" Foreground="#E2E2E2"/>
                             <ui:TextBox Text="{Binding NewFeatureName, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Nazwa opcji/usługi" Margin="0,0,0,5"/>
                             <ComboBox ItemsSource="{Binding FeatureCategories}" SelectedItem="{Binding NewFeatureCategory, Mode=TwoWay}" Margin="0,0,0,5"/>
+                            <ui:TextBox Text="{Binding NewFeaturePrice, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Cena (PLN)" Margin="0,0,0,5"/>
                             <ui:Button Content="Dodaj opcję" Appearance="Primary" HorizontalAlignment="Stretch" Command="{Binding AddFeatureCommand}"/>
                         </StackPanel>
 
@@ -297,6 +298,7 @@
                                     <DataGrid.Columns>
                                         <DataGridTextColumn Header="Kategoria" Binding="{Binding Category}" Width="120"/>
                                         <DataGridTextColumn Header="Nazwa opcji" Binding="{Binding FeatureName}" Width="*"/>
+                                        <DataGridTextColumn Header="Cena" Binding="{Binding Price}" Width="80"/>
                                         <DataGridTemplateColumn Width="70">
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>

@@ -122,14 +122,14 @@ namespace SalonSamochodowy
             if (!context.Features.Any())
             {
                 context.Features.AddRange(
-                    new Feature { FeatureName = "Lakier metalik",        Category = "Wygląd" },
-                    new Feature { FeatureName = "Czujniki parkowania",   Category = "Akcesoria" },
-                    new Feature { FeatureName = "Kamera cofania",        Category = "Akcesoria" },
-                    new Feature { FeatureName = "Alarm",                 Category = "Bezpieczeństwo" },
-                    new Feature { FeatureName = "Klimatyzacja 2-strefowa", Category = "Komfort" },
-                    new Feature { FeatureName = "Skórzane fotele",       Category = "Wnętrze" },
-                    new Feature { FeatureName = "Nawigacja",             Category = "Multimedia" },
-                    new Feature { FeatureName = "Pakiet sportowy M",     Category = "Wygląd" }
+                    new Feature { FeatureName = "Lakier metalik",        Category = "Wygląd", Price = 3000m },
+                    new Feature { FeatureName = "Czujniki parkowania",   Category = "Akcesoria", Price = 5000m },
+                    new Feature { FeatureName = "Kamera cofania",        Category = "Akcesoria", Price = 2000m },
+                    new Feature { FeatureName = "Alarm",                 Category = "Bezpieczeństwo", Price = 1500m },
+                    new Feature { FeatureName = "Klimatyzacja 2-strefowa", Category = "Komfort", Price = 2500m },
+                    new Feature { FeatureName = "Skórzane fotele",       Category = "Wnętrze", Price = 6000m },
+                    new Feature { FeatureName = "Nawigacja",             Category = "Multimedia", Price = 4000m },
+                    new Feature { FeatureName = "Pakiet sportowy M",     Category = "Wygląd", Price = 12000m }
                 );
                 context.SaveChanges();
             }
@@ -222,10 +222,10 @@ namespace SalonSamochodowy
             if (!context.Features.Any(f => f.Category == "Kolor"))
             {
                 context.Features.AddRange(
-                    new Feature { FeatureName = "Alpejska Biel (bazowy)", Category = "Kolor" },
-                    new Feature { FeatureName = "Czarny Szafir metalik",   Category = "Kolor" },
-                    new Feature { FeatureName = "Szary Melbourne metalik",Category = "Kolor" },
-                    new Feature { FeatureName = "Niebieski Phytonic metalik", Category = "Kolor" }
+                    new Feature { FeatureName = "Alpejska Biel (bazowy)", Category = "Kolor", Price = 0m },
+                    new Feature { FeatureName = "Czarny Szafir metalik",   Category = "Kolor", Price = 3500m },
+                    new Feature { FeatureName = "Szary Melbourne metalik",Category = "Kolor", Price = 3500m },
+                    new Feature { FeatureName = "Niebieski Phytonic metalik", Category = "Kolor", Price = 4000m }
                 );
                 context.SaveChanges();
             }

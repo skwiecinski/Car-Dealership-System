@@ -136,7 +136,7 @@ public partial class CreateOrderViewModel : ObservableObject
                 DodatkoweOpcje.Add(new DodatkowaOpcja
                 {
                     FeatureID = f.FeatureID,
-                    Nazwa     = $"{f.FeatureName} ({f.Category})",
+                    Nazwa     = f.Price > 0 ? $"{f.FeatureName} ({f.Category}) - {f.Price:N0} zł" : $"{f.FeatureName} ({f.Category})",
                     Kategoria = f.Category
                 });
             }

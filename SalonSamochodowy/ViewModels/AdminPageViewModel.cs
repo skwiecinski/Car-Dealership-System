@@ -63,6 +63,7 @@ namespace SalonSamochodowy.ViewModels
 
         [ObservableProperty] private string newFeatureName = "";
         [ObservableProperty] private string newFeatureCategory = "Akcesoria";
+        [ObservableProperty] private decimal? newFeaturePrice;
 
         [ObservableProperty] private string newEngineBrand = "";
         [ObservableProperty] private string newEngineName = "";
@@ -548,16 +549,17 @@ namespace SalonSamochodowy.ViewModels
         {
             var name = NewFeatureName.Trim();
             var cat = NewFeatureCategory;
-            if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(cat))
+            if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(cat) || !NewFeaturePrice.HasValue)
             {
-                ShowMessage?.Invoke("Wypełnij nazwę i kategorię opcji.", MessageBoxImage.Warning);
+                ShowMessage?.Invoke("Wypełnij nazwę, kategorię oraz cenę opcji.", MessageBoxImage.Warning);
                 return;
             }
             try
             {
                 var catalogService = ((App)Application.Current).Services.GetRequiredService<SalonSamochodowy.Services.ICatalogService>();
-                await catalogService.CreateFeatureAsync(new Feature { FeatureName = name, Category = cat });
+                await catalogService.CreateFeatureAsync(new Feature { FeatureName = name, Category = cat, Price = NewFeaturePrice.Value });
                 NewFeatureName = "";
+                NewFeaturePrice = null;
                 await LoadDictionariesAsync();
                 ShowMessage?.Invoke("Opcja dodana.", MessageBoxImage.Information);
             }

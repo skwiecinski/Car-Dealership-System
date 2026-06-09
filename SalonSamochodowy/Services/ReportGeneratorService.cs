@@ -442,13 +442,14 @@ namespace SalonSamochodowy.Services
                         column.Item().PaddingBottom(10).Text($"Cechy / Usługi Dodatkowe").FontSize(16).SemiBold();
                         column.Item().PaddingBottom(20).Table(t =>
                         {
-                            t.ColumnsDefinition(c => { c.ConstantColumn(40); c.RelativeColumn(); c.RelativeColumn(); });
-                            t.Header(h => { h.Cell().Text("ID").SemiBold(); h.Cell().Text("Nazwa").SemiBold(); h.Cell().Text("Kategoria").SemiBold(); });
+                            t.ColumnsDefinition(c => { c.ConstantColumn(40); c.RelativeColumn(); c.RelativeColumn(); c.ConstantColumn(80); });
+                            t.Header(h => { h.Cell().Text("ID").SemiBold(); h.Cell().Text("Nazwa").SemiBold(); h.Cell().Text("Kategoria").SemiBold(); h.Cell().AlignRight().Text("Cena").SemiBold(); });
                             foreach(var f in features)
                             {
                                 t.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(2).Text(f.FeatureID.ToString());
                                 t.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(2).Text(f.FeatureName);
                                 t.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(2).Text(f.Category);
+                                t.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(2).AlignRight().Text($"{f.Price:N2} zł");
                             }
                         });
 
