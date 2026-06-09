@@ -75,5 +75,17 @@ namespace SalonSamochodowy.Views
             _currentTourStep++;
             ShowTourStep();
         }
+
+        private void SeeAllOrders_Click(object sender, RoutedEventArgs e)
+        {
+            var mainWindow = Window.GetWindow(this) as MainWindow;
+            if (mainWindow == null) return;
+            
+            var user = mainWindow.LoggedInUser;
+            if (user?.Role?.RoleName == "Klient")
+                mainWindow.RootNavigation.Navigate(typeof(CustomerPanelPage));
+            else
+                mainWindow.RootNavigation.Navigate(typeof(SalesPanelPage));
+        }
     }
 }

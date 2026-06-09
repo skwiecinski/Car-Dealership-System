@@ -102,7 +102,7 @@
                 <StackPanel>
                     <Grid Margin="0,0,0,15">
                         <TextBlock Text="Ostatnie aktywności" FontSize="15" FontWeight="SemiBold" Foreground="#E2E2E2" VerticalAlignment="Center"/>
-                        <TextBlock Text="Zobacz wszystkie →" Foreground="#5B59E8" FontSize="13" HorizontalAlignment="Right" VerticalAlignment="Center" Cursor="Hand"/>
+                        <ui:Button Content="Zobacz wszystkie →" Appearance="Transparent" Foreground="#5B59E8" FontSize="13" HorizontalAlignment="Right" VerticalAlignment="Center" Padding="0" BorderThickness="0" FocusVisualStyle="{x:Null}" Click="SeeAllOrders_Click"/>
                     </Grid>
 
                     <Grid Margin="0,0,0,12">

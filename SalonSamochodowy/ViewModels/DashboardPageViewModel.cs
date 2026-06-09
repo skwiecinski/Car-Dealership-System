@@ -55,7 +55,7 @@ namespace SalonSamochodowy.ViewModels
 
                 var firstDayOfMonth = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
 
-                KpiOrders   = (await _orderService.GetOrdersCountSinceAsync(firstDayOfMonth)).ToString();
+                KpiOrders   = (await _orderService.GetActiveOrdersCountAsync()).ToString();
                 KpiVehicles = (await _vehicleService.GetAvailableVehiclesCountAsync()).ToString();
                 KpiJobs     = (await _jobService.GetActiveJobsCountAsync()).ToString();
 
@@ -76,7 +76,11 @@ namespace SalonSamochodowy.ViewModels
             var axisTextColor = new SKColor(138, 141, 152);
             var separatorColor = new SKColor(45, 48, 56);
 
-            var grouped = thisMonthOrders
+            var validOrders = thisMonthOrders
+                .Where(o => o.Status != OrderStatuses.Canceled)
+                .ToList();
+
+            var grouped = validOrders
                 .GroupBy(o => o.WorkerID)
                 .Select(g => new { WorkerID = g.Key, Count = g.Count() })
                 .OrderByDescending(x => x.Count)

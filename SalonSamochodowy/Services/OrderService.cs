@@ -41,6 +41,11 @@ namespace SalonSamochodowy.Services
             return await _uow.SalesOrders.GetTopOrderedDescAsync(o => o.OrderDate, count);
         }
 
+        public async Task<int> GetActiveOrdersCountAsync()
+        {
+            return await _uow.SalesOrders.CountAsync(o => o.Status != OrderStatuses.Finished && o.Status != OrderStatuses.FinishedAlt && o.Status != OrderStatuses.Canceled);
+        }
+
         public async Task<int> GetOrdersCountSinceAsync(DateTime since)
         {
             return await _uow.SalesOrders.CountAsync(o => o.OrderDate >= since);
