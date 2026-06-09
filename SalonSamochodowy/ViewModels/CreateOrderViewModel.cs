@@ -344,6 +344,8 @@ public partial class CreateOrderViewModel : ObservableObject
 
             ResetForm();
             await LoadFromDbAsync();
+            
+            CommunityToolkit.Mvvm.Messaging.WeakReferenceMessenger.Default.Send(new SalonSamochodowy.Messages.DataChangedMessage());
         }
         catch (Exception ex)
         {

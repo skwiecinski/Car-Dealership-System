@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using SalonSamochodowy.Entities;
 using SalonSamochodowy.Repositories;
 using SalonSamochodowy.Services;
@@ -19,8 +20,15 @@ namespace SalonSamochodowy.ViewModels
         {
             _uow = uow;
             _clientService = clientService;
+
+            CommunityToolkit.Mvvm.Messaging.WeakReferenceMessenger.Default.Register(this, (ClientsPageViewModel r, SalonSamochodowy.Messages.DataChangedMessage m) =>
+            {
+                r.IsLoaded = false;
+            });
         }
         public ObservableCollection<ClientModel> ClientsList { get; } = new();
+
+        public bool IsLoaded { get; set; } = false;
 
         [ObservableProperty] private ClientModel? selectedClient;
         [ObservableProperty] private Visibility detailsVisibility = Visibility.Collapsed;
@@ -47,6 +55,7 @@ namespace SalonSamochodowy.ViewModels
 
         public async Task LoadFromDbAsync()
         {
+            if (IsLoaded) return;
             try
             {
                 var uow = _uow;
@@ -66,11 +75,19 @@ namespace SalonSamochodowy.ViewModels
                         IsCompany   = c.IsCompany
                     });
                 }
+                IsLoaded = true;
             }
             catch (Exception ex)
             {
                 LoadFailed?.Invoke(string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Msg_LoadClientsError"), ex.Message));
             }
+        }
+
+        [RelayCommand]
+        public async Task RefreshDataAsync()
+        {
+            IsLoaded = false;
+            await LoadFromDbAsync();
         }
 
         [RelayCommand]

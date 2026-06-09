@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using SalonSamochodowy.Entities;
 using SalonSamochodowy.Repositories;
 using SalonSamochodowy.Services;
@@ -21,6 +22,11 @@ namespace SalonSamochodowy.ViewModels
         {
             _uow = uow;
             _orderService = orderService;
+
+            CommunityToolkit.Mvvm.Messaging.WeakReferenceMessenger.Default.Register(this, (SalesPanelViewModel r, SalonSamochodowy.Messages.DataChangedMessage m) =>
+            {
+                r.IsLoaded = false;
+            });
         }
 
         public ObservableCollection<SalesOrderModel> ReservedSales { get; } = new();
@@ -35,8 +41,11 @@ namespace SalonSamochodowy.ViewModels
         public event Action<string>? LoadFailed;
         public event Action<string>? OperationCompleted;
 
+        public bool IsLoaded { get; set; } = false;
+
         public async Task LoadDataAsync()
         {
+            if (IsLoaded) return;
             IsLoading = true;
             try
             {
@@ -127,6 +136,8 @@ namespace SalonSamochodowy.ViewModels
                 ReservedEmptyVisibility = ReservedSales.Any() ? Visibility.Collapsed : Visibility.Visible;
                 ServicingEmptyVisibility = ServicingSales.Any() ? Visibility.Collapsed : Visibility.Visible;
                 ReadyEmptyVisibility = ReadySales.Any() ? Visibility.Collapsed : Visibility.Visible;
+
+                IsLoaded = true;
             }
             catch (Exception ex)
             {
@@ -136,6 +147,13 @@ namespace SalonSamochodowy.ViewModels
             {
                 IsLoading = false;
             }
+        }
+
+        [RelayCommand]
+        public async Task RefreshDataAsync()
+        {
+            IsLoaded = false;
+            await LoadDataAsync();
         }
 
         [RelayCommand]

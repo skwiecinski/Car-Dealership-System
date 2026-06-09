@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using SalonSamochodowy.Entities;
 using SalonSamochodowy.Repositories;
 using SalonSamochodowy.Services;
@@ -20,9 +21,16 @@ namespace SalonSamochodowy.ViewModels
         {
             _uow = uow;
         _vehicleService = vehicleService;
+
+            CommunityToolkit.Mvvm.Messaging.WeakReferenceMessenger.Default.Register(this, (VehiclesPageViewModel r, SalonSamochodowy.Messages.DataChangedMessage m) =>
+            {
+                r.IsLoaded = false;
+            });
         }
         public ObservableCollection<string> Brands { get; } = new() { SalonSamochodowy.Services.LocalizationHelper.GetString("Vehicles_AllBrands") };
         public ObservableCollection<string> Models { get; } = new() { SalonSamochodowy.Services.LocalizationHelper.GetString("Vehicles_AllModels") };
+
+        public bool IsLoaded { get; set; } = false;
         public ObservableCollection<string> Engines { get; } = new() { SalonSamochodowy.Services.LocalizationHelper.GetString("Vehicles_Any") };
         public ObservableCollection<string> Colors { get; } = new() { SalonSamochodowy.Services.LocalizationHelper.GetString("Vehicles_Any") };
 
@@ -38,6 +46,7 @@ namespace SalonSamochodowy.ViewModels
 
         public async Task LoadFiltersAsync()
         {
+            if (IsLoaded) return;
             try
             {
                 var uow = _uow;
@@ -130,6 +139,7 @@ namespace SalonSamochodowy.ViewModels
 
         public async Task LoadVehiclesAsync()
         {
+            if (IsLoaded) return;
             try
             {
                 var uow = _uow;
@@ -210,11 +220,19 @@ namespace SalonSamochodowy.ViewModels
                         Color                 = colorVal
                     });
                 }
+                IsLoaded = true;
             }
             catch (Exception ex)
             {
                 LoadFailed?.Invoke(string.Format(SalonSamochodowy.Services.LocalizationHelper.GetString("Vehicles_VehiclesLoadError"), ex.Message, ex.InnerException?.Message ?? ""));
             }
+        }
+
+        [RelayCommand]
+        public async Task RefreshDataAsync()
+        {
+            IsLoaded = false;
+            await LoadVehiclesAsync();
         }
 
         private static (string bg, string bd, string fg) StatusColors(string status) => status switch

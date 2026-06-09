@@ -33,6 +33,11 @@ namespace SalonSamochodowy.ViewModels
                 r.Records.Clear();
                 foreach (var rec in temp) r.Records.Add(rec);
             });
+
+            WeakReferenceMessenger.Default.Register(this, (SalesRecordsViewModel r, SalonSamochodowy.Messages.DataChangedMessage m) =>
+            {
+                r.IsLoaded = false;
+            });
         }
 
         public ObservableCollection<SalesRecordRow> Records { get; } = new();
@@ -57,8 +62,12 @@ namespace SalonSamochodowy.ViewModels
         private string AllDealerships => SalonSamochodowy.Services.LocalizationHelper.GetString("Filter_AllDealerships");
         private string AllAdvisors => SalonSamochodowy.Services.LocalizationHelper.GetString("Filter_AllAdvisors");
 
+        public bool IsLoaded { get; set; } = false;
+
         public async Task LoadDataAsync()
         {
+            if (IsLoaded) return;
+            
             IsLoading = true;
             try
             {
@@ -73,6 +82,7 @@ namespace SalonSamochodowy.ViewModels
                 BuildFilterLists();
 
                 ApplyFilters();
+                IsLoaded = true;
             }
             catch (Exception ex)
             {
@@ -83,6 +93,13 @@ namespace SalonSamochodowy.ViewModels
             {
                 IsLoading = false;
             }
+        }
+
+        [RelayCommand]
+        public async Task RefreshDataAsync()
+        {
+            IsLoaded = false;
+            await LoadDataAsync();
         }
 
         private void BuildFilterLists()

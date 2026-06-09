@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.Messaging;
 using SalonSamochodowy.Entities;
 using SalonSamochodowy.Repositories;
 
@@ -33,6 +34,7 @@ namespace SalonSamochodowy.Services
             }
 
             await _uow.CompleteAsync();
+            CommunityToolkit.Mvvm.Messaging.WeakReferenceMessenger.Default.Send(new SalonSamochodowy.Messages.DataChangedMessage());
             return order;
         }
 
@@ -78,6 +80,7 @@ namespace SalonSamochodowy.Services
             }
 
             await _uow.CompleteAsync();
+            CommunityToolkit.Mvvm.Messaging.WeakReferenceMessenger.Default.Send(new SalonSamochodowy.Messages.DataChangedMessage());
         }
 
         public async Task<SalesOrder?> GetOrderForEditAsync(int orderId)
@@ -121,6 +124,7 @@ namespace SalonSamochodowy.Services
             }
 
             await _uow.CompleteAsync();
+            CommunityToolkit.Mvvm.Messaging.WeakReferenceMessenger.Default.Send(new SalonSamochodowy.Messages.DataChangedMessage());
         }
 
         public async Task<IEnumerable<SalesOrder>> GetAllOrdersWithDetailsAsync()
