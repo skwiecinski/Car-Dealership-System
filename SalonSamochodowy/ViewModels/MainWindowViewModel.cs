@@ -43,7 +43,7 @@ namespace SalonSamochodowy.ViewModels
         public string? AccessDeniedMessage { get; private set; }
 
         public event Action? LogoutRequested;
-        public event Action<string>? ShowProfileRequested;
+        public event Action<AppUser>? ShowProfileRequested;
 
         public void Initialize(AppUser loggedIn)
         {
@@ -104,10 +104,7 @@ namespace SalonSamochodowy.ViewModels
         [RelayCommand]
         private void Profile()
         {
-            var u = LoggedInUser;
-            var role = u.Role?.RoleName ?? "—";
-            var info = $"Imię: {u.FirstName}\nNazwisko: {u.LastName}\nE-mail: {u.Email}\nRola: {role}";
-            ShowProfileRequested?.Invoke(info);
+            ShowProfileRequested?.Invoke(LoggedInUser);
         }
 
         [RelayCommand]

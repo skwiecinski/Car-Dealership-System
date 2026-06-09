@@ -142,6 +142,11 @@
     <system:String x:Key="Order_Cancel">Cancel</system:String>
     <system:String x:Key="Order_Save">Save Order</system:String>
 
+    <!-- Profile -->
+    <system:String x:Key="Profile_Title">My profile</system:String>
+    <system:String x:Key="Profile_Subtitle">Details of your account</system:String>
+    <system:String x:Key="Profile_Joined">Joined:</system:String>
+
     <!-- CreateOrderViewModel Komunikaty -->
     <system:String x:Key="Payment_Cash">Cash</system:String>
     <system:String x:Key="Payment_Credit">Credit</system:String>

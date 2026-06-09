@@ -1,0 +1,64 @@
+<ui:FluentWindow x:Class="SalonSamochodowy.Views.ProfileWindow"
+                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+                 Title="{DynamicResource Profile_Title}"
+                 Height="450" Width="400"
+                 WindowStartupLocation="CenterOwner"
+                 Background="#16181D"
+                 Foreground="White"
+                 ExtendsContentIntoTitleBar="True"
+                 ResizeMode="NoResize">
+    <Grid>
+        <ui:TitleBar Title="{DynamicResource Profile_Title}" VerticalAlignment="Top"
+                     ShowMaximize="False" ShowMinimize="False"/>
+
+        <StackPanel Margin="32,56,32,24">
+            <TextBlock Text="{DynamicResource Profile_Title}"
+                       FontSize="20" FontWeight="Bold" Margin="0,0,0,4"/>
+            <TextBlock Text="{DynamicResource Profile_Subtitle}"
+                       FontSize="13" Foreground="#8A8D98" Margin="0,0,0,24"/>
+
+            <Border Background="#2D3038" CornerRadius="8" Padding="16" Margin="0,0,0,20">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <ui:SymbolIcon Symbol="Person24" FontSize="48" Foreground="#5B59E8" 
+                                   Grid.RowSpan="3" Grid.Column="0" VerticalAlignment="Top" Margin="0,0,16,0"/>
+
+                    <TextBlock Text="{Binding FullName}" FontSize="18" FontWeight="SemiBold" 
+                               Grid.Row="0" Grid.Column="1" Margin="0,0,0,4"/>
+                    
+                    <TextBlock Text="{Binding Email}" FontSize="14" Foreground="#A0A0A0" 
+                               Grid.Row="1" Grid.Column="1" Margin="0,0,0,12"/>
+
+                    <Border Background="#5B59E8" CornerRadius="4" Padding="8,4" HorizontalAlignment="Left" Grid.Row="2" Grid.Column="1">
+                        <TextBlock Text="{Binding DisplayRole}" FontSize="12" FontWeight="SemiBold" Foreground="White"/>
+                    </Border>
+                </Grid>
+            </Border>
+
+
+
+        </StackPanel>
+
+        <ui:Button Content="OK" 
+                   Appearance="Primary" 
+                   HorizontalAlignment="Right" 
+                   VerticalAlignment="Bottom" 
+                   Margin="32" 
+                   Width="100"
+                   Click="OkButton_Click"/>
+    </Grid>
+</ui:FluentWindow>

@@ -39,13 +39,10 @@ namespace SalonSamochodowy.Views
                 Close();
             };
 
-            _vm.ShowProfileRequested += info =>
+            _vm.ShowProfileRequested += user =>
             {
-                System.Windows.MessageBox.Show(
-                    info,
-                    "Mój profil",
-                    System.Windows.MessageBoxButton.OK,
-                    System.Windows.MessageBoxImage.Information);
+                var profileWindow = new ProfileWindow(user) { Owner = this };
+                profileWindow.ShowDialog();
             };
 
             if (_vm.StartupPageType != null)
