@@ -40,8 +40,24 @@ namespace SalonSamochodowy.Views
                     var v = await vehicleService.GetVehicleByIdAsync(item.VehicleID);
                     if (v != null)
                     {
-                        await vehicleService.DeleteVehicleAsync(v);
-                        await _vm.LoadVehiclesAsync();
+                        try
+                        {
+                            await vehicleService.DeleteVehicleAsync(v);
+                            await _vm.LoadVehiclesAsync();
+                        }
+                        catch (System.Exception)
+                        {
+                            string errMsg = SalonSamochodowy.Services.LocalizationHelper.GetString("LanguageCode") == "EN" 
+                                ? "Cannot delete the vehicle because it is linked to existing orders or service jobs." 
+                                : "Nie można usunąć pojazdu, ponieważ jest powiązany z istniejącymi zamówieniami lub zleceniami serwisowymi.";
+                            string errTitle = SalonSamochodowy.Services.LocalizationHelper.GetString("Vehicles_ErrorTitle") ?? "Błąd";
+                            
+                            System.Windows.MessageBox.Show(
+                                errMsg, 
+                                errTitle, 
+                                System.Windows.MessageBoxButton.OK, 
+                                System.Windows.MessageBoxImage.Error);
+                        }
                     }
                 }
             };
