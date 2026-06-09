@@ -543,5 +543,30 @@
     <system:String x:Key="Msg_Error">Błąd</system:String>
     <system:String x:Key="Msg_SelectClientFirst">Proszę wybrać klienta z listy.</system:String>
     <system:String x:Key="Msg_Info">Informacja</system:String>
+    <!-- First Config -->
+    <system:String x:Key="FirstConfig_Title">Pierwsza Konfiguracja</system:String>
+    <system:String x:Key="FirstConfig_HeaderTitle">Kreator Pierwszej Konfiguracji</system:String>
+    <system:String x:Key="FirstConfig_MainTitle">Pierwsza Konfiguracja Systemu</system:String>
+    <system:String x:Key="FirstConfig_Subtitle">Uzupełnij dane głównego administratora oraz pierwszego salonu, aby rozpocząć pracę.</system:String>
+    <system:String x:Key="FirstConfig_AdminData">Dane Administratora</system:String>
+    <system:String x:Key="FirstConfig_FirstName">Imię</system:String>
+    <system:String x:Key="FirstConfig_FirstNameHint">Jan</system:String>
+    <system:String x:Key="FirstConfig_LastName">Nazwisko</system:String>
+    <system:String x:Key="FirstConfig_LastNameHint">Kowalski</system:String>
+    <system:String x:Key="FirstConfig_Email">E-mail (Login)</system:String>
+    <system:String x:Key="FirstConfig_EmailHint">admin@salon.pl</system:String>
+    <system:String x:Key="FirstConfig_Password">Hasło</system:String>
+    <system:String x:Key="FirstConfig_BirthDate">Data Urodzenia</system:String>
+    <system:String x:Key="FirstConfig_DealershipData">Główny Salon Samochodowy</system:String>
+    <system:String x:Key="FirstConfig_DealershipName">Nazwa Salonu</system:String>
+    <system:String x:Key="FirstConfig_DealershipNameHint">np. Salon Centrala</system:String>
+    <system:String x:Key="FirstConfig_Address">Adres</system:String>
+    <system:String x:Key="FirstConfig_AddressHint">np. ul. Główna 1</system:String>
+    <system:String x:Key="FirstConfig_City">Miasto</system:String>
+    <system:String x:Key="FirstConfig_CityHint">np. Warszawa</system:String>
+    <system:String x:Key="FirstConfig_Owner">Właściciel / Zarządca</system:String>
+    <system:String x:Key="FirstConfig_OwnerHint">np. Jan Kowalski</system:String>
+    <system:String x:Key="FirstConfig_FinishBtn">Zakończ konfigurację i Zaloguj się</system:String>
+    <system:String x:Key="FirstConfig_Loading">Zapisywanie konfiguracji...</system:String>
 
 </ResourceDictionary>

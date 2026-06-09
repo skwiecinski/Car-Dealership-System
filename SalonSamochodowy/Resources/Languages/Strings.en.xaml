@@ -543,5 +543,30 @@
     <system:String x:Key="Msg_Error">Error</system:String>
     <system:String x:Key="Msg_SelectClientFirst">Please select a customer from the list.</system:String>
     <system:String x:Key="Msg_Info">Information</system:String>
+    <!-- First Config -->
+    <system:String x:Key="FirstConfig_Title">First Configuration</system:String>
+    <system:String x:Key="FirstConfig_HeaderTitle">First Configuration Wizard</system:String>
+    <system:String x:Key="FirstConfig_MainTitle">System First Configuration</system:String>
+    <system:String x:Key="FirstConfig_Subtitle">Fill in the main administrator and first dealership details to start working.</system:String>
+    <system:String x:Key="FirstConfig_AdminData">Administrator Details</system:String>
+    <system:String x:Key="FirstConfig_FirstName">First Name</system:String>
+    <system:String x:Key="FirstConfig_FirstNameHint">John</system:String>
+    <system:String x:Key="FirstConfig_LastName">Last Name</system:String>
+    <system:String x:Key="FirstConfig_LastNameHint">Doe</system:String>
+    <system:String x:Key="FirstConfig_Email">E-mail (Login)</system:String>
+    <system:String x:Key="FirstConfig_EmailHint">admin@dealership.com</system:String>
+    <system:String x:Key="FirstConfig_Password">Password</system:String>
+    <system:String x:Key="FirstConfig_BirthDate">Date of Birth</system:String>
+    <system:String x:Key="FirstConfig_DealershipData">Main Dealership</system:String>
+    <system:String x:Key="FirstConfig_DealershipName">Dealership Name</system:String>
+    <system:String x:Key="FirstConfig_DealershipNameHint">e.g. Central Dealership</system:String>
+    <system:String x:Key="FirstConfig_Address">Address</system:String>
+    <system:String x:Key="FirstConfig_AddressHint">e.g. Main Street 1</system:String>
+    <system:String x:Key="FirstConfig_City">City</system:String>
+    <system:String x:Key="FirstConfig_CityHint">e.g. New York</system:String>
+    <system:String x:Key="FirstConfig_Owner">Owner / Manager</system:String>
+    <system:String x:Key="FirstConfig_OwnerHint">e.g. John Doe</system:String>
+    <system:String x:Key="FirstConfig_FinishBtn">Finish Configuration and Login</system:String>
+    <system:String x:Key="FirstConfig_Loading">Saving configuration...</system:String>
 
 </ResourceDictionary>

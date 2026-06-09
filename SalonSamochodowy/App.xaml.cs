@@ -40,6 +40,7 @@ namespace SalonSamochodowy
             services.AddTransient<CreateOrderViewModel>();
             services.AddTransient<CustomerPanelViewModel>();
             services.AddTransient<DashboardPageViewModel>();
+            services.AddTransient<FirstConfigViewModel>();
             services.AddTransient<LoginViewModel>();
             services.AddTransient<MainWindowViewModel>();
             services.AddTransient<SalesPanelViewModel>();
@@ -59,13 +60,21 @@ namespace SalonSamochodowy
                 MessageBox.Show($"Błąd krytyczny: {ex.ExceptionObject}");
             };
 
+            bool isFirstRun = false;
+
             try
             {
                 using (var scope = Services.CreateScope())
                 {
                     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
                     context.Database.EnsureCreated();
-                    DbSeeder.Seed(context);
+                    
+                    // Sprawdzamy czy to pierwsze uruchomienie (brak jakichkolwiek użytkowników)
+                    if (!context.AppUsers.Any())
+                    {
+                        isFirstRun = true;
+                    }
                 }
             }
             catch (Exception ex)
@@ -77,12 +86,20 @@ namespace SalonSamochodowy
 
             try
             {
-                var loginWindow = new LoginWindow();
-                loginWindow.Show();
+                if (isFirstRun)
+                {
+                    var firstConfigWindow = new FirstConfigWindow();
+                    firstConfigWindow.Show();
+                }
+                else
+                {
+                    var loginWindow = new LoginWindow();
+                    loginWindow.Show();
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Błąd podczas startu okna logowania:\n{ex.Message}\n\n{ex.InnerException?.Message}");
+                MessageBox.Show($"Błąd podczas startu aplikacji:\n{ex.Message}\n\n{ex.InnerException?.Message}");
             }
         }
     }
