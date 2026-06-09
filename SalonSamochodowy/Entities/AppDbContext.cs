@@ -25,8 +25,7 @@ namespace SalonSamochodowy.Entities
         {
             if (!optionsBuilder.IsConfigured)
             {
-                // sciezka wzgledna (zeby nie korzystac z pliku .db w folderze debug)
-                optionsBuilder.UseSqlite(@"Data Source=..\..\..\SalonSamochodowy_v2.db");
+                optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=SalonSamochodowy_v4;Trusted_Connection=True;MultipleActiveResultSets=true");
             }
         }
         
@@ -68,6 +67,37 @@ namespace SalonSamochodowy.Entities
                 .HasOne(u => u.Worker)
                 .WithOne(w => w.User)
                 .HasForeignKey<Worker>(w => w.UserID);
+
+            // Zabezpieczenie przed błędem "multiple cascade paths" w SQL Server
+            modelBuilder.Entity<Job>()
+                .HasOne(j => j.Worker)
+                .WithMany(w => w.Jobs)
+                .HasForeignKey(j => j.WorkerID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Job>()
+                .HasOne(j => j.Vehicle)
+                .WithMany(v => v.Jobs)
+                .HasForeignKey(j => j.VehicleID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<SalesOrder>()
+                .HasOne(s => s.Worker)
+                .WithMany(w => w.SalesOrders)
+                .HasForeignKey(s => s.WorkerID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<SalesOrder>()
+                .HasOne(s => s.Vehicle)
+                .WithMany(v => v.SalesOrders)
+                .HasForeignKey(s => s.VehicleID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<SalesOrder>()
+                .HasOne(s => s.Dealership)
+                .WithMany(d => d.SalesOrders)
+                .HasForeignKey(s => s.DealershipID)
+                .OnDelete(DeleteBehavior.Restrict);
         }
 
     }
