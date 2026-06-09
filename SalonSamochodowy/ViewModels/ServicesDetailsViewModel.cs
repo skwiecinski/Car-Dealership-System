@@ -125,7 +125,7 @@ namespace SalonSamochodowy.ViewModels
             try
             {
                 await _jobService.ChangeJobStatusAsync(_jobId, newStatus);
-                ApplyStatus(newStatus);
+                await LoadAsync();
                 ShowSuccess?.Invoke($"Status zmieniony na: {CurrentStatus}");
                 StatusChanged?.Invoke();
             }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using SalonSamochodowy.Entities;
 
@@ -34,5 +34,10 @@ namespace SalonSamochodowy.Repositories
          * @return the number of state entries written to the database.
          */
         Task<int> CompleteAsync();
+
+        /**
+         * Clears the EF Core Change Tracker so that subsequent queries will fetch fresh data from the database.
+         */
+        void ClearTracker();
     }
 }

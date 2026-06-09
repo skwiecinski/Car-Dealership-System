@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using SalonSamochodowy.Entities;
 
 namespace SalonSamochodowy.Repositories
@@ -66,6 +66,14 @@ namespace SalonSamochodowy.Repositories
         public void Dispose()
         {
             _context.Dispose();
+        }
+
+        /**
+         * Clears the EF Core Change Tracker.
+         */
+        public void ClearTracker()
+        {
+            _context.ChangeTracker.Clear();
         }
     }
 }

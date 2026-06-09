@@ -51,7 +51,6 @@ namespace SalonSamochodowy
                 var rSprzedawca = context.AppRoles.First(r => r.RoleName == "Sprzedawca");
                 var rSerwisant = context.AppRoles.First(r => r.RoleName == "Serwisant");
 
-                // Nowi fikcyjni pracownicy
                 context.AppUsers.AddRange(
                     new AppUser { FirstName = "Robert", LastName = "Nowy-Kierownik", Email = "kierownik2@salon.pl", PasswordHash = AuthService.HashPassword("123"), RoleID = rKierownik.RoleID, BirthDate = new DateTime(1982, 4, 11) },
                     new AppUser { FirstName = "Karolina", LastName = "Bystra", Email = "sprzedawca2@salon.pl", PasswordHash = AuthService.HashPassword("123"), RoleID = rSprzedawca.RoleID, BirthDate = new DateTime(1993, 7, 22) },

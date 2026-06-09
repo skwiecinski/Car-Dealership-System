@@ -20,6 +20,7 @@ namespace SalonSamochodowy.Services
 
         public async Task<IEnumerable<JobDto>> GetJobsForUserAsync(AppUser user)
         {
+            _uow.ClearTracker();
             IEnumerable<Job> allJobs = Enumerable.Empty<Job>();
 
             if (user.Role?.RoleName == RoleNames.Kierownik)
@@ -108,6 +109,15 @@ namespace SalonSamochodowy.Services
             if (job == null) throw new Exception("Nie znaleziono zlecenia.");
 
             job.Status = newStatus;
+
+            if (SessionContext.CurrentUser?.Role?.RoleName == RoleNames.Serwisant)
+            {
+                var worker = (await _uow.Workers.FindAsync(w => w.UserID == SessionContext.CurrentUser.UserID)).FirstOrDefault();
+                if (worker != null)
+                {
+                    job.WorkerID = worker.WorkerID;
+                }
+            }
 
             if (newStatus == "FinishedJob" || newStatus == "Zakończone")
             {

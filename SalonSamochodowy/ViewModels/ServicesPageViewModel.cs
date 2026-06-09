@@ -35,6 +35,7 @@ namespace SalonSamochodowy.ViewModels
 
             try
             {
+                _uow.ClearTracker();
                 var jobs = await _jobService.GetJobsForUserAsync(loggedInUser);
 
                 PendingJobs.Clear();
