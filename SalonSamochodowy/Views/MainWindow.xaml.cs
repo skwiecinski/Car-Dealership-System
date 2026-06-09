@@ -86,6 +86,9 @@ namespace SalonSamochodowy.Views
                 case "Trwające Sprzedaże":
                     helpText = "Lista aktualnie procedowanych zamówień. Umożliwia zmianę statusu i weryfikację postępu dla każdego zlecenia (np. z 'Gotowe do odbioru' na 'Zrealizowane').";
                     break;
+                case "Ewidencja Sprzedaży":
+                    helpText = "Przeglądaj pełny rejestr wszystkich transakcji. Możesz tu filtrować zamówienia według statusu, salonu, doradcy lub zakresu dat. Tabela pozwala na szybki wgląd w szczegóły sprzedaży, takie jak przypisany pojazd, numer VIN, klient, doradca oraz aktualny status realizacji.";
+                    break;
                 case "Dodaj zamówienie":
                     helpText = "Zacznij nową sprzedaż. Wybierz klienta (lub stwórz nowego), dopasuj odpowiedni pojazd, dobierz konfigurację opcjonalną i sfinalizuj transakcję.";
                     break;

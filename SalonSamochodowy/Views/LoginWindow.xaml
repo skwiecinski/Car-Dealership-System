@@ -40,6 +40,7 @@
                        Height="45"
                        FontSize="15"
                        FontWeight="SemiBold"
+                       IsDefault="True"
                        Command="{Binding LoginCommand}"
                        CommandParameter="{Binding ElementName=TxtPassword}"/>
 
