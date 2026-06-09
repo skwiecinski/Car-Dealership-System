@@ -416,3 +416,13 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+__publish/*
+
+Salon Samochodowy.dialog_banner
+Salon Samochodowy.dialog_bmp
+Salon Samochodowy.licence.rtf
+Salon Samochodowy
+"Salon Samochodowy.wxl"
+SalonSamochodowy.msi
+net472"/*
