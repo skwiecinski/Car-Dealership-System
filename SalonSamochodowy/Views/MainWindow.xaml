@@ -60,7 +60,7 @@
             <ui:NavigationView.MenuItems>
                 <ui:NavigationViewItem Content="Moje Zamówienia"      Icon="{ui:SymbolIcon DocumentBulletList24}"        TargetPageType="{x:Type local:CustomerPanelPage}" Visibility="{Binding CustomerPanelVisibility}"/>
                 <ui:NavigationViewItem Content="Dashboard"             Icon="{ui:SymbolIcon Home24}"                TargetPageType="{x:Type local:DashboardPage}" Visibility="{Binding DashboardVisibility}"/>
-                <ui:NavigationViewItem Content="Klienci i Sprzedaż"    Icon="{ui:SymbolIcon DocumentBulletList24}"  TargetPageType="{x:Type local:ClientsPage}"   Visibility="{Binding ClientsVisibility}"/>
+                <ui:NavigationViewItem Content="Klienci"               Icon="{ui:SymbolIcon DocumentBulletList24}"  TargetPageType="{x:Type local:ClientsPage}"   Visibility="{Binding ClientsVisibility}"/>
                 <ui:NavigationViewItem Content="Trwające Sprzedaże"   Icon="{ui:SymbolIcon Briefcase24}"           TargetPageType="{x:Type local:SalesPanelPage}" Visibility="{Binding SalesPanelVisibility}"/>
                 <ui:NavigationViewItem Content="Dodaj zamówienie"      Icon="{ui:SymbolIcon DocumentAdd24}"         TargetPageType="{x:Type local:CreateOrder}"   Visibility="{Binding CreateOrderVisibility}"/>
                 <ui:NavigationViewItem Content="Zarządzanie Pojazdami" Icon="{ui:SymbolIcon VehicleCar24}"          TargetPageType="{x:Type local:VehiclesPage}"  Visibility="{Binding VehiclesVisibility}"/>
