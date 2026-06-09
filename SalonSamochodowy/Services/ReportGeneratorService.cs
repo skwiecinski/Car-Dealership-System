@@ -12,19 +12,39 @@ namespace SalonSamochodowy.Services
 {
     public class ReportGeneratorService
     {
+        private bool IsEn => LocalizationHelper.GetString("LanguageCode") == "EN";
+
         public ReportGeneratorService()
         {
             QuestPDF.Settings.License = LicenseType.Community;
         }
 
+        private string TranslateStatus(string status)
+        {
+            if (!IsEn || string.IsNullOrEmpty(status)) return status;
+            return status switch
+            {
+                "Oczekujące" => "Pending",
+                "W trakcie" => "In Progress",
+                "Zakończone" => "Finished",
+                "Zrealizowane" => "Finished",
+                "Sfinalizowane" => "Finalized",
+                "Zarezerwowane" => "Reserved",
+                "Anulowane" => "Cancelled",
+                "Sprzedany" => "Sold",
+                _ => status
+            };
+        }
+
         private void ComposeHeader(IContainer container, string title)
         {
+            string generatedStr = IsEn ? "Generated" : "Wygenerowano";
             container.Row(row =>
             {
                 row.RelativeItem().Column(column =>
                 {
                     column.Item().Text(title).FontSize(24).SemiBold().FontColor(Colors.Blue.Darken2);
-                    column.Item().Text($"Wygenerowano: {DateTime.Now:dd.MM.yyyy HH:mm}").FontSize(10).FontColor(Colors.Grey.Medium);
+                    column.Item().Text($"{generatedStr}: {DateTime.Now:dd.MM.yyyy HH:mm}").FontSize(10).FontColor(Colors.Grey.Medium);
                 });
                 row.ConstantItem(100).AlignRight().Text("LeAuto Salon").FontSize(16).SemiBold().FontColor(Colors.Grey.Darken2);
             });
@@ -67,6 +87,17 @@ namespace SalonSamochodowy.Services
             });
         }
 
+        private void DrawFooter(IContainer container)
+        {
+            container.AlignCenter().Text(x =>
+            {
+                x.Span(IsEn ? "Page " : "Strona ");
+                x.CurrentPageNumber();
+                x.Span(IsEn ? " of " : " z ");
+                x.TotalPages();
+            });
+        }
+
         public async Task<string> GenerateOrdersByStatusReportAsync(IEnumerable<SalesOrder> orders)
         {
             var filePath = Path.Combine(Path.GetTempPath(), $"Raport_Zamowien_{DateTime.Now:yyyyMMdd_HHmmss}.pdf");
@@ -80,13 +111,13 @@ namespace SalonSamochodowy.Services
                     page.Margin(2, Unit.Centimetre);
                     page.DefaultTextStyle(x => x.FontSize(11).FontFamily(Fonts.Arial));
 
-                    page.Header().Element(c => ComposeHeader(c, "Raport zamówień wg statusów"));
+                    page.Header().Element(c => ComposeHeader(c, IsEn ? "Orders by Status Report" : "Raport zamówień wg statusów"));
 
                     page.Content().PaddingVertical(1, Unit.Centimetre).Column(column =>
                     {
                         var statusCounts = orders.GroupBy(o => o.Status).Select(g => new { Status = g.Key, Count = g.Count() }).ToList();
                         
-                        var pieChartData = statusCounts.Select(x => (x.Status, (double)x.Count)).ToList();
+                        var pieChartData = statusCounts.Select(x => (TranslateStatus(x.Status), (double)x.Count)).ToList();
                         if (pieChartData.Any())
                         {
                             var chartImage = PdfChartGenerator.GeneratePieChart(pieChartData, 500, 300);
@@ -95,7 +126,10 @@ namespace SalonSamochodowy.Services
 
                         foreach (var group in groupedOrders)
                         {
-                            column.Item().PaddingBottom(5).Text($"Status: {group.Key} ({group.Count()} zamówień)").FontSize(16).SemiBold().FontColor(Colors.Black);
+                            string statusStr = IsEn ? "Status:" : "Status:";
+                            string ordersCountStr = IsEn ? "orders" : "zamówień";
+
+                            column.Item().PaddingBottom(5).Text($"{statusStr} {TranslateStatus(group.Key)} ({group.Count()} {ordersCountStr})").FontSize(16).SemiBold().FontColor(Colors.Black);
                             
                             column.Item().PaddingBottom(15).Table(table =>
                             {
@@ -111,10 +145,10 @@ namespace SalonSamochodowy.Services
                                 table.Header(header =>
                                 {
                                     header.Cell().BorderBottom(1).PaddingBottom(5).Text("ID").SemiBold();
-                                    header.Cell().BorderBottom(1).PaddingBottom(5).Text("Pojazd").SemiBold();
-                                    header.Cell().BorderBottom(1).PaddingBottom(5).Text("Klient").SemiBold();
-                                    header.Cell().BorderBottom(1).PaddingBottom(5).Text("Data").SemiBold();
-                                    header.Cell().BorderBottom(1).PaddingBottom(5).AlignRight().Text("Kwota").SemiBold();
+                                    header.Cell().BorderBottom(1).PaddingBottom(5).Text(IsEn ? "Vehicle" : "Pojazd").SemiBold();
+                                    header.Cell().BorderBottom(1).PaddingBottom(5).Text(IsEn ? "Client" : "Klient").SemiBold();
+                                    header.Cell().BorderBottom(1).PaddingBottom(5).Text(IsEn ? "Date" : "Data").SemiBold();
+                                    header.Cell().BorderBottom(1).PaddingBottom(5).AlignRight().Text(IsEn ? "Amount" : "Kwota").SemiBold();
                                 });
 
                                 foreach (var order in group)
@@ -129,13 +163,7 @@ namespace SalonSamochodowy.Services
                         }
                     });
 
-                    page.Footer().AlignCenter().Text(x =>
-                    {
-                        x.Span("Strona ");
-                        x.CurrentPageNumber();
-                        x.Span(" z ");
-                        x.TotalPages();
-                    });
+                    page.Footer().Element(DrawFooter);
                 });
             }).GeneratePdf(filePath);
 
@@ -154,31 +182,31 @@ namespace SalonSamochodowy.Services
                     page.Margin(2, Unit.Centimetre);
                     page.DefaultTextStyle(x => x.FontSize(11).FontFamily(Fonts.Arial));
 
-                    page.Header().Element(c => ComposeHeader(c, $"Raport Klienta: {client.User?.FirstName} {client.User?.LastName}"));
+                    page.Header().Element(c => ComposeHeader(c, IsEn ? $"Client Report: {client.User?.FirstName} {client.User?.LastName}" : $"Raport Klienta: {client.User?.FirstName} {client.User?.LastName}"));
 
                     page.Content().PaddingVertical(1, Unit.Centimetre).Column(column =>
                     {
-                        column.Item().PaddingBottom(10).Text("Podsumowanie klienta").FontSize(14).SemiBold();
+                        column.Item().PaddingBottom(10).Text(IsEn ? "Client Summary" : "Podsumowanie klienta").FontSize(14).SemiBold();
                         column.Item().Background(Colors.Grey.Lighten4).Padding(10).Column(inner =>
                         {
                             inner.Item().Text($"E-mail: {client.User?.Email}");
-                            inner.Item().Text($"Telefon: {client.Phone}");
+                            inner.Item().Text($"{(IsEn ? "Phone" : "Telefon")}: {client.Phone}");
                             
                             var finishedOrders = orders.Where(o => o.Status == OrderStatuses.Finished || o.Status == OrderStatuses.FinishedAlt).ToList();
                             decimal totalSpent = finishedOrders.Sum(o => o.FinalPrice);
                             decimal avgSpent = finishedOrders.Any() ? finishedOrders.Average(o => o.FinalPrice) : 0;
                             
-                            inner.Item().PaddingTop(5).Text($"Liczba zrealizowanych zamówień: {finishedOrders.Count}");
-                            inner.Item().Text($"Całkowita kwota zakupów: {totalSpent:C2}").SemiBold();
-                            inner.Item().Text($"Średnia wartość koszyka: {avgSpent:C2}");
+                            inner.Item().PaddingTop(5).Text($"{(IsEn ? "Finished orders count" : "Liczba zrealizowanych zamówień")}: {finishedOrders.Count}");
+                            inner.Item().Text($"{(IsEn ? "Total amount spent" : "Całkowita kwota zakupów")}: {totalSpent:C2}").SemiBold();
+                            inner.Item().Text($"{(IsEn ? "Average cart value" : "Średnia wartość koszyka")}: {avgSpent:C2}");
                         });
                         column.Item().PaddingBottom(20);
 
-                        column.Item().PaddingBottom(10).Text("Historia Zakupów").FontSize(14).SemiBold();
+                        column.Item().PaddingBottom(10).Text(IsEn ? "Purchase History" : "Historia Zakupów").FontSize(14).SemiBold();
                         
                         if (!orders.Any())
                         {
-                            column.Item().Text("Brak zarejestrowanych zamówień.").Italic();
+                            column.Item().Text(IsEn ? "No registered orders." : "Brak zarejestrowanych zamówień.").Italic();
                         }
                         else
                         {
@@ -196,17 +224,17 @@ namespace SalonSamochodowy.Services
                                 table.Header(header =>
                                 {
                                     header.Cell().BorderBottom(1).PaddingBottom(5).Text("ID").SemiBold();
-                                    header.Cell().BorderBottom(1).PaddingBottom(5).Text("Pojazd").SemiBold();
+                                    header.Cell().BorderBottom(1).PaddingBottom(5).Text(IsEn ? "Vehicle" : "Pojazd").SemiBold();
                                     header.Cell().BorderBottom(1).PaddingBottom(5).Text("Status").SemiBold();
-                                    header.Cell().BorderBottom(1).PaddingBottom(5).Text("Data Zam.").SemiBold();
-                                    header.Cell().BorderBottom(1).PaddingBottom(5).AlignRight().Text("Kwota").SemiBold();
+                                    header.Cell().BorderBottom(1).PaddingBottom(5).Text(IsEn ? "Order Date" : "Data Zam.").SemiBold();
+                                    header.Cell().BorderBottom(1).PaddingBottom(5).AlignRight().Text(IsEn ? "Amount" : "Kwota").SemiBold();
                                 });
 
                                 foreach (var order in orders.OrderByDescending(o => o.OrderDate))
                                 {
                                     table.Cell().PaddingVertical(2).Text($"#{order.OrderID}");
                                     table.Cell().PaddingVertical(2).Text($"{order.Vehicle?.Trim?.Model?.Brand} {order.Vehicle?.Trim?.Model?.ModelName}");
-                                    table.Cell().PaddingVertical(2).Text(order.Status);
+                                    table.Cell().PaddingVertical(2).Text(TranslateStatus(order.Status));
                                     table.Cell().PaddingVertical(2).Text($"{order.OrderDate:dd.MM.yyyy}");
                                     table.Cell().PaddingVertical(2).AlignRight().Text($"{order.FinalPrice:C2}");
                                 }
@@ -214,7 +242,7 @@ namespace SalonSamochodowy.Services
                         }
                     });
 
-                    page.Footer().AlignCenter().Text(x => { x.Span("Strona "); x.CurrentPageNumber(); x.Span(" z "); x.TotalPages(); });
+                    page.Footer().Element(DrawFooter);
                 });
             }).GeneratePdf(filePath);
 
@@ -246,23 +274,23 @@ namespace SalonSamochodowy.Services
                     page.Margin(2, Unit.Centimetre);
                     page.DefaultTextStyle(x => x.FontSize(11).FontFamily(Fonts.Arial));
 
-                    page.Header().Element(c => ComposeHeader(c, "Rankingi Sprzedaży"));
+                    page.Header().Element(c => ComposeHeader(c, IsEn ? "Sales Rankings" : "Rankingi Sprzedaży"));
 
                     page.Content().PaddingVertical(1, Unit.Centimetre).Column(column =>
                     {
                         decimal allTimeRevenue = finalizedOrders.Sum(o => o.FinalPrice);
-                        column.Item().PaddingBottom(20).Background(Colors.Grey.Lighten4).Padding(10).Text($"Łączny wygenerowany przychód firmy: {allTimeRevenue:C2}").FontSize(14).SemiBold();
+                        column.Item().PaddingBottom(20).Background(Colors.Grey.Lighten4).Padding(10).Text($"{(IsEn ? "Total generated company revenue" : "Łączny wygenerowany przychód firmy")}: {allTimeRevenue:C2}").FontSize(14).SemiBold();
 
                         var dChartData = dealershipSales.Select(x => ($"{x.Dealership.Name} ({x.Dealership.City})", (float)x.TotalSales)).ToList();
-                        column.Item().Element(c => DrawBarChart(c, "Ranking Salonów (wg przychodu)", dChartData, "{0:C2}"));
+                        column.Item().Element(c => DrawBarChart(c, IsEn ? "Dealership Rankings (by revenue)" : "Ranking Salonów (wg przychodu)", dChartData, "{0:C2}"));
 
                         column.Item().PaddingVertical(10).LineHorizontal(1).LineColor(Colors.Grey.Lighten2);
 
                         var wChartData = workerSales.Select(x => ($"{x.User?.FirstName} {x.User?.LastName}", (float)x.TotalSales)).ToList();
-                        column.Item().Element(c => DrawBarChart(c, "Top 10 Sprzedawców (wg przychodu)", wChartData, "{0:C2}"));
+                        column.Item().Element(c => DrawBarChart(c, IsEn ? "Top 10 Sellers (by revenue)" : "Top 10 Sprzedawców (wg przychodu)", wChartData, "{0:C2}"));
                     });
 
-                    page.Footer().AlignCenter().Text(x => { x.Span("Strona "); x.CurrentPageNumber(); x.Span(" z "); x.TotalPages(); });
+                    page.Footer().Element(DrawFooter);
                 });
             }).GeneratePdf(filePath);
 
@@ -292,27 +320,27 @@ namespace SalonSamochodowy.Services
                     page.Margin(2, Unit.Centimetre);
                     page.DefaultTextStyle(x => x.FontSize(10).FontFamily(Fonts.Arial));
 
-                    page.Header().Element(c => ComposeHeader(c, "Kompleksowy Raport Bazy Danych"));
+                    page.Header().Element(c => ComposeHeader(c, IsEn ? "Comprehensive Database Report" : "Kompleksowy Raport Bazy Danych"));
 
                     page.Content().PaddingVertical(1, Unit.Centimetre).Column(column =>
                     {
                         column.Item().PaddingBottom(20).Background(Colors.Grey.Lighten4).Padding(10).Column(inner =>
                         {
-                            inner.Item().PaddingBottom(5).Text("Podsumowanie statystyczne").FontSize(14).SemiBold();
-                            inner.Item().Text($"Zarejestrowane Salony: {dealerships.Count()}");
-                            inner.Item().Text($"Dostępne Pojazdy: {vehicles.Count(v => v.Status != "Sprzedany")}");
-                            inner.Item().Text($"Sprzedane Pojazdy: {vehicles.Count(v => v.Status == "Sprzedany")}");
-                            inner.Item().Text($"Klienci w bazie: {clients.Count()}");
-                            inner.Item().Text($"Zatrudnieni Pracownicy: {workers.Count()}");
-                            inner.Item().Text($"Przetworzone Zamówienia: {orders.Count()}");
+                            inner.Item().PaddingBottom(5).Text(IsEn ? "Statistical Summary" : "Podsumowanie statystyczne").FontSize(14).SemiBold();
+                            inner.Item().Text($"{(IsEn ? "Registered Dealerships" : "Zarejestrowane Salony")}: {dealerships.Count()}");
+                            inner.Item().Text($"{(IsEn ? "Available Vehicles" : "Dostępne Pojazdy")}: {vehicles.Count(v => v.Status != "Sprzedany" && v.Status != "Sold")}");
+                            inner.Item().Text($"{(IsEn ? "Sold Vehicles" : "Sprzedane Pojazdy")}: {vehicles.Count(v => v.Status == "Sprzedany" || v.Status == "Sold")}");
+                            inner.Item().Text($"{(IsEn ? "Clients in DB" : "Klienci w bazie")}: {clients.Count()}");
+                            inner.Item().Text($"{(IsEn ? "Employed Workers" : "Zatrudnieni Pracownicy")}: {workers.Count()}");
+                            inner.Item().Text($"{(IsEn ? "Processed Orders" : "Przetworzone Zamówienia")}: {orders.Count()}");
                         });
 
                         // Salony
-                        column.Item().PaddingBottom(10).Text($"Salony").FontSize(16).SemiBold();
+                        column.Item().PaddingBottom(10).Text(IsEn ? "Dealerships" : "Salony").FontSize(16).SemiBold();
                         column.Item().PaddingBottom(20).Table(t =>
                         {
                             t.ColumnsDefinition(c => { c.ConstantColumn(40); c.RelativeColumn(); c.RelativeColumn(); c.RelativeColumn(); });
-                            t.Header(h => { h.Cell().Text("ID").SemiBold(); h.Cell().Text("Nazwa").SemiBold(); h.Cell().Text("Adres").SemiBold(); h.Cell().Text("Właściciel").SemiBold(); });
+                            t.Header(h => { h.Cell().Text("ID").SemiBold(); h.Cell().Text(IsEn ? "Name" : "Nazwa").SemiBold(); h.Cell().Text(IsEn ? "Address" : "Adres").SemiBold(); h.Cell().Text(IsEn ? "Owner" : "Właściciel").SemiBold(); });
                             foreach(var d in dealerships)
                             {
                                 t.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(2).Text(d.DealershipID.ToString());
@@ -322,20 +350,20 @@ namespace SalonSamochodowy.Services
                             }
                         });
 
-                        var availableVehicles = vehicles.Where(v => v.Status != "Sprzedany").ToList();
-                        var soldVehicles = vehicles.Where(v => v.Status == "Sprzedany").ToList();
+                        var availableVehicles = vehicles.Where(v => v.Status != "Sprzedany" && v.Status != "Sold").ToList();
+                        var soldVehicles = vehicles.Where(v => v.Status == "Sprzedany" || v.Status == "Sold").ToList();
 
                         // Pojazdy Dostępne
-                        column.Item().PaddingBottom(10).Text($"Dostępne Pojazdy ({availableVehicles.Count})").FontSize(16).SemiBold();
+                        column.Item().PaddingBottom(10).Text($"{(IsEn ? "Available Vehicles" : "Dostępne Pojazdy")} ({availableVehicles.Count})").FontSize(16).SemiBold();
                         column.Item().PaddingBottom(20).Table(t =>
                         {
                             t.ColumnsDefinition(c => { c.ConstantColumn(40); c.RelativeColumn(); c.ConstantColumn(60); c.RelativeColumn(); c.ConstantColumn(80); });
-                            t.Header(h => { h.Cell().Text("ID").SemiBold(); h.Cell().Text("Model").SemiBold(); h.Cell().Text("Stan").SemiBold(); h.Cell().Text("VIN").SemiBold(); h.Cell().AlignRight().Text("Cena bazowa").SemiBold(); });
+                            t.Header(h => { h.Cell().Text("ID").SemiBold(); h.Cell().Text("Model").SemiBold(); h.Cell().Text(IsEn ? "State" : "Stan").SemiBold(); h.Cell().Text("VIN").SemiBold(); h.Cell().AlignRight().Text(IsEn ? "Base Price" : "Cena bazowa").SemiBold(); });
                             foreach(var v in availableVehicles)
                             {
                                 t.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(2).Text(v.VehicleID.ToString());
                                 t.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(2).Text($"{v.Trim?.Model?.Brand} {v.Trim?.Model?.ModelName}");
-                                t.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(2).Text(v.IsUsed ? "Używany" : "Nowy");
+                                t.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(2).Text(v.IsUsed ? (IsEn ? "Used" : "Używany") : (IsEn ? "New" : "Nowy"));
                                 t.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(2).Text(v.VIN);
                                 t.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(2).AlignRight().Text($"{v.Trim?.BasePrice:C2}");
                             }
@@ -344,16 +372,16 @@ namespace SalonSamochodowy.Services
                         // Pojazdy Sprzedane
                         if (soldVehicles.Any())
                         {
-                            column.Item().PaddingBottom(10).Text($"Sprzedane Pojazdy ({soldVehicles.Count})").FontSize(16).SemiBold();
+                            column.Item().PaddingBottom(10).Text($"{(IsEn ? "Sold Vehicles" : "Sprzedane Pojazdy")} ({soldVehicles.Count})").FontSize(16).SemiBold();
                             column.Item().PaddingBottom(20).Table(t =>
                             {
                                 t.ColumnsDefinition(c => { c.ConstantColumn(40); c.RelativeColumn(); c.ConstantColumn(60); c.RelativeColumn(); c.ConstantColumn(80); });
-                                t.Header(h => { h.Cell().Text("ID").SemiBold(); h.Cell().Text("Model").SemiBold(); h.Cell().Text("Stan").SemiBold(); h.Cell().Text("VIN").SemiBold(); h.Cell().AlignRight().Text("Cena bazowa").SemiBold(); });
+                                t.Header(h => { h.Cell().Text("ID").SemiBold(); h.Cell().Text("Model").SemiBold(); h.Cell().Text(IsEn ? "State" : "Stan").SemiBold(); h.Cell().Text("VIN").SemiBold(); h.Cell().AlignRight().Text(IsEn ? "Base Price" : "Cena bazowa").SemiBold(); });
                                 foreach(var v in soldVehicles)
                                 {
                                     t.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(2).Text(v.VehicleID.ToString());
                                     t.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(2).Text($"{v.Trim?.Model?.Brand} {v.Trim?.Model?.ModelName}");
-                                    t.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(2).Text(v.IsUsed ? "Używany" : "Nowy");
+                                    t.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(2).Text(v.IsUsed ? (IsEn ? "Used" : "Używany") : (IsEn ? "New" : "Nowy"));
                                     t.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(2).Text(v.VIN);
                                     t.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(2).AlignRight().Text($"{v.Trim?.BasePrice:C2}");
                                 }
@@ -361,11 +389,11 @@ namespace SalonSamochodowy.Services
                         }
 
                         // Klienci
-                        column.Item().PaddingBottom(10).Text($"Klienci").FontSize(16).SemiBold();
+                        column.Item().PaddingBottom(10).Text(IsEn ? "Clients" : "Klienci").FontSize(16).SemiBold();
                         column.Item().PaddingBottom(20).Table(t =>
                         {
                             t.ColumnsDefinition(c => { c.ConstantColumn(40); c.RelativeColumn(); c.RelativeColumn(); c.RelativeColumn(); });
-                            t.Header(h => { h.Cell().Text("ID").SemiBold(); h.Cell().Text("Imię i Nazwisko").SemiBold(); h.Cell().Text("E-mail").SemiBold(); h.Cell().Text("Telefon").SemiBold(); });
+                            t.Header(h => { h.Cell().Text("ID").SemiBold(); h.Cell().Text(IsEn ? "Full Name" : "Imię i Nazwisko").SemiBold(); h.Cell().Text("E-mail").SemiBold(); h.Cell().Text(IsEn ? "Phone" : "Telefon").SemiBold(); });
                             foreach(var c in clients)
                             {
                                 t.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(2).Text(c.ClientID.ToString());
@@ -376,29 +404,29 @@ namespace SalonSamochodowy.Services
                         });
 
                         // Pracownicy
-                        column.Item().PaddingBottom(10).Text($"Pracownicy").FontSize(16).SemiBold();
+                        column.Item().PaddingBottom(10).Text(IsEn ? "Workers" : "Pracownicy").FontSize(16).SemiBold();
                         column.Item().PaddingBottom(20).Table(t =>
                         {
                             t.ColumnsDefinition(c => { c.ConstantColumn(40); c.RelativeColumn(); c.RelativeColumn(); c.RelativeColumn(); });
-                            t.Header(h => { h.Cell().Text("ID").SemiBold(); h.Cell().Text("Użytkownik").SemiBold(); h.Cell().Text("Salon").SemiBold(); h.Cell().AlignRight().Text("Wypłata").SemiBold(); });
+                            t.Header(h => { h.Cell().Text("ID").SemiBold(); h.Cell().Text(IsEn ? "User" : "Użytkownik").SemiBold(); h.Cell().Text(IsEn ? "Dealership" : "Salon").SemiBold(); h.Cell().AlignRight().Text(IsEn ? "Payroll" : "Wypłata").SemiBold(); });
                             foreach(var w in workers)
                             {
                                 var user = users.FirstOrDefault(u => u.UserID == w.UserID);
                                 var dealership = dealerships.FirstOrDefault(d => d.DealershipID == w.DealershipID);
 
                                 t.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(2).Text(w.WorkerID.ToString());
-                                t.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(2).Text(user != null ? $"{user.FirstName} {user.LastName}" : "Nieznany");
-                                t.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(2).Text(dealership?.Name ?? "Brak");
+                                t.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(2).Text(user != null ? $"{user.FirstName} {user.LastName}" : (IsEn ? "Unknown" : "Nieznany"));
+                                t.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(2).Text(dealership?.Name ?? (IsEn ? "None" : "Brak"));
                                 t.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(2).AlignRight().Text($"{w.Payroll:C2}");
                             }
                         });
 
                         // Modele
-                        column.Item().PaddingBottom(10).Text($"Modele Samochodów").FontSize(16).SemiBold();
+                        column.Item().PaddingBottom(10).Text(IsEn ? "Car Models" : "Modele Samochodów").FontSize(16).SemiBold();
                         column.Item().PaddingBottom(20).Table(t =>
                         {
                             t.ColumnsDefinition(c => { c.ConstantColumn(40); c.RelativeColumn(); c.RelativeColumn(); });
-                            t.Header(h => { h.Cell().Text("ID").SemiBold(); h.Cell().Text("Marka").SemiBold(); h.Cell().Text("Nazwa modelu").SemiBold(); });
+                            t.Header(h => { h.Cell().Text("ID").SemiBold(); h.Cell().Text(IsEn ? "Brand" : "Marka").SemiBold(); h.Cell().Text(IsEn ? "Model Name" : "Nazwa modelu").SemiBold(); });
                             foreach(var m in models)
                             {
                                 t.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(2).Text(m.ModelID.ToString());
@@ -408,11 +436,11 @@ namespace SalonSamochodowy.Services
                         });
 
                         // Silniki
-                        column.Item().PaddingBottom(10).Text($"Silniki").FontSize(16).SemiBold();
+                        column.Item().PaddingBottom(10).Text(IsEn ? "Engines" : "Silniki").FontSize(16).SemiBold();
                         column.Item().PaddingBottom(20).Table(t =>
                         {
                             t.ColumnsDefinition(c => { c.ConstantColumn(40); c.RelativeColumn(); c.RelativeColumn(); c.ConstantColumn(60); c.ConstantColumn(80); });
-                            t.Header(h => { h.Cell().Text("ID").SemiBold(); h.Cell().Text("Nazwa").SemiBold(); h.Cell().Text("Pojemność").SemiBold(); h.Cell().AlignRight().Text("Moc (KM)").SemiBold(); h.Cell().AlignRight().Text("Cena").SemiBold(); });
+                            t.Header(h => { h.Cell().Text("ID").SemiBold(); h.Cell().Text(IsEn ? "Name" : "Nazwa").SemiBold(); h.Cell().Text(IsEn ? "Capacity" : "Pojemność").SemiBold(); h.Cell().AlignRight().Text(IsEn ? "Power (HP)" : "Moc (KM)").SemiBold(); h.Cell().AlignRight().Text(IsEn ? "Price" : "Cena").SemiBold(); });
                             foreach(var e in engines)
                             {
                                 t.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(2).Text(e.EngineID.ToString());
@@ -424,11 +452,11 @@ namespace SalonSamochodowy.Services
                         });
 
                         // Pakiety wyposazenia
-                        column.Item().PaddingBottom(10).Text($"Warianty Wyposażenia").FontSize(16).SemiBold();
+                        column.Item().PaddingBottom(10).Text(IsEn ? "Trim Levels" : "Warianty Wyposażenia").FontSize(16).SemiBold();
                         column.Item().PaddingBottom(20).Table(t =>
                         {
                             t.ColumnsDefinition(c => { c.ConstantColumn(40); c.RelativeColumn(); c.RelativeColumn(); c.ConstantColumn(100); });
-                            t.Header(h => { h.Cell().Text("ID").SemiBold(); h.Cell().Text("Model").SemiBold(); h.Cell().Text("Wariant").SemiBold(); h.Cell().AlignRight().Text("Cena bazowa").SemiBold(); });
+                            t.Header(h => { h.Cell().Text("ID").SemiBold(); h.Cell().Text("Model").SemiBold(); h.Cell().Text(IsEn ? "Trim" : "Wariant").SemiBold(); h.Cell().AlignRight().Text(IsEn ? "Base Price" : "Cena bazowa").SemiBold(); });
                             foreach(var tl in trimLevels)
                             {
                                 t.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(2).Text(tl.TrimID.ToString());
@@ -439,11 +467,11 @@ namespace SalonSamochodowy.Services
                         });
 
                         // Cechy/Opcje
-                        column.Item().PaddingBottom(10).Text($"Cechy / Usługi Dodatkowe").FontSize(16).SemiBold();
+                        column.Item().PaddingBottom(10).Text(IsEn ? "Features / Add-ons" : "Cechy / Usługi Dodatkowe").FontSize(16).SemiBold();
                         column.Item().PaddingBottom(20).Table(t =>
                         {
                             t.ColumnsDefinition(c => { c.ConstantColumn(40); c.RelativeColumn(); c.RelativeColumn(); c.ConstantColumn(80); });
-                            t.Header(h => { h.Cell().Text("ID").SemiBold(); h.Cell().Text("Nazwa").SemiBold(); h.Cell().Text("Kategoria").SemiBold(); h.Cell().AlignRight().Text("Cena").SemiBold(); });
+                            t.Header(h => { h.Cell().Text("ID").SemiBold(); h.Cell().Text(IsEn ? "Name" : "Nazwa").SemiBold(); h.Cell().Text(IsEn ? "Category" : "Kategoria").SemiBold(); h.Cell().AlignRight().Text(IsEn ? "Price" : "Cena").SemiBold(); });
                             foreach(var f in features)
                             {
                                 t.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(2).Text(f.FeatureID.ToString());
@@ -454,39 +482,39 @@ namespace SalonSamochodowy.Services
                         });
 
                         // Zamówienia
-                        column.Item().PaddingBottom(10).Text($"Wszystkie Zamówienia ({orders.Count()})").FontSize(16).SemiBold();
+                        column.Item().PaddingBottom(10).Text($"{(IsEn ? "All Orders" : "Wszystkie Zamówienia")} ({orders.Count()})").FontSize(16).SemiBold();
                         column.Item().PaddingBottom(20).Table(t =>
                         {
                             t.ColumnsDefinition(c => { c.ConstantColumn(40); c.RelativeColumn(); c.RelativeColumn(); c.RelativeColumn(); c.ConstantColumn(80); });
-                            t.Header(h => { h.Cell().Text("ID").SemiBold(); h.Cell().Text("Data").SemiBold(); h.Cell().Text("Status").SemiBold(); h.Cell().Text("Klient (ID)").SemiBold(); h.Cell().AlignRight().Text("Kwota").SemiBold(); });
+                            t.Header(h => { h.Cell().Text("ID").SemiBold(); h.Cell().Text(IsEn ? "Date" : "Data").SemiBold(); h.Cell().Text("Status").SemiBold(); h.Cell().Text(IsEn ? "Client (ID)" : "Klient (ID)").SemiBold(); h.Cell().AlignRight().Text(IsEn ? "Amount" : "Kwota").SemiBold(); });
                             foreach(var o in orders.OrderByDescending(x => x.OrderDate))
                             {
                                 t.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(2).Text(o.OrderID.ToString());
                                 t.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(2).Text(o.OrderDate.ToString("dd.MM.yyyy"));
-                                t.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(2).Text(o.Status);
+                                t.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(2).Text(TranslateStatus(o.Status));
                                 t.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(2).Text($"ID: {o.ClientID}");
                                 t.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(2).AlignRight().Text($"{o.FinalPrice:C2}");
                             }
                         });
 
                         // Zlecenia Serwisowe
-                        column.Item().PaddingBottom(10).Text($"Zlecenia Serwisowe ({jobs.Count()})").FontSize(16).SemiBold();
+                        column.Item().PaddingBottom(10).Text($"{(IsEn ? "Service Jobs" : "Zlecenia Serwisowe")} ({jobs.Count()})").FontSize(16).SemiBold();
                         column.Item().PaddingBottom(20).Table(t =>
                         {
                             t.ColumnsDefinition(c => { c.ConstantColumn(40); c.RelativeColumn(); c.RelativeColumn(); c.RelativeColumn(); c.RelativeColumn(); });
-                            t.Header(h => { h.Cell().Text("ID").SemiBold(); h.Cell().Text("Pojazd (ID)").SemiBold(); h.Cell().Text("Serwisant").SemiBold(); h.Cell().Text("Usługa").SemiBold(); h.Cell().Text("Status").SemiBold(); });
+                            t.Header(h => { h.Cell().Text("ID").SemiBold(); h.Cell().Text(IsEn ? "Vehicle (ID)" : "Pojazd (ID)").SemiBold(); h.Cell().Text(IsEn ? "Mechanic" : "Serwisant").SemiBold(); h.Cell().Text(IsEn ? "Service" : "Usługa").SemiBold(); h.Cell().Text("Status").SemiBold(); });
                             foreach(var j in jobs.OrderByDescending(x => x.CreatedAt))
                             {
                                 t.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(2).Text(j.JobID.ToString());
                                 t.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(2).Text($"Auto ID: {j.VehicleID}");
                                 t.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(2).Text(j.Worker?.User != null ? $"{j.Worker.User.FirstName} {j.Worker.User.LastName}" : $"Worker ID: {j.WorkerID}");
                                 t.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(2).Text(j.Feature?.FeatureName ?? $"Feature ID: {j.FeatureID}");
-                                t.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(2).Text(j.Status);
+                                t.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(2).Text(TranslateStatus(j.Status));
                             }
                         });
                     });
 
-                    page.Footer().AlignCenter().Text(x => { x.Span("Strona "); x.CurrentPageNumber(); x.Span(" z "); x.TotalPages(); });
+                    page.Footer().Element(DrawFooter);
                 });
             }).GeneratePdf(filePath);
 
@@ -520,23 +548,23 @@ namespace SalonSamochodowy.Services
                     page.Margin(2, Unit.Centimetre);
                     page.DefaultTextStyle(x => x.FontSize(11).FontFamily(Fonts.Arial));
 
-                    page.Header().Element(c => ComposeHeader(c, "Raport Przychodów Miesięcznych"));
+                    page.Header().Element(c => ComposeHeader(c, IsEn ? "Monthly Revenue Report" : "Raport Przychodów Miesięcznych"));
 
                     page.Content().PaddingVertical(1, Unit.Centimetre).Column(column =>
                     {
                         var chartData = monthlySales.Select(x => ($"{x.Month:00}/{x.Year}", (double)x.Revenue)).ToList();
-                        var chartImage = PdfChartGenerator.GenerateColumnChart(chartData, "Przychód (PLN)", 800, 400);
+                        var chartImage = PdfChartGenerator.GenerateColumnChart(chartData, IsEn ? "Revenue (PLN)" : "Przychód (PLN)", 800, 400);
                         column.Item().Image(chartImage);
 
                         column.Item().PaddingVertical(10).LineHorizontal(1).LineColor(Colors.Grey.Lighten2);
 
                         if (!monthlySales.Any())
                         {
-                            column.Item().Text("Brak danych finansowych do wyświetlenia.").Italic();
+                            column.Item().Text(IsEn ? "No financial data to display." : "Brak danych finansowych do wyświetlenia.").Italic();
                         }
                     });
 
-                    page.Footer().AlignCenter().Text(x => { x.Span("Strona "); x.CurrentPageNumber(); x.Span(" z "); x.TotalPages(); });
+                    page.Footer().Element(DrawFooter);
                 });
             }).GeneratePdf(filePath);
 
@@ -563,17 +591,17 @@ namespace SalonSamochodowy.Services
                     page.Margin(2, Unit.Centimetre);
                     page.DefaultTextStyle(x => x.FontSize(11).FontFamily(Fonts.Arial));
 
-                    page.Header().Element(c => ComposeHeader(c, "Trendy: Popularność Modeli"));
+                    page.Header().Element(c => ComposeHeader(c, IsEn ? "Trends: Model Popularity" : "Trendy: Popularność Modeli"));
 
                     page.Content().PaddingVertical(1, Unit.Centimetre).Column(column =>
                     {
                         var chartData = popularModels.Select(x => ($"{x.Brand} {x.Model}", (double)x.Count)).ToList();
                         var chartImage = PdfChartGenerator.GeneratePieChart(chartData, 600, 400);
-                        column.Item().PaddingBottom(10).Text("Udział w sprzedaży (Top 10)").FontSize(14).SemiBold();
+                        column.Item().PaddingBottom(10).Text(IsEn ? "Sales Share (Top 10)" : "Udział w sprzedaży (Top 10)").FontSize(14).SemiBold();
                         column.Item().Image(chartImage);
                     });
 
-                    page.Footer().AlignCenter().Text(x => { x.Span("Strona "); x.CurrentPageNumber(); x.Span(" z "); x.TotalPages(); });
+                    page.Footer().Element(DrawFooter);
                 });
             }).GeneratePdf(filePath);
 
@@ -589,7 +617,7 @@ namespace SalonSamochodowy.Services
             var workerJobs = completedJobs
                 .GroupBy(j => j.Worker)
                 .Select(g => new { 
-                    WorkerName = g.Key.User != null ? $"{g.Key.User.FirstName} {g.Key.User.LastName}" : "Nieznany", 
+                    WorkerName = g.Key?.User != null ? $"{g.Key.User.FirstName} {g.Key.User.LastName}" : (IsEn ? "Unknown" : "Nieznany"), 
                     Count = g.Count() 
                 })
                 .OrderByDescending(x => x.Count)
@@ -598,7 +626,7 @@ namespace SalonSamochodowy.Services
 
             var popularFeatures = completedJobs
                 .GroupBy(j => j.Feature)
-                .Select(g => new { FeatureName = g.Key != null ? g.Key.FeatureName : "Nieznana usługa", Count = g.Count() })
+                .Select(g => new { FeatureName = g.Key != null ? g.Key.FeatureName : (IsEn ? "Unknown service" : "Nieznana usługa"), Count = g.Count() })
                 .OrderByDescending(x => x.Count)
                 .Take(5)
                 .ToList();
@@ -611,30 +639,30 @@ namespace SalonSamochodowy.Services
                     page.Margin(2, Unit.Centimetre);
                     page.DefaultTextStyle(x => x.FontSize(11).FontFamily(Fonts.Arial));
 
-                    page.Header().Element(c => ComposeHeader(c, "Raport Wydajności Serwisu"));
+                    page.Header().Element(c => ComposeHeader(c, IsEn ? "Service Efficiency Report" : "Raport Wydajności Serwisu"));
 
                     page.Content().PaddingVertical(1, Unit.Centimetre).Column(column =>
                     {
                         if (!workerJobs.Any() && !popularFeatures.Any())
                         {
-                            column.Item().Text("Brak ukończonych zleceń serwisowych do wyświetlenia w statystykach.").Italic();
+                            column.Item().Text(IsEn ? "No finished service jobs to display in statistics." : "Brak ukończonych zleceń serwisowych do wyświetlenia w statystykach.").Italic();
                             return;
                         }
 
                         var wChartData = workerJobs.Select(x => (x.WorkerName, (double)x.Count)).ToList();
-                        var wChartImage = PdfChartGenerator.GenerateColumnChart(wChartData, "Liczba napraw", 800, 350);
-                        column.Item().PaddingBottom(10).Text("Top 10 Serwisantów (wg liczby zleceń)").FontSize(14).SemiBold();
+                        var wChartImage = PdfChartGenerator.GenerateColumnChart(wChartData, IsEn ? "Repairs count" : "Liczba napraw", 800, 350);
+                        column.Item().PaddingBottom(10).Text(IsEn ? "Top 10 Mechanics (by job count)" : "Top 10 Serwisantów (wg liczby zleceń)").FontSize(14).SemiBold();
                         column.Item().Image(wChartImage);
 
                         column.Item().PaddingVertical(10).LineHorizontal(1).LineColor(Colors.Grey.Lighten2);
 
                         var fChartData = popularFeatures.Select(x => (x.FeatureName, (double)x.Count)).ToList();
                         var fChartImage = PdfChartGenerator.GeneratePieChart(fChartData, 600, 350);
-                        column.Item().PaddingBottom(10).Text("Top 5 najczęściej instalowanych części/usług").FontSize(14).SemiBold();
+                        column.Item().PaddingBottom(10).Text(IsEn ? "Top 5 most frequently installed parts/services" : "Top 5 najczęściej instalowanych części/usług").FontSize(14).SemiBold();
                         column.Item().Image(fChartImage);
                     });
 
-                    page.Footer().AlignCenter().Text(x => { x.Span("Strona "); x.CurrentPageNumber(); x.Span(" z "); x.TotalPages(); });
+                    page.Footer().Element(DrawFooter);
                 });
             }).GeneratePdf(filePath);
 

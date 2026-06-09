@@ -2,6 +2,18 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:system="clr-namespace:System;assembly=mscorlib">
     
+    <!-- Meta -->
+    <system:String x:Key="LanguageCode">PL</system:String>
+
+    <!-- Logowanie -->
+    <system:String x:Key="Login_Title">Logowanie - LeAuto Salon</system:String>
+    <system:String x:Key="Login_Header">LeAuto Salon</system:String>
+    <system:String x:Key="Login_Subtitle">Zaloguj się do systemu salonu</system:String>
+    <system:String x:Key="Login_Email">Adres e-mail</system:String>
+    <system:String x:Key="Login_Password">Hasło</system:String>
+    <system:String x:Key="Login_Button">Zaloguj się</system:String>
+    <system:String x:Key="Login_Exit">Wyjdź z programu</system:String>
+
     <!-- Menu Główne -->
     <system:String x:Key="Menu_MyOrders">Moje Zamówienia</system:String>
     <system:String x:Key="Menu_Dashboard">Dashboard</system:String>
