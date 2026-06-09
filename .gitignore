@@ -417,7 +417,7 @@ FodyWeavers.xsd
 *.msm
 *.msp
 
-__publish/*
+publish/*
 
 Salon Samochodowy.dialog_banner
 Salon Samochodowy.dialog_bmp
