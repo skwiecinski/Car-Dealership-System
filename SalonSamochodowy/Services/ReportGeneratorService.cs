@@ -257,13 +257,13 @@ namespace SalonSamochodowy.Services
             var dealershipSales = dealerships.Select(d => new
             {
                 Dealership = d,
-                TotalSales = finalizedOrders.Where(o => workers.FirstOrDefault(w => w.UserID == o.WorkerID)?.DealershipID == d.DealershipID).Sum(o => o.FinalPrice)
+                TotalSales = finalizedOrders.Where(o => o.DealershipID == d.DealershipID).Sum(o => o.FinalPrice)
             }).OrderByDescending(x => x.TotalSales).ToList();
 
             var workerSales = workers.Select(w => new
             {
                 User = users.FirstOrDefault(u => u.UserID == w.UserID),
-                TotalSales = finalizedOrders.Where(o => o.WorkerID == w.UserID).Sum(o => o.FinalPrice)
+                TotalSales = finalizedOrders.Where(o => o.WorkerID == w.WorkerID).Sum(o => o.FinalPrice)
             }).Where(x => x.User != null && x.TotalSales > 0).OrderByDescending(x => x.TotalSales).Take(10).ToList();
 
             Document.Create(container =>
