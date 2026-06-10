@@ -2,6 +2,16 @@
 
 A desktop application for managing a modern car dealership. Built with C# and WPF (Windows Presentation Foundation), this project uses a clear architecture and popular design patterns to manage data easily and efficiently.
 
+> **Note:** This is a forked repository. In this group project, my primary role was **Full-Stack Developer**. 
+> 
+> **My personal contributions included:**
+> * Implemented *Repository* and *Unit of Work* design patterns to ensure robust data architecture.
+> * Engineered a comprehensive dynamic Internationalization system covering all application views, components, and PDF exports.
+> * Created the PDF generation feature using *QuestPDF* for complex database summaries, including interactive charts and time-period filters.
+> * Designed advanced UI/UX features, including startup animations, responsive layouts, and a cross-module Interactive Guided Tour system.
+> * Built the complete authentication flow featuring SHA-256 password hashing, an Administrator CRUD dashboard, and a First-Run Configuration Wizard.
+> * Resolved application bugs, optimized data caching, and implemented robust validation logic to prevent application crashes and ensure seamless view navigation.
+
 ## Design Patterns & Databases
 
 The system uses the **MVVM (Model-View-ViewModel)** pattern to keep the user interface separate from the business logic. 
