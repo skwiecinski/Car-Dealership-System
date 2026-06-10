@@ -15,7 +15,7 @@ namespace SalonSamochodowy.Views
             var vm = ((App)Application.Current).Services.GetRequiredService<LoginViewModel>();
             vm.LoginSucceeded += user =>
             {
-                SessionContext.CurrentUser = user; // zeby miec info o userze, jest static, takze mozna sie odwolywac bez tworzenia klasy
+                SessionContext.CurrentUser = user; 
                 var main = new MainWindow(user);
                 main.Show();
                 Close();
@@ -24,7 +24,7 @@ namespace SalonSamochodowy.Views
 
             DataContext = vm;
 
-            // Ustaw początkowy wygląd flag
+            
             string currentLang = SalonSamochodowy.Services.LocalizationHelper.GetString("LanguageCode");
             if (currentLang == "EN")
             {

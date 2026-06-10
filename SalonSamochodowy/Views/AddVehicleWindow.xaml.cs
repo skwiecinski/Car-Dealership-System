@@ -26,7 +26,7 @@ namespace SalonSamochodowy.Views
                 this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             }
 
-            // Obsługa komunikatów
+            
             _vm.ShowError += msg => System.Windows.MessageBox.Show(
                 msg, "Błąd",
                 System.Windows.MessageBoxButton.OK,

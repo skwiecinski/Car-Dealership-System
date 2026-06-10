@@ -34,14 +34,14 @@ namespace SalonSamochodowy.ViewModels
 
             WeakReferenceMessenger.Default.Register(this, (DashboardPageViewModel r, SalonSamochodowy.Messages.LanguageChangedMessage m) =>
             {
-                // Refresh title
+                
                 var currentCulture = System.Threading.Thread.CurrentThread.CurrentUICulture;
                 var firstDay = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
                 var monthName = firstDay.ToString("MMMM yyyy", currentCulture);
                 var titleFormat = LocalizationHelper.GetString("Dash_SalesChartTitle");
                 r.SalesChartTitle = string.Format(titleFormat, monthName);
 
-                // Refresh orders
+                
                 foreach (var order in r.RecentOrders)
                 {
                     order.RefreshLocalization();

@@ -45,7 +45,7 @@ namespace SalonSamochodowy.ViewModels
 
                 WelcomeText = $"Witaj, {currentUser.FirstName} {currentUser.LastName}!";
 
-                // Fetch Client details associated with this user
+                
                 var clients = await _uow.Clients.FindWithIncludesAsync(c => c.UserID == currentUser.UserID);
                 var client = clients.FirstOrDefault();
                 if (client == null)
@@ -65,7 +65,7 @@ namespace SalonSamochodowy.ViewModels
                 ClientDetailsText = $"Telefon: {client.Phone} | Email: {currentUser.Email}" + 
                                     (string.IsNullOrWhiteSpace(client.NIP) ? "" : $" | NIP: {client.NIP}");
 
-                // Fetch all sales orders for this client
+                
                 var orders = await _uow.SalesOrders.FindWithIncludesAsync(
                     o => o.ClientID == client.ClientID,
                     o => o.Vehicle.Trim.Model,

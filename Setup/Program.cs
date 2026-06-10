@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows.Forms;
 using WixSharp;
 using WixSharp.Forms;
@@ -15,10 +15,10 @@ namespace WixSharp_Setup1
 
             project.GUID = new Guid("3186a88a-6367-4225-9572-4cb6fb7eb50b");
 
-            project.ManagedUI = ManagedUI.Empty;    //no standard UI dialogs
-            project.ManagedUI = ManagedUI.Default;  //all standard UI dialogs
+            project.ManagedUI = ManagedUI.Empty;    
+            project.ManagedUI = ManagedUI.Default;  
 
-            //custom set of standard UI dialogs
+            
             project.ManagedUI = new ManagedUI();
 
             project.ManagedUI.InstallDialogs.Add(Dialogs.Welcome)
@@ -38,8 +38,8 @@ namespace WixSharp_Setup1
             project.BeforeInstall += Msi_BeforeInstall;
             project.AfterInstall += Msi_AfterInstall;
 
-            //project.SourceBaseDir = "<input dir path>";
-            //project.OutDir = "<output dir path>";
+            
+            
 
             project.BuildMsi();
         }

@@ -102,7 +102,7 @@
         </StackPanel>
         </Grid>
 
-        <!-- Ekran ładowania -->
+        
         <Grid x:Name="LoadingOverlay" Background="#D916181D" Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}" Panel.ZIndex="200">
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                 <ui:ProgressRing IsIndeterminate="True" Width="60" Height="60" Foreground="#5B59E8" />

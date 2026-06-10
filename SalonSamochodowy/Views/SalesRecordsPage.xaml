@@ -12,16 +12,16 @@
     <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <!-- Header -->
+            
             <RowDefinition Height="Auto"/>
-            <!-- Filters -->
+            
             <RowDefinition Height="*"/>
-            <!-- Table -->
+            
             <RowDefinition Height="Auto"/>
-            <!-- Summary -->
+            
         </Grid.RowDefinitions>
 
-        <!-- ===== Header ===== -->
+        
         <Grid Grid.Row="0" Margin="0,0,0,16">
             <StackPanel>
                 <TextBlock Text="{DynamicResource SalesRecords_Title}" FontSize="24" FontWeight="Bold" Foreground="#E2E2E2"/>
@@ -34,7 +34,7 @@
                          Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"/>
         </Grid>
 
-        <!-- ===== Filters ===== -->
+        
         <Border x:Name="FiltersSection" Grid.Row="1" Background="#22242C" CornerRadius="10" BorderBrush="#2D3038" BorderThickness="1" Padding="16" Margin="0,0,0,16">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -82,7 +82,7 @@
             </Grid>
         </Border>
 
-        <!-- ===== Table ===== -->
+        
         <Border x:Name="TableSection" Grid.Row="2" Background="#22242C" CornerRadius="10" BorderBrush="#2D3038" BorderThickness="1" Padding="8">
             <Grid>
                 <DataGrid ItemsSource="{Binding Records}"
@@ -132,7 +132,7 @@
             </Grid>
         </Border>
 
-        <!-- ===== Summary ===== -->
+        
         <Border x:Name="SummarySection" Grid.Row="3" Background="#22242C" CornerRadius="10" BorderBrush="#2D3038" BorderThickness="1" Padding="16,10" Margin="0,16,0,0">
             <TextBlock Text="{Binding SummaryText}" Foreground="#E2E2E2" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Right"/>
         </Border>

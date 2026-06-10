@@ -335,7 +335,7 @@ namespace SalonSamochodowy.Services
                             inner.Item().Text($"{(IsEn ? "Processed Orders" : "Przetworzone Zamówienia")}: {orders.Count()}");
                         });
 
-                        // Salony
+                        
                         column.Item().PaddingBottom(10).Text(IsEn ? "Dealerships" : "Salony").FontSize(16).SemiBold();
                         column.Item().PaddingBottom(20).Table(t =>
                         {
@@ -353,7 +353,7 @@ namespace SalonSamochodowy.Services
                         var availableVehicles = vehicles.Where(v => v.Status != "Sprzedany" && v.Status != "Sold").ToList();
                         var soldVehicles = vehicles.Where(v => v.Status == "Sprzedany" || v.Status == "Sold").ToList();
 
-                        // Pojazdy Dostępne
+                        
                         column.Item().PaddingBottom(10).Text($"{(IsEn ? "Available Vehicles" : "Dostępne Pojazdy")} ({availableVehicles.Count})").FontSize(16).SemiBold();
                         column.Item().PaddingBottom(20).Table(t =>
                         {
@@ -369,7 +369,7 @@ namespace SalonSamochodowy.Services
                             }
                         });
 
-                        // Pojazdy Sprzedane
+                        
                         if (soldVehicles.Any())
                         {
                             column.Item().PaddingBottom(10).Text($"{(IsEn ? "Sold Vehicles" : "Sprzedane Pojazdy")} ({soldVehicles.Count})").FontSize(16).SemiBold();
@@ -388,7 +388,7 @@ namespace SalonSamochodowy.Services
                             });
                         }
 
-                        // Klienci
+                        
                         column.Item().PaddingBottom(10).Text(IsEn ? "Clients" : "Klienci").FontSize(16).SemiBold();
                         column.Item().PaddingBottom(20).Table(t =>
                         {
@@ -403,7 +403,7 @@ namespace SalonSamochodowy.Services
                             }
                         });
 
-                        // Pracownicy
+                        
                         column.Item().PaddingBottom(10).Text(IsEn ? "Workers" : "Pracownicy").FontSize(16).SemiBold();
                         column.Item().PaddingBottom(20).Table(t =>
                         {
@@ -421,7 +421,7 @@ namespace SalonSamochodowy.Services
                             }
                         });
 
-                        // Modele
+                        
                         column.Item().PaddingBottom(10).Text(IsEn ? "Car Models" : "Modele Samochodów").FontSize(16).SemiBold();
                         column.Item().PaddingBottom(20).Table(t =>
                         {
@@ -435,7 +435,7 @@ namespace SalonSamochodowy.Services
                             }
                         });
 
-                        // Silniki
+                        
                         column.Item().PaddingBottom(10).Text(IsEn ? "Engines" : "Silniki").FontSize(16).SemiBold();
                         column.Item().PaddingBottom(20).Table(t =>
                         {
@@ -451,7 +451,7 @@ namespace SalonSamochodowy.Services
                             }
                         });
 
-                        // Pakiety wyposazenia
+                        
                         column.Item().PaddingBottom(10).Text(IsEn ? "Trim Levels" : "Warianty Wyposażenia").FontSize(16).SemiBold();
                         column.Item().PaddingBottom(20).Table(t =>
                         {
@@ -466,7 +466,7 @@ namespace SalonSamochodowy.Services
                             }
                         });
 
-                        // Cechy/Opcje
+                        
                         column.Item().PaddingBottom(10).Text(IsEn ? "Features / Add-ons" : "Cechy / Usługi Dodatkowe").FontSize(16).SemiBold();
                         column.Item().PaddingBottom(20).Table(t =>
                         {
@@ -481,7 +481,7 @@ namespace SalonSamochodowy.Services
                             }
                         });
 
-                        // Zamówienia
+                        
                         column.Item().PaddingBottom(10).Text($"{(IsEn ? "All Orders" : "Wszystkie Zamówienia")} ({orders.Count()})").FontSize(16).SemiBold();
                         column.Item().PaddingBottom(20).Table(t =>
                         {
@@ -497,7 +497,7 @@ namespace SalonSamochodowy.Services
                             }
                         });
 
-                        // Zlecenia Serwisowe
+                        
                         column.Item().PaddingBottom(10).Text($"{(IsEn ? "Service Jobs" : "Zlecenia Serwisowe")} ({jobs.Count()})").FontSize(16).SemiBold();
                         column.Item().PaddingBottom(20).Table(t =>
                         {
@@ -521,7 +521,7 @@ namespace SalonSamochodowy.Services
             return await Task.FromResult(filePath);
         }
 
-        // --- NEW REPORTS --- //
+        
 
         public async Task<string> GenerateMonthlyRevenueReportAsync(IEnumerable<SalesOrder> orders)
         {

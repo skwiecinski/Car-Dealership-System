@@ -16,7 +16,7 @@ namespace SalonSamochodowy.ViewModels
     {
         private readonly IOrderService _orderService;
 
-        // Pelna lista wszystkich rekordow (cache do filtrowania w pamieci UI po jednym pobraniu z bazy)
+        
         private List<SalesRecordRow> _allRecords = new();
 
         public SalesRecordsViewModel(IOrderService orderService)
@@ -28,7 +28,7 @@ namespace SalonSamochodowy.ViewModels
                 r.BuildFilterLists();
                 r.ApplyFilters();
                 
-                // Refresh Records localization
+                
                 var temp = r.Records.ToList();
                 r.Records.Clear();
                 foreach (var rec in temp) r.Records.Add(rec);
@@ -78,7 +78,7 @@ namespace SalonSamochodowy.ViewModels
                     .Select(MapToRow)
                     .ToList();
 
-                // Wypelnienie list filtrow z faktycznych danych
+                
                 BuildFilterLists();
 
                 ApplyFilters();
@@ -123,7 +123,7 @@ namespace SalonSamochodowy.ViewModels
             foreach (var a in _allRecords.Select(r => r.AdvisorName).Distinct().OrderBy(a => a))
                 AdvisorFilters.Add(new FilterItem(a, a));
 
-            // Domyslne wartosci i przywracanie wyboru
+            
             SelectedStatus = StatusFilters.FirstOrDefault(x => x.Value == oldStatus) ?? StatusFilters.First();
             SelectedDealership = DealershipFilters.FirstOrDefault(x => x.Value == oldDealership) ?? DealershipFilters.First();
             SelectedAdvisor = AdvisorFilters.FirstOrDefault(x => x.Value == oldAdvisor) ?? AdvisorFilters.First();

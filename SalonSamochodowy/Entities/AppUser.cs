@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,7 +22,7 @@ namespace SalonSamochodowy.Entities
         public string PasswordHash { get; set; } = null!;
         public DateTime BirthDate { get; set; }
 
-        // nie kazdy user jest klientem i pracownikiem 
+        
         public virtual Client? Client { get; set; }
         public virtual Worker? Worker { get; set; }
     }

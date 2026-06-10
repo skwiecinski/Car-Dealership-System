@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
-// https://learn.microsoft.com/pl-pl/ef/core/dbcontext-configuration/
+
 
 namespace SalonSamochodowy.Entities
 {
@@ -47,7 +47,7 @@ namespace SalonSamochodowy.Entities
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            // klucze zlozone
+            
             modelBuilder.Entity<VehicleFeature>().HasKey(vf => new { vf.VehicleID, vf.FeatureID });
             modelBuilder.Entity<TrimFeature>().HasKey(tf => new { tf.TrimID, tf.FeatureID });
 
@@ -57,18 +57,18 @@ namespace SalonSamochodowy.Entities
             modelBuilder.Entity<TrimLevel>().HasKey(t => t.TrimID);
             modelBuilder.Entity<VehicleModel>().HasKey(v => v.ModelID);
 
-            // tabela client posiada klucz obcy UserID
+            
             modelBuilder.Entity<AppUser>()
             .HasOne(u => u.Client)
             .WithOne(c => c.User)
             .HasForeignKey<Client>(c => c.UserID);
-            // tabela worker posiada klucz obcy UserID
+            
             modelBuilder.Entity<AppUser>()
                 .HasOne(u => u.Worker)
                 .WithOne(w => w.User)
                 .HasForeignKey<Worker>(w => w.UserID);
 
-            // Zabezpieczenie przed błędem "multiple cascade paths" w SQL Server
+            
             modelBuilder.Entity<Job>()
                 .HasOne(j => j.Worker)
                 .WithMany(w => w.Jobs)

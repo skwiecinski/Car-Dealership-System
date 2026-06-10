@@ -49,7 +49,7 @@ namespace SalonSamochodowy.ViewModels
             IsLoading = true;
             try
             {
-                // Fetch all sales orders with details
+                
                 var orders = await _uow.SalesOrders.FindWithIncludesAsync(
                     o => o.Status != OrderStatuses.Finished &&
                          o.Status != OrderStatuses.FinishedAlt &&
@@ -61,8 +61,8 @@ namespace SalonSamochodowy.ViewModels
                     o => o.Vehicle.Jobs
                 );
 
-                // We need to fetch features for jobs since EF might not deep-load Features through Vehicle.Jobs
-                // Let's populate the feature names manually or just ensure jobs have them.
+                
+                
                 var allJobs = await _uow.Jobs.GetAllWithIncludesAsync(j => j.Feature);
                 var jobsLookup = allJobs.ToLookup(j => j.VehicleID);
 
@@ -115,10 +115,10 @@ namespace SalonSamochodowy.ViewModels
                         OrderStatus = order.Status
                     };
 
-                    // Categorize:
-                    // 1. Reserved (Zarezerwowane): No jobs at all, and not closed.
-                    // 2. Servicing (W realizacji / Czekające na zlecenia): Has active (pending/in-progress) jobs.
-                    // 3. Ready (Gotowe do oddania): Has jobs and all are finished.
+                    
+                    
+                    
+                    
                     if (!hasJobs)
                     {
                         ReservedSales.Add(model);

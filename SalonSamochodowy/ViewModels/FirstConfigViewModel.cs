@@ -85,7 +85,7 @@ namespace SalonSamochodowy.ViewModels
                     using var scope = _serviceProvider.CreateScope();
                     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-                    // 1. Roles
+                    
                     if (!context.AppRoles.Any())
                     {
                         context.AppRoles.AddRange(
@@ -100,7 +100,7 @@ namespace SalonSamochodowy.ViewModels
 
                     var adminRole = context.AppRoles.First(r => r.RoleName == RoleNames.Admin);
 
-                    // 2. Dealership
+                    
                     var dealership = new Dealership
                     {
                         Name = DealershipName.Trim(),
@@ -111,7 +111,7 @@ namespace SalonSamochodowy.ViewModels
                     context.Dealerships.Add(dealership);
                     context.SaveChanges();
 
-                    // 3. Admin User & Worker
+                    
                     var user = new AppUser
                     {
                         FirstName = AdminFirstName.Trim(),

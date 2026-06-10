@@ -10,9 +10,9 @@ namespace SalonSamochodowy
     {
         public static void Seed(AppDbContext context)
         {
-            Random rnd = new Random(1337); // Stałe ziarno dla powtarzalności generowanych danych
+            Random rnd = new Random(1337); 
 
-            // 1. Roles
+            
             if (!context.AppRoles.Any())
             {
                 context.AppRoles.AddRange(
@@ -31,14 +31,14 @@ namespace SalonSamochodowy
             var rSerwisant = context.AppRoles.First(r => r.RoleName == RoleNames.Serwisant);
             var rKlient = context.AppRoles.First(r => r.RoleName == RoleNames.Klient);
 
-            // 2. Base Admin user
+            
             if (!context.AppUsers.Any(u => u.RoleID == rAdmin.RoleID))
             {
                 context.AppUsers.Add(new AppUser { FirstName = "Anna", LastName = "Adminowa", Email = "admin@salon.pl", PasswordHash = AuthService.HashPassword("123"), RoleID = rAdmin.RoleID, BirthDate = new DateTime(1980, 1, 15) });
                 context.SaveChanges();
             }
 
-            // 3. Dealerships
+            
             if (!context.Dealerships.Any())
             {
                 context.Dealerships.AddRange(
@@ -51,17 +51,17 @@ namespace SalonSamochodowy
 
             var dealerships = context.Dealerships.ToList();
 
-            // 4. Base dictionary data
+            
             var firstNames = new[] { "Piotr", "Michał", "Anna", "Katarzyna", "Tomasz", "Jan", "Kamil", "Marek", "Ewa", "Karolina", "Adam", "Marcin", "Mateusz", "Agnieszka", "Magdalena", "Jakub", "Maciej", "Paweł", "Monika", "Julia", "Zofia", "Hanna", "Krzysztof", "Szymon", "Bartosz" };
             var lastNames = new[] { "Kowalski", "Nowak", "Wiśniewski", "Wójcik", "Kowalczyk", "Kamiński", "Lewandowski", "Zieliński", "Szymański", "Woźniak", "Dąbrowski", "Kozłowski", "Jankowski", "Mazur", "Wojciechowski", "Kwiatkowski", "Krawczyk", "Kaczmarek", "Piotrowski", "Grabowski" };
 
-            // 5. Generate Workers (Managers, Sellers, Mechanics)
+            
             if (!context.Workers.Any())
             {
                 var workersToInsert = new List<Worker>();
                 var usersToInsert = new List<AppUser>();
 
-                // Helper to create worker
+                
                 Worker CreateWorker(string fname, string lname, string email, AppRole role, Dealership ds, decimal payroll)
                 {
                     var user = new AppUser { FirstName = fname, LastName = lname, Email = email, PasswordHash = AuthService.HashPassword("123"), RoleID = role.RoleID, BirthDate = new DateTime(rnd.Next(1970, 2000), rnd.Next(1, 13), rnd.Next(1, 28)) };
@@ -74,12 +74,12 @@ namespace SalonSamochodowy
 
                 foreach (var ds in dealerships)
                 {
-                    // 1 Manager per dealership
+                    
                     var manFn = firstNames[rnd.Next(firstNames.Length)];
                     var manLn = lastNames[rnd.Next(lastNames.Length)];
                     workersToInsert.Add(CreateWorker(manFn, manLn, $"kierownik.{ds.City.ToLower()}@salon.pl", rKierownik, ds, 10000m));
 
-                    // 5-8 Sellers per dealership
+                    
                     int numSellers = rnd.Next(5, 9);
                     for (int i = 0; i < numSellers; i++)
                     {
@@ -88,7 +88,7 @@ namespace SalonSamochodowy
                         workersToInsert.Add(CreateWorker(fn, ln, $"sprzedawca{sellerId++}@salon.pl", rSprzedawca, ds, rnd.Next(5000, 8000)));
                     }
 
-                    // 5-8 Mechanics per dealership
+                    
                     int numMechs = rnd.Next(5, 9);
                     for (int i = 0; i < numMechs; i++)
                     {
@@ -98,7 +98,7 @@ namespace SalonSamochodowy
                     }
                 }
 
-                // Add test accounts explicitly for easy testing
+                
                 workersToInsert.Add(CreateWorker("Wiesław", "Testowy", "kierownik@salon.pl", rKierownik, dealerships[0], 12000m));
                 workersToInsert.Add(CreateWorker("Tomasz", "Testowy", "sprzedawca@salon.pl", rSprzedawca, dealerships[0], 7000m));
                 workersToInsert.Add(CreateWorker("Piotr", "Testowy", "serwis@salon.pl", rSerwisant, dealerships[0], 6500m));
@@ -108,13 +108,13 @@ namespace SalonSamochodowy
                 context.SaveChanges();
             }
 
-            // 6. Generate Clients
+            
             if (!context.Clients.Any())
             {
                 var clientsToInsert = new List<Client>();
                 var usersToInsert = new List<AppUser>();
 
-                // Explicit test client
+                
                 var testUser = new AppUser { FirstName = "Jan", LastName = "Testowy", Email = "klient@wp.pl", PasswordHash = AuthService.HashPassword("123"), RoleID = rKlient.RoleID, BirthDate = new DateTime(1990, 5, 5) };
                 usersToInsert.Add(testUser);
                 clientsToInsert.Add(new Client { User = testUser, NIP = "1234567890", Phone = "111-222-333" });
@@ -133,7 +133,7 @@ namespace SalonSamochodowy
                 context.SaveChanges();
             }
 
-            // 7. Base vehicle catalogs (Models, Engines, Features, Trims)
+            
             if (!context.VehicleModels.Any())
             {
                 context.VehicleModels.AddRange(
@@ -252,11 +252,11 @@ namespace SalonSamochodowy
                     {
                         vehicleStatus = "Sprzedany";
                         orderStatus = rnd.NextDouble() > 0.5 ? OrderStatuses.Finished : OrderStatuses.FinishedAlt;
-                        orderDate = DateTime.Now.AddDays(-rnd.Next(1, 180)); // 6 months back
+                        orderDate = DateTime.Now.AddDays(-rnd.Next(1, 180)); 
                     }
                     else if (randStat < 75)
                     {
-                        vehicleStatus = "Dostępny"; // Not sold, maybe it was canceled previously? 
+                        vehicleStatus = "Dostępny"; 
                         if (rnd.NextDouble() > 0.7) 
                         {
                             orderStatus = OrderStatuses.Canceled;
@@ -267,7 +267,7 @@ namespace SalonSamochodowy
                     {
                         vehicleStatus = "Zarezerwowany";
                         orderStatus = OrderStatuses.InProgress;
-                        orderDate = DateTime.Now.AddDays(-rnd.Next(0, 14)); // recent
+                        orderDate = DateTime.Now.AddDays(-rnd.Next(0, 14)); 
                     }
                     else
                     {
@@ -291,7 +291,7 @@ namespace SalonSamochodowy
                 context.Vehicles.AddRange(vehiclesToInsert);
                 context.SaveChanges();
 
-                // Now add features and orders
+                
                 decimal CalculateTotal(Vehicle v)
                 {
                     var basePrice = context.TrimLevels.First(t => t.TrimID == v.TrimID).BasePrice;
@@ -303,12 +303,12 @@ namespace SalonSamochodowy
                 {
                     decimal extraFeaturesPrice = 0;
                     
-                    // Color
+                    
                     var color = colors[rnd.Next(colors.Count)];
                     vehicleFeaturesToInsert.Add(new VehicleFeature { VehicleID = auto.VehicleID, FeatureID = color.FeatureID, PurchasePrice = color.Price });
                     extraFeaturesPrice += color.Price;
 
-                    // Extra features
+                    
                     int featureCount = rnd.Next(0, 4);
                     var selectedFeatures = features.OrderBy(x => rnd.Next()).Take(featureCount).ToList();
                     foreach (var f in selectedFeatures)
@@ -317,7 +317,7 @@ namespace SalonSamochodowy
                         extraFeaturesPrice += f.Price;
                     }
 
-                    // Create Order if it has an orderStatus mapped in the initial loop
+                    
                     if (auto.Status == "Sprzedany" || auto.Status == "Zarezerwowany" || rnd.NextDouble() > 0.8)
                     {
                         string orderStatus = OrderStatuses.Finished;
@@ -325,17 +325,17 @@ namespace SalonSamochodowy
 
                         if (auto.Status == "Sprzedany") orderStatus = rnd.NextDouble() > 0.5 ? OrderStatuses.Finished : OrderStatuses.FinishedAlt;
                         else if (auto.Status == "Zarezerwowany") orderStatus = rnd.NextDouble() > 0.5 ? OrderStatuses.InProgress : OrderStatuses.Pending;
-                        else { orderStatus = OrderStatuses.Canceled; orderDate = DateTime.Now.AddDays(-rnd.Next(1, 100)); } // Available but had canceled order
+                        else { orderStatus = OrderStatuses.Canceled; orderDate = DateTime.Now.AddDays(-rnd.Next(1, 100)); } 
 
-                        if (auto.Status == "Zarezerwowany") orderDate = DateTime.Now.AddDays(-rnd.Next(0, 14)); // recent
+                        if (auto.Status == "Zarezerwowany") orderDate = DateTime.Now.AddDays(-rnd.Next(0, 14)); 
 
                         var client = clients[rnd.Next(clients.Count)];
                         
-                        // Select seller from the same dealership
+                        
                         var dsSellers = allSellers.Where(w => w.DealershipID == auto.DealershipID).ToList();
                         var seller = dsSellers.Any() ? dsSellers[rnd.Next(dsSellers.Count)] : allSellers[rnd.Next(allSellers.Count)];
 
-                        var finalPrice = CalculateTotal(auto) + extraFeaturesPrice - rnd.Next(0, 15)*1000m; // some discount
+                        var finalPrice = CalculateTotal(auto) + extraFeaturesPrice - rnd.Next(0, 15)*1000m; 
 
                         var order = new SalesOrder
                         {
@@ -355,12 +355,12 @@ namespace SalonSamochodowy
                 context.SalesOrders.AddRange(ordersToInsert);
                 context.SaveChanges();
 
-                // Generate Service Jobs
+                
                 foreach (var order in ordersToInsert)
                 {
                     if (order.Status == OrderStatuses.Canceled) continue;
 
-                    // 0-3 service jobs per order
+                    
                     int jobsCount = rnd.Next(0, 4);
                     var colorFeatureIds = colors.Select(c => c.FeatureID).ToList();
                     var orderFeatures = vehicleFeaturesToInsert
@@ -371,7 +371,7 @@ namespace SalonSamochodowy
                     var dsMechanics = allMechanics.Where(m => m.DealershipID == order.DealershipID).ToList();
                     var mechanic = dsMechanics.Any() ? dsMechanics[rnd.Next(dsMechanics.Count)] : allMechanics[rnd.Next(allMechanics.Count)];
 
-                    bool allJobsDoneForThisActiveOrder = rnd.NextDouble() > 0.7; // 30% szans, że serwis już skończył robotę
+                    bool allJobsDoneForThisActiveOrder = rnd.NextDouble() > 0.7; 
 
                     foreach (var vf in orderFeatures)
                     {

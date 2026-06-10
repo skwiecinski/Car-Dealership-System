@@ -20,7 +20,7 @@ namespace SalonSamochodowy.Views
             if (owner != null)
                 Owner = owner;
 
-            _vm.ShowError += msg => System.Windows.MessageBox.Show( // do poprawy, nie chcemy takich okienek
+            _vm.ShowError += msg => System.Windows.MessageBox.Show( 
                 msg, "Błąd",
                 System.Windows.MessageBoxButton.OK,
                 MessageBoxImage.Error);

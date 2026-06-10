@@ -11,7 +11,7 @@
     ExtendsContentIntoTitleBar="True">
 
     <ui:FluentWindow.Resources>
-        <!-- Kolory -->
+        
         <SolidColorBrush x:Key="BgBase"      Color="#0F1117"/>
         <SolidColorBrush x:Key="BgSurface"   Color="#161B27"/>
         <SolidColorBrush x:Key="BgCard"      Color="#1C2235"/>
@@ -20,12 +20,12 @@
         <SolidColorBrush x:Key="TextMuted"   Color="#6B7299"/>
         <SolidColorBrush x:Key="Accent"      Color="#5B59E8"/>
 
-        <!-- Reużywalny styl wiersza info -->
+        
         <Style x:Key="InfoRow" TargetType="Grid">
             <Setter Property="Margin" Value="0,0,0,10"/>
         </Style>
 
-        <!-- Etykieta -->
+        
         <Style x:Key="LabelStyle" TargetType="TextBlock">
             <Setter Property="Foreground"  Value="{StaticResource TextMuted}"/>
             <Setter Property="FontSize"    Value="11"/>
@@ -35,7 +35,7 @@
             <Setter Property="Margin" Value="0,0,0,2"/>
         </Style>
 
-        <!-- Wartość -->
+        
         <Style x:Key="ValueStyle" TargetType="TextBlock">
             <Setter Property="Foreground"  Value="{StaticResource TextPrimary}"/>
             <Setter Property="FontSize"    Value="13"/>
@@ -44,7 +44,7 @@
             <Setter Property="TextWrapping" Value="Wrap"/>
         </Style>
 
-        <!-- Nagłówek sekcji -->
+        
         <Style x:Key="SectionHeader" TargetType="TextBlock">
             <Setter Property="Foreground"  Value="{StaticResource TextMuted}"/>
             <Setter Property="FontSize"    Value="10"/>
@@ -53,7 +53,7 @@
             <Setter Property="Margin"      Value="0,0,0,10"/>
         </Style>
 
-        <!-- Karta sekcji -->
+        
         <Style x:Key="SectionCard" TargetType="Border">
             <Setter Property="Background"       Value="{StaticResource BgCard}"/>
             <Setter Property="BorderBrush"      Value="{StaticResource BorderColor}"/>
@@ -63,7 +63,7 @@
             <Setter Property="Margin"           Value="0,0,0,10"/>
         </Style>
 
-        <!-- Przycisk statusu -->
+        
         <Style x:Key="StatusBtn" TargetType="Button">
             <Setter Property="Height"      Value="38"/>
             <Setter Property="FontSize"    Value="12"/>
@@ -101,12 +101,12 @@
     <Grid Background="{StaticResource BgBase}">
         <Grid.RowDefinitions>
             <RowDefinition Height="52"/>
-            <!-- titlebar -->
+            
             <RowDefinition Height="*"/>
-            <!-- content -->
+            
         </Grid.RowDefinitions>
 
-        <!-- ── Custom TitleBar ────────────────────────────────────── -->
+        
         <Grid Grid.Row="0" Background="{StaticResource BgSurface}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -134,12 +134,12 @@
                          VerticalAlignment="Center"/>
         </Grid>
 
-        <!-- ── Scrollable content ─────────────────────────────────── -->
+        
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto"
                       Padding="20,16,20,20">
             <StackPanel>
 
-                <!-- STATUS BADGE + data -->
+                
                 <Grid Margin="0,0,0,14">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -165,7 +165,7 @@
                     </Border>
                 </Grid>
 
-                <!-- CZYNNOŚĆ / WYPOSAŻENIE -->
+                
                 <Border Style="{StaticResource SectionCard}">
                     <StackPanel>
                         <TextBlock Text="{DynamicResource ServicesDetails_ServiceAction}" Style="{StaticResource SectionHeader}"/>
@@ -196,7 +196,7 @@
                     </StackPanel>
                 </Border>
 
-                <!-- POJAZD -->
+                
                 <Border Style="{StaticResource SectionCard}">
                     <StackPanel>
                         <TextBlock Text="{DynamicResource ServicesDetails_Vehicle}" Style="{StaticResource SectionHeader}"/>
@@ -245,7 +245,7 @@
                     </StackPanel>
                 </Border>
 
-                <!-- SERWISANT -->
+                
                 <Border Style="{StaticResource SectionCard}">
                     <StackPanel>
                         <TextBlock Text="{DynamicResource ServicesDetails_MechanicInfo}" Style="{StaticResource SectionHeader}"/>
@@ -284,7 +284,7 @@
                     </StackPanel>
                 </Border>
 
-                <!-- ZMIANA STATUSU -->
+                
                 <Border Style="{StaticResource SectionCard}">
                     <StackPanel>
                         <TextBlock Text="{DynamicResource ServicesDetails_ChangeStatus}" Style="{StaticResource SectionHeader}"/>
@@ -298,7 +298,7 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
 
-                            <!-- Oczekujące -->
+                            
                             <Button Grid.Column="0"
                                     Style="{StaticResource StatusBtn}"
                                     Command="{Binding SetPendingCommand}"
@@ -307,7 +307,7 @@
                                     Foreground="#F0B82B"
                                     Content="{DynamicResource ServicesDetails_SetPending}"/>
 
-                            <!-- W trakcie -->
+                            
                             <Button Grid.Column="2"
                                     Style="{StaticResource StatusBtn}"
                                     Command="{Binding SetInProgressCommand}"
@@ -316,7 +316,7 @@
                                     Foreground="#60A5FA"
                                     Content="{DynamicResource ServicesDetails_SetInProgress}"/>
 
-                            <!-- Zakończone -->
+                            
                             <Button Grid.Column="4"
                                     Style="{StaticResource StatusBtn}"
                                     Command="{Binding SetFinishedCommand}"
@@ -328,7 +328,7 @@
                     </StackPanel>
                 </Border>
 
-                <!-- ZAMKNIJ -->
+                
                 <Button Command="{Binding CloseCommand}"
                         Height="44" Margin="0,4,0,0"
                         Background="#252D40" BorderBrush="{StaticResource BorderColor}"

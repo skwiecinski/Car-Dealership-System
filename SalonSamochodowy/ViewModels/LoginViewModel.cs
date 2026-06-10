@@ -52,7 +52,7 @@ namespace SalonSamochodowy.ViewModels
             IsLoading = true;
             try
             {
-                // Dodajemy małe opóźnienie dla lepszego efektu wizualnego
+                
                 await Task.Delay(500);
 
                 var loggedUser = await _authService.LoginAsync(emailTrim, password);

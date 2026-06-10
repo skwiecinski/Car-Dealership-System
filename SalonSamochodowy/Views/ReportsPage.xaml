@@ -30,7 +30,7 @@
 
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
             <WrapPanel x:Name="ReportsPanel" Orientation="Horizontal" ItemWidth="300">
-                <!-- Raport statusów zamówień -->
+                
                 <Border Background="#22242C" CornerRadius="10" Padding="20" Margin="0,0,20,20" BorderBrush="#2D3038" BorderThickness="1">
                     <StackPanel>
                         <ui:SymbolIcon Symbol="DocumentBulletList24" FontSize="32" Foreground="#5B59E8" Margin="0,0,0,10" HorizontalAlignment="Left"/>
@@ -41,7 +41,7 @@
                     </StackPanel>
                 </Border>
 
-                <!-- Raport klienta -->
+                
                 <Border Background="#22242C" CornerRadius="10" Padding="20" Margin="0,0,20,20" BorderBrush="#2D3038" BorderThickness="1">
                     <StackPanel>
                         <ui:SymbolIcon Symbol="Person24" FontSize="32" Foreground="#ED6262" Margin="0,0,0,10" HorizontalAlignment="Left"/>
@@ -58,7 +58,7 @@
                     </StackPanel>
                 </Border>
 
-                <!-- Rankingi sprzedaży -->
+                
                 <Border Background="#22242C" CornerRadius="10" Padding="20" Margin="0,0,20,20" BorderBrush="#2D3038" BorderThickness="1">
                     <StackPanel>
                         <ui:SymbolIcon Symbol="DataBarHorizontal24" FontSize="32" Foreground="#4CAF50" Margin="0,0,0,10" HorizontalAlignment="Left"/>
@@ -69,7 +69,7 @@
                     </StackPanel>
                 </Border>
 
-                <!-- Pełny zrzut bazy -->
+                
                 <Border Background="#22242C" CornerRadius="10" Padding="20" Margin="0,0,20,20" BorderBrush="#2D3038" BorderThickness="1">
                     <StackPanel>
                         <ui:SymbolIcon Symbol="Database24" FontSize="32" Foreground="#FF9800" Margin="0,0,0,10" HorizontalAlignment="Left"/>
@@ -80,7 +80,7 @@
                     </StackPanel>
                 </Border>
 
-                <!-- Raport Finansowy -->
+                
                 <Border Background="#22242C" CornerRadius="10" Padding="20" Margin="0,0,20,20" BorderBrush="#2D3038" BorderThickness="1">
                     <StackPanel>
                         <ui:SymbolIcon Symbol="Money24" FontSize="32" Foreground="#8BC34A" Margin="0,0,0,10" HorizontalAlignment="Left"/>
@@ -91,7 +91,7 @@
                     </StackPanel>
                 </Border>
 
-                <!-- Raport Trendów -->
+                
                 <Border Background="#22242C" CornerRadius="10" Padding="20" Margin="0,0,20,20" BorderBrush="#2D3038" BorderThickness="1">
                     <StackPanel>
                         <ui:SymbolIcon Symbol="VehicleCar24" FontSize="32" Foreground="#03A9F4" Margin="0,0,0,10" HorizontalAlignment="Left"/>
@@ -102,7 +102,7 @@
                     </StackPanel>
                 </Border>
 
-                <!-- Raport Serwisu -->
+                
                 <Border Background="#22242C" CornerRadius="10" Padding="20" Margin="0,0,20,20" BorderBrush="#2D3038" BorderThickness="1">
                     <StackPanel>
                         <ui:SymbolIcon Symbol="Wrench24" FontSize="32" Foreground="#9C27B0" Margin="0,0,0,10" HorizontalAlignment="Left"/>

@@ -22,7 +22,7 @@ namespace SalonSamochodowy.Views
 
             DataContext = vm;
 
-            // Ustaw początkowy wygląd flag
+            
             string currentLang = SalonSamochodowy.Services.LocalizationHelper.GetString("LanguageCode");
             if (currentLang == "EN")
             {

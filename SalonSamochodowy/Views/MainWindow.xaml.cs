@@ -57,13 +57,13 @@ namespace SalonSamochodowy.Views
             Type pageType = selectedItem?.TargetPageType;
             string pageTypeIdentifier = pageType?.Name ?? "Unknown";
 
-            // Zapytaj aktywną stronę, czy posiada samouczek
+            
             var tourMessage = new SalonSamochodowy.Messages.StartTourRequestMessage(pageTypeIdentifier);
             CommunityToolkit.Mvvm.Messaging.WeakReferenceMessenger.Default.Send(tourMessage);
 
             if (tourMessage.HasReceivedResponse && tourMessage.Response == true)
             {
-                // Strona sama obsłużyła samouczek - nie robimy nic więcej
+                
                 return;
             }
             
@@ -75,7 +75,7 @@ namespace SalonSamochodowy.Views
             string helpTextKey = $"Help_{pageTypeIdentifier}";
             string helpText = SalonSamochodowy.Services.LocalizationHelper.GetString(helpTextKey);
 
-            if (helpText == helpTextKey) // If missing
+            if (helpText == helpTextKey) 
             {
                 helpText = SalonSamochodowy.Services.LocalizationHelper.GetString("Help_Default");
             }

@@ -2,10 +2,10 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:system="clr-namespace:System;assembly=mscorlib">
     
-    <!-- Meta -->
+    
     <system:String x:Key="LanguageCode">EN</system:String>
 
-    <!-- Logowanie -->
+    
     <system:String x:Key="Login_Title">Login - LeAuto Salon</system:String>
     <system:String x:Key="Login_Header">LeAuto Salon</system:String>
     <system:String x:Key="Login_Subtitle">Log in to the dealership system</system:String>
@@ -14,7 +14,7 @@
     <system:String x:Key="Login_Button">Log in</system:String>
     <system:String x:Key="Login_Exit">Exit application</system:String>
 
-    <!-- Menu Główne -->
+    
     <system:String x:Key="Menu_MyOrders">My Orders</system:String>
     <system:String x:Key="Menu_Dashboard">Dashboard</system:String>
     <system:String x:Key="Menu_Clients">Clients</system:String>
@@ -29,7 +29,7 @@
     <system:String x:Key="Menu_Admin">Administration</system:String>
     <system:String x:Key="Menu_Logout">Logout</system:String>
 
-    <!-- Dashboard -->
+    
     <system:String x:Key="Dash_NewOrders">New orders</system:String>
     <system:String x:Key="Dash_InProcess">In process</system:String>
     <system:String x:Key="Dash_CarsOnLot">Vehicles on lot</system:String>
@@ -45,7 +45,7 @@
     <system:String x:Key="Dash_Date">Date</system:String>
     <system:String x:Key="Dash_SalesChartTitle">Sales in {0} (Top 5 Employees)</system:String>
 
-    <!-- Globalne Statusy -->
+    
     <system:String x:Key="Status_Pending">Pending</system:String>
     <system:String x:Key="Status_InProgress">In progress</system:String>
     <system:String x:Key="Status_Finished">Finished</system:String>
@@ -54,7 +54,7 @@
     <system:String x:Key="Status_Canceled">Canceled</system:String>
     <system:String x:Key="Status_New">New</system:String>
 
-    <!-- Pomoc (Globalna) -->
+    
     <system:String x:Key="Help_Title">Help</system:String>
     <system:String x:Key="Help_Default">Select a tab from the left menu to start working.</system:String>
     <system:String x:Key="Help_CustomerPanelPage">In this section, you can view the list of your orders, their statuses, and download a report if an order is assigned to your account.</system:String>
@@ -68,19 +68,19 @@
     <system:String x:Key="Help_ReportsPage">Generate advanced PDFs to understand company performance. Reports include full analytics, colorful charts, and employee rankings.</system:String>
     <system:String x:Key="Help_AdminPage">Administrator panel for managing the database (e.g., adding new dealerships) and registering new employee accounts with specific roles.</system:String>
 
-    <!-- Samouczek -->
+    
     <system:String x:Key="Tour_Next">Next</system:String>
     <system:String x:Key="Tour_Finish">Finish</system:String>
     <system:String x:Key="Tour_DefaultText">Tutorial text</system:String>
 
-    <!-- Role -->
+    
     <system:String x:Key="Role_Administrator">Administrator</system:String>
     <system:String x:Key="Role_Kierownik">Manager</system:String>
     <system:String x:Key="Role_Sprzedawca">Salesman</system:String>
     <system:String x:Key="Role_Serwisant">Mechanic</system:String>
     <system:String x:Key="Role_Klient">Customer</system:String>
 
-    <!-- Akcesoria / Features -->
+    
     <system:String x:Key="Feature_Lakier_metalik">Metallic paint</system:String>
     <system:String x:Key="Feature_Czujniki_parkowania">Parking sensors</system:String>
     <system:String x:Key="Feature_Kamera_cofania">Rearview camera</system:String>
@@ -119,7 +119,7 @@
 
     <system:String x:Key="Tour_Reports_Step1">Step 1/1: Here you can generate PDF reports and export statistics.</system:String>
 
-    <!-- Dodaj zamówienie (CreateOrder) -->
+    
     <system:String x:Key="Order_AddTitle">Create Order</system:String>
     <system:String x:Key="Order_AddSubtitle">Fill in customer details, vehicle selection, and order conditions</system:String>
     <system:String x:Key="Order_Client">Customer</system:String>
@@ -154,12 +154,12 @@
     <system:String x:Key="Order_Cancel">Cancel</system:String>
     <system:String x:Key="Order_Save">Save Order</system:String>
 
-    <!-- Profile -->
+    
     <system:String x:Key="Profile_Title">My profile</system:String>
     <system:String x:Key="Profile_Subtitle">Details of your account</system:String>
     <system:String x:Key="Profile_Joined">Joined:</system:String>
 
-    <!-- CreateOrderViewModel Komunikaty -->
+    
     <system:String x:Key="Payment_Cash">Cash</system:String>
     <system:String x:Key="Payment_Credit">Credit</system:String>
     <system:String x:Key="Payment_Leasing">Leasing</system:String>
@@ -179,7 +179,7 @@
     <system:String x:Key="Msg_LoadTrimsError">Error loading trims: {0}</system:String>
     <system:String x:Key="Msg_ConfirmDeleteClient">Are you sure you want to delete client {0}?</system:String>
 
-    <!-- Klienci (ClientsPage) -->
+    
     <system:String x:Key="Clients_Title">Clients Database</system:String>
     <system:String x:Key="Clients_Subtitle">Management of buyer and company data</system:String>
     <system:String x:Key="Clients_NewClient">New Client</system:String>
@@ -214,7 +214,7 @@
     <system:String x:Key="Msg_EmailExistsAddClient">An account with this e-mail address already exists.</system:String>
     <system:String x:Key="Msg_SaveClientError">Failed to save changes:\n{0}</system:String>
 
-    <!-- Aktywne Procesy Sprzedaży (SalesPanelPage) -->
+    
     <system:String x:Key="SalesPanel_PageTitle">Active Sales Processes</system:String>
     <system:String x:Key="SalesPanel_Subtitle">Management of ongoing orders, vehicle preparation progress, and transaction finalization</system:String>
     <system:String x:Key="SalesPanel_ColReserved">Reserved</system:String>
@@ -254,7 +254,7 @@
     <system:String x:Key="SalesPanel_CancelError">Error while cancelling sale:\n{0}</system:String>
     <system:String x:Key="Global_Error">Error</system:String>
 
-    <!-- Katalog Pojazdów (VehiclesPage) -->
+    
     <system:String x:Key="Vehicles_FilterTitle">Filters</system:String>
     <system:String x:Key="Vehicles_Brand">Brand</system:String>
     <system:String x:Key="Vehicles_Model">Model</system:String>
@@ -304,7 +304,7 @@
     <system:String x:Key="Vehicles_EditTitle">Edit vehicle</system:String>
     <system:String x:Key="Vehicles_Editing"> · Editing vehicle</system:String>
     
-    <!-- AddJobWindow -->
+    
     <system:String x:Key="Vehicles_NewJobTitle">New Service Order</system:String>
     <system:String x:Key="Vehicles_AddJobTitle">Order Service</system:String>
     <system:String x:Key="Vehicles_AddJobSubtitle"> · Ordering new service</system:String>
@@ -317,7 +317,7 @@
     <system:String x:Key="Vehicles_Loading">Loading...</system:String>
     <system:String x:Key="Vehicles_ValidationJob">Please select option/service and mechanic.</system:String>
     
-    <!-- ViewModels Strings -->
+    
     <system:String x:Key="Vehicles_DictionaryLoadError">Failed to load dictionary data:\n{0}</system:String>
     <system:String x:Key="Vehicles_ValidationVIN">Please provide the VIN number.</system:String>
     <system:String x:Key="Vehicles_ValidationSpecs">Please select model, trim level, engine, and color.</system:String>
@@ -329,7 +329,7 @@
     <system:String x:Key="Vehicles_SuccessEdited">Changes have been saved.</system:String>
     <system:String x:Key="Vehicles_DataLoadError">Failed to load data:\n{0}</system:String>
 
-    <!-- ServicesPage & ServicesDetailsWindow -->
+    
     <system:String x:Key="Services_PageTitle">Services</system:String>
     <system:String x:Key="Services_Title">Service and Assembly Jobs</system:String>
     <system:String x:Key="Services_Subtitle">Preparing vehicles for delivery to customers</system:String>
@@ -369,7 +369,7 @@
     <system:String x:Key="Global_Edit">Edit</system:String>
     <system:String x:Key="Global_Delete">Delete</system:String>
 
-    <!-- AdminPage & EditEmployeeWindow -->
+    
     <system:String x:Key="Admin_PageTitle">Administration</system:String>
     <system:String x:Key="Admin_Subtitle">Managing employee accounts and dealerships</system:String>
     <system:String x:Key="Admin_TabUsers">Users</system:String>
@@ -480,7 +480,7 @@
     <system:String x:Key="Admin_ValEmailEdit">Provide a valid e-mail address.</system:String>
     <system:String x:Key="Admin_ValDealershipEdit">Select a dealership for this employee.</system:String>
 
-    <!-- Ewidencja Sprzedaży (SalesRecords) -->
+    
     <system:String x:Key="SalesRecords_Title">Sales Records</system:String>
     <system:String x:Key="SalesRecords_Subtitle">Register of all transactions: vehicle, client, advisor, and dealership</system:String>
     <system:String x:Key="SalesRecords_Status">Status</system:String>
@@ -510,7 +510,7 @@
 
     <system:String x:Key="Culture_CurrencyCode">en-US</system:String>
 
-    <!-- Raporty (ReportsPage) -->
+    
     <system:String x:Key="Reports_Title">Reports and Statistics</system:String>
     <system:String x:Key="Reports_Subtitle">Generate comprehensive reports in PDF format</system:String>
     <system:String x:Key="Reports_Period">Time period:</system:String>
@@ -543,7 +543,7 @@
     <system:String x:Key="Msg_Error">Error</system:String>
     <system:String x:Key="Msg_SelectClientFirst">Please select a customer from the list.</system:String>
     <system:String x:Key="Msg_Info">Information</system:String>
-    <!-- First Config -->
+    
     <system:String x:Key="FirstConfig_Title">First Configuration</system:String>
     <system:String x:Key="FirstConfig_HeaderTitle">First Configuration Wizard</system:String>
     <system:String x:Key="FirstConfig_MainTitle">System First Configuration</system:String>

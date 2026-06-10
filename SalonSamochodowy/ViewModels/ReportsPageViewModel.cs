@@ -211,7 +211,7 @@ namespace SalonSamochodowy.ViewModels
             try
             {
                 var startDate = GetStartDate();
-                var allOrders = await _uow.SalesOrders.GetAllAsync(); // only need basic info (dates, prices, status)
+                var allOrders = await _uow.SalesOrders.GetAllAsync(); 
                 var orders = startDate.HasValue ? allOrders.Where(o => o.OrderDate >= startDate.Value).ToList() : allOrders.ToList();
 
                 var filePath = await _reportService.GenerateMonthlyRevenueReportAsync(orders);

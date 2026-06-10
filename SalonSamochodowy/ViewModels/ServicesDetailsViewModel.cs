@@ -17,24 +17,24 @@ namespace SalonSamochodowy.ViewModels
 
         private int _jobId;
 
-        // ── Info o jobbie ──────────────────────────────────────────────
+        
         [ObservableProperty] private string jobCode = "—";
         [ObservableProperty] private string createdAt = "—";
         [ObservableProperty] private string featureName = "—";
         [ObservableProperty] private string featureCategory = "—";
 
-        // ── Pojazd ────────────────────────────────────────────────────
+        
         [ObservableProperty] private string vehicleVin = "—";
         [ObservableProperty] private string vehicleModel = "—";
         [ObservableProperty] private string vehicleEngine = "—";
         [ObservableProperty] private string vehicleStatus = "—";
 
-        // ── Serwisant ─────────────────────────────────────────────────
+        
         [ObservableProperty] private string workerName = "—";
         [ObservableProperty] private string workerEmail = "—";
         [ObservableProperty] private string dealershipName = "—";
 
-        // ── Status joba ───────────────────────────────────────────────
+        
         [ObservableProperty] private string currentStatus = "—";
         [ObservableProperty] private string statusBadgeBackground = "#1F2536";
         [ObservableProperty] private string statusBadgeBorder = "#3B82F6";
@@ -44,7 +44,7 @@ namespace SalonSamochodowy.ViewModels
         [ObservableProperty] private bool canMoveToInProgress = false;
         [ObservableProperty] private bool canMoveToFinished = false;
 
-        // ── Eventy ────────────────────────────────────────────────────
+        
         public event Action<string>? ShowError;
         public event Action<string>? ShowSuccess;
         public event Action? CloseRequested;

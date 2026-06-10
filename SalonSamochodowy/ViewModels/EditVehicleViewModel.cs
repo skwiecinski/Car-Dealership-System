@@ -85,7 +85,7 @@ namespace SalonSamochodowy.ViewModels
                 _allEngines = engines.ToList();
                 _allTrims = trims.ToList();
 
-                // Select existing values
+                
                 var currentTrim = _allTrims.FirstOrDefault(t => t.TrimID == NewVehicle.TrimID);
                 if (currentTrim != null)
                 {
@@ -140,7 +140,7 @@ namespace SalonSamochodowy.ViewModels
                     return;
                 }
 
-                // Check VIN uniqueness only if changed
+                
                 if (existingVehicle.VIN != NewVehicle.VIN.Trim().ToUpper())
                 {
                     var vinExists = await uow.Vehicles.FindAsync(v => v.VIN == NewVehicle.VIN.Trim());

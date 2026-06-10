@@ -54,7 +54,7 @@
                         PlaceholderText="klient@example.com"
                         Margin="0,0,0,28"/>
 
-            <!-- Komunikat błędu inline -->
+            
             <TextBlock Text="{Binding ErrorMessage}"
                        Foreground="#ED6262" FontSize="12"
                        TextWrapping="Wrap"

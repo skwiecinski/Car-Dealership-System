@@ -2,10 +2,10 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:system="clr-namespace:System;assembly=mscorlib">
     
-    <!-- Meta -->
+    
     <system:String x:Key="LanguageCode">PL</system:String>
 
-    <!-- Logowanie -->
+    
     <system:String x:Key="Login_Title">Logowanie - LeAuto Salon</system:String>
     <system:String x:Key="Login_Header">LeAuto Salon</system:String>
     <system:String x:Key="Login_Subtitle">Zaloguj się do systemu salonu</system:String>
@@ -14,7 +14,7 @@
     <system:String x:Key="Login_Button">Zaloguj się</system:String>
     <system:String x:Key="Login_Exit">Wyjdź z programu</system:String>
 
-    <!-- Menu Główne -->
+    
     <system:String x:Key="Menu_MyOrders">Moje Zamówienia</system:String>
     <system:String x:Key="Menu_Dashboard">Dashboard</system:String>
     <system:String x:Key="Menu_Clients">Klienci</system:String>
@@ -29,7 +29,7 @@
     <system:String x:Key="Menu_Admin">Administracja</system:String>
     <system:String x:Key="Menu_Logout">Wyloguj</system:String>
 
-    <!-- Dashboard -->
+    
     <system:String x:Key="Dash_NewOrders">Nowe zamówienia</system:String>
     <system:String x:Key="Dash_InProcess">W procesie</system:String>
     <system:String x:Key="Dash_CarsOnLot">Auta na placu</system:String>
@@ -45,7 +45,7 @@
     <system:String x:Key="Dash_Date">Data</system:String>
     <system:String x:Key="Dash_SalesChartTitle">Sprzedaż w {0} (Top 5 Pracowników)</system:String>
 
-    <!-- Globalne Statusy -->
+    
     <system:String x:Key="Status_Pending">Oczekujące</system:String>
     <system:String x:Key="Status_InProgress">W trakcie</system:String>
     <system:String x:Key="Status_Finished">Zrealizowane</system:String>
@@ -54,7 +54,7 @@
     <system:String x:Key="Status_Canceled">Anulowane</system:String>
     <system:String x:Key="Status_New">Nowe</system:String>
 
-    <!-- Pomoc (Globalna) -->
+    
     <system:String x:Key="Help_Title">Pomoc</system:String>
     <system:String x:Key="Help_Default">Wybierz zakładkę z menu po lewej stronie, aby rozpocząć pracę.</system:String>
     <system:String x:Key="Help_CustomerPanelPage">W tej sekcji możesz przeglądać listę swoich zamówień, ich statusy oraz pobrać raport, jeżeli zamówienie zostało przypisane do Twojego konta.</system:String>
@@ -68,19 +68,19 @@
     <system:String x:Key="Help_ReportsPage">Generuj zaawansowane PDF-y, aby poznać wydajność firmy. Raporty posiadają pełną analitykę, kolorowe wykresy i rankingi Twoich pracowników.</system:String>
     <system:String x:Key="Help_AdminPage">Panel administratora do zarządzania bazą danych (np. dodawanie nowych salonów) i rejestrowania nowych kont pracowniczych z konkretnymi stanowiskami.</system:String>
 
-    <!-- Samouczek -->
+    
     <system:String x:Key="Tour_Next">Dalej</system:String>
     <system:String x:Key="Tour_Finish">Zakończ</system:String>
     <system:String x:Key="Tour_DefaultText">Tekst samouczka</system:String>
 
-    <!-- Role -->
+    
     <system:String x:Key="Role_Administrator">Administrator</system:String>
     <system:String x:Key="Role_Kierownik">Kierownik</system:String>
     <system:String x:Key="Role_Sprzedawca">Sprzedawca</system:String>
     <system:String x:Key="Role_Serwisant">Serwisant</system:String>
     <system:String x:Key="Role_Klient">Klient</system:String>
 
-    <!-- Akcesoria / Features -->
+    
     <system:String x:Key="Feature_Lakier_metalik">Lakier metalik</system:String>
     <system:String x:Key="Feature_Czujniki_parkowania">Czujniki parkowania</system:String>
     <system:String x:Key="Feature_Kamera_cofania">Kamera cofania</system:String>
@@ -119,7 +119,7 @@
 
     <system:String x:Key="Tour_Reports_Step1">Krok 1/1: Tutaj możesz generować dowolne raporty w formacie PDF i eksportować statystyki.</system:String>
 
-    <!-- Dodaj zamówienie (CreateOrder) -->
+    
     <system:String x:Key="Order_AddTitle">Dodaj zamówienie</system:String>
     <system:String x:Key="Order_AddSubtitle">Wypełnij dane klienta, wybór pojazdu i warunki zamówienia</system:String>
     <system:String x:Key="Order_Client">Klient</system:String>
@@ -154,12 +154,12 @@
     <system:String x:Key="Order_Cancel">Anuluj</system:String>
     <system:String x:Key="Order_Save">Zapisz zamówienie</system:String>
 
-    <!-- Profile -->
+    
     <system:String x:Key="Profile_Title">Mój profil</system:String>
     <system:String x:Key="Profile_Subtitle">Szczegóły twojego konta</system:String>
     <system:String x:Key="Profile_Joined">Dołączył(a):</system:String>
 
-    <!-- CreateOrderViewModel Komunikaty -->
+    
     <system:String x:Key="Payment_Cash">Gotówka</system:String>
     <system:String x:Key="Payment_Credit">Kredyt</system:String>
     <system:String x:Key="Payment_Leasing">Leasing</system:String>
@@ -179,7 +179,7 @@
     <system:String x:Key="Msg_LoadTrimsError">Błąd ładowania wersji: {0}</system:String>
     <system:String x:Key="Msg_ConfirmDeleteClient">Czy na pewno chcesz usunąć klienta {0}?</system:String>
 
-    <!-- Klienci (ClientsPage) -->
+    
     <system:String x:Key="Clients_Title">Baza Klientów</system:String>
     <system:String x:Key="Clients_Subtitle">Zarządzanie danymi nabywców i firm</system:String>
     <system:String x:Key="Clients_NewClient">Nowy Klient</system:String>
@@ -214,7 +214,7 @@
     <system:String x:Key="Msg_EmailExistsAddClient">Konto z tym adresem e-mail już istnieje.</system:String>
     <system:String x:Key="Msg_SaveClientError">Nie udało się zapisać zmian:\n{0}</system:String>
 
-    <!-- Aktywne Procesy Sprzedaży (SalesPanelPage) -->
+    
     <system:String x:Key="SalesPanel_PageTitle">Aktywne Procesy Sprzedaży</system:String>
     <system:String x:Key="SalesPanel_Subtitle">Zarządzanie trwającymi zamówieniami, postępem przygotowania pojazdów i finalizacja transakcji</system:String>
     <system:String x:Key="SalesPanel_ColReserved">Zarezerwowane</system:String>
@@ -254,7 +254,7 @@
     <system:String x:Key="SalesPanel_CancelError">Błąd podczas anulowania sprzedaży:\n{0}</system:String>
     <system:String x:Key="Global_Error">Błąd</system:String>
 
-    <!-- Katalog Pojazdów (VehiclesPage) -->
+    
     <system:String x:Key="Vehicles_FilterTitle">Filtrowanie</system:String>
     <system:String x:Key="Vehicles_Brand">Marka</system:String>
     <system:String x:Key="Vehicles_Model">Model</system:String>
@@ -304,7 +304,7 @@
     <system:String x:Key="Vehicles_EditTitle">Edytuj pojazd</system:String>
     <system:String x:Key="Vehicles_Editing"> · Edycja pojazdu</system:String>
     
-    <!-- AddJobWindow -->
+    
     <system:String x:Key="Vehicles_NewJobTitle">Nowe Zlecenie Serwisowe</system:String>
     <system:String x:Key="Vehicles_AddJobTitle">Zleć Usługę Serwisową</system:String>
     <system:String x:Key="Vehicles_AddJobSubtitle"> · Zlecenie nowej usługi</system:String>
@@ -317,7 +317,7 @@
     <system:String x:Key="Vehicles_Loading">Ładowanie...</system:String>
     <system:String x:Key="Vehicles_ValidationJob">Wybierz opcję/usługę oraz serwisanta.</system:String>
     
-    <!-- ViewModels Strings -->
+    
     <system:String x:Key="Vehicles_DictionaryLoadError">Nie udało się pobrać danych słownikowych:\n{0}</system:String>
     <system:String x:Key="Vehicles_ValidationVIN">Uzupełnij numer VIN.</system:String>
     <system:String x:Key="Vehicles_ValidationSpecs">Wybierz model, wersję wyposażenia, silnik i kolor.</system:String>
@@ -329,7 +329,7 @@
     <system:String x:Key="Vehicles_SuccessEdited">Zmiany zostały zapisane.</system:String>
     <system:String x:Key="Vehicles_DataLoadError">Nie udało się pobrać danych:\n{0}</system:String>
 
-    <!-- ServicesPage & ServicesDetailsWindow -->
+    
     <system:String x:Key="Services_PageTitle">Usługi Serwisowe</system:String>
     <system:String x:Key="Services_Title">Zlecenia Serwisowe i Montażowe</system:String>
     <system:String x:Key="Services_Subtitle">Przygotowanie pojazdów do wydania klientom</system:String>
@@ -369,7 +369,7 @@
     <system:String x:Key="Global_Edit">Edytuj</system:String>
     <system:String x:Key="Global_Delete">Usuń</system:String>
 
-    <!-- AdminPage & EditEmployeeWindow -->
+    
     <system:String x:Key="Admin_PageTitle">Administracja</system:String>
     <system:String x:Key="Admin_Subtitle">Zarządzanie kontami pracowników i salonami</system:String>
     <system:String x:Key="Admin_TabUsers">Użytkownicy</system:String>
@@ -480,7 +480,7 @@
     <system:String x:Key="Admin_ValEmailEdit">Podaj poprawny adres e-mail.</system:String>
     <system:String x:Key="Admin_ValDealershipEdit">Wybierz salon dla tego pracownika.</system:String>
 
-    <!-- Ewidencja Sprzedaży (SalesRecords) -->
+    
     <system:String x:Key="SalesRecords_Title">Ewidencja Sprzedaży</system:String>
     <system:String x:Key="SalesRecords_Subtitle">Rejestr wszystkich transakcji: pojazd, klient, doradca i salon</system:String>
     <system:String x:Key="SalesRecords_Status">Status</system:String>
@@ -510,7 +510,7 @@
 
     <system:String x:Key="Culture_CurrencyCode">pl-PL</system:String>
 
-    <!-- Raporty (ReportsPage) -->
+    
     <system:String x:Key="Reports_Title">Raporty i statystyki</system:String>
     <system:String x:Key="Reports_Subtitle">Generuj kompleksowe raporty w formacie PDF</system:String>
     <system:String x:Key="Reports_Period">Zakres czasowy:</system:String>
@@ -543,7 +543,7 @@
     <system:String x:Key="Msg_Error">Błąd</system:String>
     <system:String x:Key="Msg_SelectClientFirst">Proszę wybrać klienta z listy.</system:String>
     <system:String x:Key="Msg_Info">Informacja</system:String>
-    <!-- First Config -->
+    
     <system:String x:Key="FirstConfig_Title">Pierwsza Konfiguracja</system:String>
     <system:String x:Key="FirstConfig_HeaderTitle">Kreator Pierwszej Konfiguracji</system:String>
     <system:String x:Key="FirstConfig_MainTitle">Pierwsza Konfiguracja Systemu</system:String>

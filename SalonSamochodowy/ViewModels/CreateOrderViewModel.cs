@@ -338,10 +338,7 @@ public partial class CreateOrderViewModel : ObservableObject
                 DealershipID = salon.DealershipID
             };
 
-            /*
-             Dodać opcję że gdy przy zamówieniu wybrane zostanie wyposażenie dodatkowe to jednocześnie tworzy się zlecenie serwisowe dla serwisanta.
-                Dodać możliwość tworzenia nowych zleceń serwisowych dla serwisanta
-             */
+            
 
             await _orderService.CreateOrderAsync(order);
 
@@ -459,7 +456,7 @@ public class DodatkowaOpcja
             var localizedName = SalonSamochodowy.Services.LocalizationHelper.GetString($"Feature_{FeatureName.Replace(" ", "_")}");
             var localizedCategory = SalonSamochodowy.Services.LocalizationHelper.GetString($"Category_{Kategoria.Replace(" ", "_")}");
             if (localizedCategory == $"Category_{Kategoria.Replace(" ", "_")}") 
-                localizedCategory = Kategoria; // Fallback to raw category if translation not found
+                localizedCategory = Kategoria; 
 
             if (Cena > 0)
                 return $"{localizedName} ({localizedCategory}) - {Cena:N0} zł";

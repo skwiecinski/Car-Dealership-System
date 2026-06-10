@@ -16,14 +16,14 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Header -->
+        
         <Grid Grid.Row="0" Margin="0,0,0,20">
             <StackPanel>
                 <TextBlock Text="{DynamicResource SalesPanel_PageTitle}" FontSize="24" FontWeight="Bold" Foreground="#E2E2E2"/>
                 <TextBlock Text="{DynamicResource SalesPanel_Subtitle}" Foreground="#8A8D98" Margin="0,4,0,0"/>
             </StackPanel>
             
-            <!-- Refresh Indicator / Progress -->
+            
             <ProgressBar IsIndeterminate="True" 
                          HorizontalAlignment="Right" 
                          VerticalAlignment="Center" 
@@ -32,7 +32,7 @@
                          Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"/>
         </Grid>
 
-        <!-- Board Layout (3 Columns) -->
+        
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -40,7 +40,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <!-- ================= COLUMN 1: ZAREZERWOWANE ================= -->
+            
             <Border x:Name="ColReserved" Grid.Column="0" Background="#22242C" CornerRadius="10" BorderBrush="#2D3038" BorderThickness="1" Margin="0,0,10,0" Padding="15">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -62,10 +62,10 @@
                         <Separator Background="#2D3038" Margin="0,10,0,0"/>
                     </StackPanel>
 
-                    <!-- List of items -->
+                    
                     <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <Grid>
-                            <!-- Empty message -->
+                            
                             <TextBlock Text="{DynamicResource SalesPanel_NoReserved}" Foreground="#8A8D98" FontSize="13" FontStyle="Italic" 
                                        HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,40,0,0"
                                        Visibility="{Binding ReservedEmptyVisibility}"/>
@@ -75,23 +75,23 @@
                                     <DataTemplate DataType="{x:Type vm:SalesOrderModel}">
                                         <Border Background="#1C1E23" CornerRadius="8" Margin="0,0,0,12" Padding="12" BorderBrush="#2D3038" BorderThickness="1">
                                             <StackPanel>
-                                                <!-- Brand & Model -->
+                                                
                                                 <TextBlock Text="{Binding VehicleName}" FontSize="14" FontWeight="Bold" Foreground="White"/>
                                                 
-                                                <!-- VIN & Engine -->
+                                                
                                                 <TextBlock Text="{Binding VehicleVin}" FontFamily="Consolas" FontSize="11" Foreground="#8A8D98" Margin="0,2,0,0"/>
                                                 <TextBlock Text="{Binding EngineInfo}" FontSize="11" Foreground="#8A8D98" Margin="0,2,0,0"/>
 
                                                 <Separator Background="#2D3038" Margin="0,8"/>
 
-                                                <!-- Client Details -->
+                                                
                                                 <StackPanel Margin="0,0,0,8">
                                                     <TextBlock Text="{DynamicResource SalesPanel_Client}" FontSize="10" Foreground="#8A8D98" FontWeight="SemiBold"/>
                                                     <TextBlock Text="{Binding ClientName}" FontSize="12" FontWeight="SemiBold" Foreground="#E2E2E2"/>
                                                     <TextBlock Text="{Binding ClientContact}" FontSize="11" Foreground="#8A8D98"/>
                                                 </StackPanel>
 
-                                                <!-- Date and Price -->
+                                                
                                                 <Grid Margin="0,0,0,12">
                                                     <StackPanel HorizontalAlignment="Left">
                                                         <TextBlock Text="{DynamicResource SalesPanel_OrderDate}" FontSize="10" Foreground="#8A8D98"/>
@@ -102,7 +102,7 @@
                                                     </StackPanel>
                                                 </Grid>
 
-                                                <!-- Actions -->
+                                                
                                                 <Grid>
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="*"/>
@@ -125,7 +125,7 @@
                 </Grid>
             </Border>
 
-            <!-- ================= COLUMN 2: W TRAKCIE SERWISU ================= -->
+            
             <Border x:Name="ColServicing" Grid.Column="1" Background="#22242C" CornerRadius="10" BorderBrush="#2D3038" BorderThickness="1" Margin="5,0,5,0" Padding="15">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -147,10 +147,10 @@
                         <Separator Background="#2D3038" Margin="0,10,0,0"/>
                     </StackPanel>
 
-                    <!-- List of items -->
+                    
                     <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <Grid>
-                            <!-- Empty message -->
+                            
                             <TextBlock Text="{DynamicResource SalesPanel_NoServicing}" Foreground="#8A8D98" FontSize="13" FontStyle="Italic" 
                                        HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,40,0,0"
                                        Visibility="{Binding ServicingEmptyVisibility}"/>
@@ -160,14 +160,14 @@
                                     <DataTemplate DataType="{x:Type vm:SalesOrderModel}">
                                         <Border Background="#1C1E23" CornerRadius="8" Margin="0,0,0,12" Padding="12" BorderBrush="#2D3038" BorderThickness="1">
                                             <StackPanel>
-                                                <!-- Brand & Model -->
+                                                
                                                 <TextBlock Text="{Binding VehicleName}" FontSize="14" FontWeight="Bold" Foreground="White"/>
                                                 
-                                                <!-- VIN & Engine -->
+                                                
                                                 <TextBlock Text="{Binding VehicleVin}" FontFamily="Consolas" FontSize="11" Foreground="#8A8D98" Margin="0,2,0,0"/>
                                                 <TextBlock Text="{Binding EngineInfo}" FontSize="11" Foreground="#8A8D98" Margin="0,2,0,0"/>
 
-                                                <!-- Job Progress Badge -->
+                                                
                                                 <Border Background="#331A1A" BorderBrush="#8E2D2D" BorderThickness="1" CornerRadius="6" Padding="8,6" Margin="0,8,0,0">
                                                     <StackPanel>
                                                         <TextBlock Text="{Binding JobsStatus}" FontWeight="SemiBold" FontSize="11" Foreground="#ED6262"/>
@@ -177,14 +177,14 @@
 
                                                 <Separator Background="#2D3038" Margin="0,8"/>
 
-                                                <!-- Client Details -->
+                                                
                                                 <StackPanel Margin="0,0,0,8">
                                                     <TextBlock Text="{DynamicResource SalesPanel_Client}" FontSize="10" Foreground="#8A8D98" FontWeight="SemiBold"/>
                                                     <TextBlock Text="{Binding ClientName}" FontSize="12" FontWeight="SemiBold" Foreground="#E2E2E2"/>
                                                     <TextBlock Text="{Binding ClientContact}" FontSize="11" Foreground="#8A8D98"/>
                                                 </StackPanel>
 
-                                                <!-- Date and Price -->
+                                                
                                                 <Grid Margin="0,0,0,12">
                                                     <StackPanel HorizontalAlignment="Left">
                                                         <TextBlock Text="{DynamicResource SalesPanel_OrderDate}" FontSize="10" Foreground="#8A8D98"/>
@@ -195,7 +195,7 @@
                                                     </StackPanel>
                                                 </Grid>
 
-                                                <!-- Actions -->
+                                                
                                                 <Grid>
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="*"/>
@@ -218,7 +218,7 @@
                 </Grid>
             </Border>
 
-            <!-- ================= COLUMN 3: GOTOWE DO ODDANIA ================= -->
+            
             <Border x:Name="ColReady" Grid.Column="2" Background="#22242C" CornerRadius="10" BorderBrush="#2D3038" BorderThickness="1" Margin="10,0,0,0" Padding="15">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -240,10 +240,10 @@
                         <Separator Background="#2D3038" Margin="0,10,0,0"/>
                     </StackPanel>
 
-                    <!-- List of items -->
+                    
                     <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <Grid>
-                            <!-- Empty message -->
+                            
                             <TextBlock Text="{DynamicResource SalesPanel_NoReady}" Foreground="#8A8D98" FontSize="13" FontStyle="Italic" 
                                        HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,40,0,0"
                                        Visibility="{Binding ReadyEmptyVisibility}"/>
@@ -253,14 +253,14 @@
                                     <DataTemplate DataType="{x:Type vm:SalesOrderModel}">
                                         <Border Background="#1C1E23" CornerRadius="8" Margin="0,0,0,12" Padding="12" BorderBrush="#2D3038" BorderThickness="1">
                                             <StackPanel>
-                                                <!-- Brand & Model -->
+                                                
                                                 <TextBlock Text="{Binding VehicleName}" FontSize="14" FontWeight="Bold" Foreground="White"/>
                                                 
-                                                <!-- VIN & Engine -->
+                                                
                                                 <TextBlock Text="{Binding VehicleVin}" FontFamily="Consolas" FontSize="11" Foreground="#8A8D98" Margin="0,2,0,0"/>
                                                 <TextBlock Text="{Binding EngineInfo}" FontSize="11" Foreground="#8A8D98" Margin="0,2,0,0"/>
 
-                                                <!-- Job Progress Badge -->
+                                                
                                                 <Border Background="#112C1E" BorderBrush="#2D9A4A" BorderThickness="1" CornerRadius="6" Padding="8,6" Margin="0,8,0,0">
                                                     <StackPanel>
                                                         <TextBlock Text="{Binding JobsStatus}" FontWeight="SemiBold" FontSize="11" Foreground="#44C767"/>
@@ -270,14 +270,14 @@
 
                                                 <Separator Background="#2D3038" Margin="0,8"/>
 
-                                                <!-- Client Details -->
+                                                
                                                 <StackPanel Margin="0,0,0,8">
                                                     <TextBlock Text="{DynamicResource SalesPanel_Client}" FontSize="10" Foreground="#8A8D98" FontWeight="SemiBold"/>
                                                     <TextBlock Text="{Binding ClientName}" FontSize="12" FontWeight="SemiBold" Foreground="#E2E2E2"/>
                                                     <TextBlock Text="{Binding ClientContact}" FontSize="11" Foreground="#8A8D98"/>
                                                 </StackPanel>
 
-                                                <!-- Date and Price -->
+                                                
                                                 <Grid Margin="0,0,0,12">
                                                     <StackPanel HorizontalAlignment="Left">
                                                         <TextBlock Text="{DynamicResource SalesPanel_OrderDate}" FontSize="10" Foreground="#8A8D98"/>
@@ -288,7 +288,7 @@
                                                     </StackPanel>
                                                 </Grid>
 
-                                                <!-- Actions -->
+                                                
                                                 <Grid>
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="*"/>

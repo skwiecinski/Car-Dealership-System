@@ -29,7 +29,7 @@ namespace SalonSamochodowy.ViewModels
         private List<TrimLevel> _allTrims = new();
         private List<Engine> _allEngines = new();
 
-        // SelectedModel filtruje trims i silniki
+        
         private VehicleModel? _selectedModel;
         public VehicleModel? SelectedModel
         {
@@ -57,7 +57,7 @@ namespace SalonSamochodowy.ViewModels
             set => SetProperty(ref _selectedEngine, value);
         }
 
-        // DealershipID wyznaczane z sesji — nie hardkodowane
+        
         private int _resolvedDealershipId = 1;
 
         public event Action? CloseRequested;
@@ -77,7 +77,7 @@ namespace SalonSamochodowy.ViewModels
                 using var ctx = new AppDbContext();
                 using var uow = new UnitOfWork(ctx);
 
-                // --- wyznacz salon zalogowanego pracownika ---
+                
                 var currentUser = SessionContext.CurrentUser;
                 if (currentUser != null)
                 {
@@ -85,7 +85,7 @@ namespace SalonSamochodowy.ViewModels
                     var worker = workers.FirstOrDefault();
                     if (worker != null)
                         _resolvedDealershipId = worker.DealershipID;
-                    // Administrator nie ma wpisu Worker — zostaje domyślny salon 1
+                    
                 }
 
                 var models = (await uow.VehicleModels.GetAllAsync()).OrderBy(m => m.Brand).ThenBy(m => m.ModelName);
@@ -147,7 +147,7 @@ namespace SalonSamochodowy.ViewModels
                 using var ctx = new AppDbContext();
                 using var uow = new UnitOfWork(ctx);
 
-                // Sprawdź unikalność VIN
+                
                 var existing = await uow.Vehicles.FindAsync(v => v.VIN == NewVehicle.VIN.Trim());
                 if (existing.Any())
                 {

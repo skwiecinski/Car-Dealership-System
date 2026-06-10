@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,7 +13,7 @@ namespace SalonSamochodowy.Entities
         public int UserID { get; set; }
         public virtual AppUser User { get; set; } = null!;
         [MaxLength(15)]
-        // klient nie zawsze musi miec nip (obywatel bez nipu hehe)
+        
         public string? NIP { get; set; }
         [MaxLength(20)]
         public string Phone { get; set; } = null!;

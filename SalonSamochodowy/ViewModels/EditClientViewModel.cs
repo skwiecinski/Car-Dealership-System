@@ -9,8 +9,8 @@ using SalonSamochodowy.Repositories;
 
 namespace SalonSamochodowy.ViewModels
 {
-    // Celowo bez [ObservableProperty] — właściwości ręczne żeby uniknąć
-    // problemów z source generatorem przy nowym pliku w projekcie.
+    
+    
     public class EditClientViewModel : System.ComponentModel.INotifyPropertyChanged
     {
         public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
@@ -25,10 +25,10 @@ namespace SalonSamochodowy.ViewModels
             OnPropertyChanged(name);
         }
 
-        // ── Oryginał e-mail potrzebny do wyszukania w bazie ──────────
+        
         private readonly string _originalEmail;
 
-        // ── Właściwości formularza ────────────────────────────────────
+        
         private string _fullName = "";
         public string FullName
         {
@@ -78,11 +78,11 @@ namespace SalonSamochodowy.ViewModels
             set => Set(ref _errorVisibility, value, nameof(ErrorVisibility));
         }
 
-        // ── Komendy ───────────────────────────────────────────────────
+        
         public IAsyncRelayCommand SaveCommand { get; }
         public IRelayCommand CancelCommand { get; }
 
-        // ── Eventy ───────────────────────────────────────────────────
+        
         public event Action? SaveSucceeded;
         public event Action? CancelRequested;
 
@@ -147,7 +147,7 @@ namespace SalonSamochodowy.ViewModels
                 using var ctx = new AppDbContext();
                 using var uow = new UnitOfWork(ctx);
 
-                // Znajdź użytkownika po oryginalnym e-mailu
+                
                 var users = await uow.AppUsers.FindAsync(u => u.Email == _originalEmail);
                 var user = users.FirstOrDefault();
                 if (user == null)
@@ -156,7 +156,7 @@ namespace SalonSamochodowy.ViewModels
                     return;
                 }
 
-                // Sprawdź unikalność nowego e-maila (tylko jeśli zmieniony)
+                
                 if (!string.Equals(em, _originalEmail, StringComparison.OrdinalIgnoreCase))
                 {
                     var existing = await uow.AppUsers.FindAsync(u => u.Email == em);
@@ -167,7 +167,7 @@ namespace SalonSamochodowy.ViewModels
                     }
                 }
 
-                // Aktualizuj AppUser
+                
                 if (IsCompany)
                 {
                     user.FirstName = fn.Length > 50 ? fn.Substring(0, 50) : fn;
@@ -182,7 +182,7 @@ namespace SalonSamochodowy.ViewModels
                 user.Email = em;
                 uow.AppUsers.Update(user);
 
-                // Znajdź i zaktualizuj Client
+                
                 var clients = await uow.Clients.FindAsync(c => c.UserID == user.UserID);
                 var client = clients.FirstOrDefault();
                 if (client != null)

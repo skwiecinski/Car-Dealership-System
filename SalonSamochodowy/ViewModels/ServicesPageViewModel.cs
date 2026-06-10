@@ -11,7 +11,7 @@ namespace SalonSamochodowy.ViewModels
     public partial class ServicesPageViewModel : ObservableObject
     {
         private readonly IJobService _jobService;
-        private readonly IUnitOfWork _uow; // Potrzebne do odświeżenia roli w SessionContext
+        private readonly IUnitOfWork _uow; 
 
         public ServicesPageViewModel(IUnitOfWork uow, IJobService jobService)
         {

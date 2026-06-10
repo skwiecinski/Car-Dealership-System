@@ -82,7 +82,7 @@ namespace SalonSamochodowy.Services
             };
             
             await _uow.AppUsers.AddAsync(newUser);
-            await _uow.CompleteAsync(); // Wymagane by uzyskać newUser.UserID
+            await _uow.CompleteAsync(); 
 
             var newClient = new Client
             {
@@ -92,7 +92,7 @@ namespace SalonSamochodowy.Services
             };
             
             await _uow.Clients.AddAsync(newClient);
-            await _uow.CompleteAsync(); // Wymagane by zapisać nowego klienta
+            await _uow.CompleteAsync(); 
 
             return new ClientDto
             {

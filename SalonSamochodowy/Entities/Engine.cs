@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SalonSamochodowy.Entities
 {
-    // Engine class
+    
     public class Engine
     {
         public int EngineID { get; set; }

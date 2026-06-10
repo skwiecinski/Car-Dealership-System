@@ -21,7 +21,7 @@ namespace SalonSamochodowy
         {
             var services = new ServiceCollection();
 
-            // Database
+            
             services.AddTransient<AppDbContext>();
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<SalonSamochodowy.Services.AuthService>();
@@ -32,7 +32,7 @@ namespace SalonSamochodowy
             services.AddTransient<SalonSamochodowy.Services.ICatalogService, SalonSamochodowy.Services.CatalogService>();
             services.AddTransient<SalonSamochodowy.Services.ReportGeneratorService>();
 
-            // ViewModels
+            
             services.AddTransient<AddClientWindowViewModel>();
             services.AddTransient<AddJobViewModel>();
             services.AddTransient<AdminPageViewModel>();
@@ -70,7 +70,7 @@ namespace SalonSamochodowy
 
                     context.Database.EnsureCreated();
                     
-                    // Sprawdzamy czy to pierwsze uruchomienie (brak jakichkolwiek użytkowników)
+                    
                     if (!context.AppUsers.Any())
                     {
                         isFirstRun = true;
