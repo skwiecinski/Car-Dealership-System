@@ -1,112 +1,50 @@
-Salon Samochodowy
+# Salon Samochodowy — Car Dealership
 
-## Instalacja środowiska (Przejście na SQL Server)
+A desktop application for managing a modern car dealership. Built with C# and WPF (Windows Presentation Foundation), this project uses a clear architecture and popular design patterns to manage data easily and efficiently.
 
-**Instrukcja instalacji:**
-1. Uruchom **Visual Studio Installer**.
-2. Przy swojej wersji Visual Studio kliknij **Modify**.
-3. Przejdź do zakładki **Pojedyncze składniki**
-4. Wyszukaj i zaznacz **SQL Server Express 2019 LocalDB**
-5. Kliknij *Modyfikuj/Zainstaluj*
+## Design Patterns & Databases
 
-## Pracowanie z bazą danych
+The system uses the **MVVM (Model-View-ViewModel)** pattern to keep the user interface separate from the business logic. 
 
-Architektura jest opartana wzorcach **Repository** oraz **Unit of Work**. Dzięki temu nie musimy pisać zapytań SQL, cała komunikacja odbywa się za pomocoą dwóch mechanizmów.
+For database management, it uses **Entity Framework Core** with a SQL Server database. To keep the code clean and fast, the project uses the **Repository** and **Unit of Work** design patterns. This ensures that all database queries are grouped and saved safely, preventing data errors.
 
-* **`IRepository` / `Repository` **: Gotowe narzędzia do pracy z konkretną tabelą. Każdy repozytorium potrafi wykonać standardowe operacje: pobierz wszystko, pobierz jedno, dodaj, zaktualizuj, usuń.
-* **`IUnitOfWork` / `UnitOfWork` **: Główny punkt styku z bazą danych. Ma pod sobą wszystkie repozytoria. Kiedy wykonujemy jakąś czynność to UnitOfWork tworzy zapytania SQL, a następnie wszystko zatwierdza.
+## Prerequisites
 
-### WAŻNE
+To run the application, you only need a Windows computer with:
+* **.NET Desktop Runtime (6, 7, or 8)** installed.
 
-> Metody takie jak `AddAsync`, `Update` czy `Delete` **NIE ZAPISUJĄ** zmian fizycznie w bazie! Jest to tylko zapisywane w pamięci podręcznej komputera. 
-> Baza danych dowiaduje się o zmianach dopiero po **`await unitOfWork.CompleteAsync();`**
+## Installation & Releases (v1.1)
 
-### Przykłady użycia w kodzie
+This release brings the application to a production-ready state. You do not need to build the project from source code to use it. It comes with a custom, easy-to-use installer available in two versions:
 
-#### 1. Odczytywanie danych 
-```csharp
-using (var dbContext = new AppDbContext())
-using (var unitOfWork = new UnitOfWork(dbContext))
-{
-    // Pobranie wszystkich salonów
-    var salony = await unitOfWork.Dealerships.GetAllAsync();
+### 1. SalonSamochodowy.exe - Clean install production
+Ships with an empty database. Intended for fresh production deployments. On first launch, an Initial Configuration Wizard will guide you through setting up the root administrator account and basic dealership information.
 
-    // Pobranie konkretnego pracownika o ID = 5
-    var pracownik = await unitOfWork.Workers.GetByIdAsync(5);
-}
-```
+### 2. SalonSamochodowy_with_data.exe - Pre-seeded demo
+Includes a fully populated database with sample cars, clients, orders, and employees. Useful for testing, demonstrations, or evaluating features without manual data entry.
+*(Test accounts: admin@salon.pl, kierownik@salon.pl, sprzedawca@salon.pl — password: 123)*.
 
-#### 2. Zapisywanie danych
+## Features, Roles & Usage
 
-```csharp
-using (var dbContext = new AppDbContext())
-using (var unitOfWork = new UnitOfWork(dbContext))
-{
-    // 1. Tworzenie nowego obiektu
-    var nowyKlient = new Client { Phone = "123-456-789", UserID = 2 };
+The application provides full support for **two languages (English and Polish)** and features **contextual help** across different screens. Features and menus are dynamically adjusted based on your assigned user role: Admin, Client, Salesperson, Service, or Manager.
 
-    // 2. Przekazanie go do repozytorium
-    await unitOfWork.Clients.AddAsync(nowyKlient);
+Depending on your role, you can navigate through the sidebar to:
+* **Dashboard:** View live sales charts and track business performance *(Managers & Admins)*.
+* **Vehicles:** Browse the catalog of available cars, filter features, and check real-time pricing *(All Roles)*.
+* **Sales & Clients:** Process new orders, review the full transaction history, and maintain the customer registry *(Salesperson & Managers)*.
+* **Services:** Manage mechanic tasks, update job statuses, and handle vehicle repairs *(Service / Mechanics)*.
+* **Reports:** Generate and export complex database summaries to PDF *(Managers & Admins)*.
+* **Admin Panel:** Manage user accounts, assign roles, and control system settings *(Admins)*.
 
-    // 3. Zapis fizyczny transakcji
-    await unitOfWork.CompleteAsync(); 
-}
-```
+## Authors
 
-#### 3. Edycja istniejących danych
-```csharp
-using (var dbContext = new AppDbContext())
-using (var unitOfWork = new UnitOfWork(dbContext))
-{
-    // 1.Pobieranie auta z bazy
-    var auto = await unitOfWork.Vehicles.GetByIdAsync(10);
-    
-    // 2. Zmiana przebiegu
-    auto.Mileage = 150000;
-
-    // 3. Informujemy system, że obiekt został zmieniony
-    unitOfWork.Vehicles.Update(auto);
-
-    // 4. Zatwierdzamy zmiany
-    await unitOfWork.CompleteAsync();
-}
-```
-
-#### 4. Usuwanie danych
-```csharp
-using (var dbContext = new AppDbContext())
-using (var unitOfWork = new UnitOfWork(dbContext))
-{
-    var salon = await unitOfWork.Dealerships.GetByIdAsync(1);
-    
-    if (salon != null)
-    {
-        unitOfWork.Dealerships.Delete(salon);
-        await unitOfWork.CompleteAsync();
-    }
-}
-```
-
-#### 5. Funkcja FindAsync
-Funkcja, którą używamy aby odfiltrowała wyniki.
-
-```csharp
-using (var dbContext = new AppDbContext())
-using (var unitOfWork = new UnitOfWork(dbContext))
-{
-    // Auta tylko, które są używane oraz są w salonu o ID 1.
-    var dostepneUzywane = await unitOfWork.Vehicles.FindAsync(v => v.IsUsed == true && v.DealershipID == 1);
-
-    // Znalezenie klientów o nazwisko "Kowalski"
-    var kowalscy = await unitOfWork.Clients.FindAsync(c => c.LastName == "Kowalski");
-}
-```
-
-### Dostępne funkcje
-* `GetAllAsync()` -> Zwraca listę wszystkich elementów.
-* `GetByIdAsync(int id)` -> Zwraca jeden element po jego ID.
-* `FindAsync(warunek)` -> Filtruje dane bezpośrednio w bazie i zwraca tylko pasujące elementy.
-* `AddAsync(T entity)` -> Czeka w kolejce na dopisanie nowego elementu.
-* `Update(T entity)` -> Czeka w kolejce na zmianę istniejącego elementu.
-* `Delete(T entity)` -> Czeka w kolejce na skasowanie elementu.
-* `CompleteAsync()` -> **Wykonuje i zapisuje wszystko na dysku**
+Krzysztof Bieszczad
+[@KBieszczad](https://github.com/KBieszczad)
+Mateusz Chęciński
+[@perszik](https://github.com/perszik)
+Kamil Karwacki
+[@Kamil-Karwacki](https://github.com/Kamil-Karwacki)
+Szymon Kwieciński
+[@skwiecinski](https://github.com/skwiecinski)
+Marek Znamirowski
+[@marekznamir](https://github.com/marekznamir)
