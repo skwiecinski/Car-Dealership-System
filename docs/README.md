@@ -39,12 +39,12 @@ Depending on your role, you can navigate through the sidebar to:
 ## Authors
 
 Krzysztof Bieszczad
-[@KBieszczad](https://github.com/KBieszczad)
+[@KBieszczad](https://github.com/KBieszczad)<br>
 Mateusz Chęciński
-[@perszik](https://github.com/perszik)
+[@perszik](https://github.com/perszik)<br>
 Kamil Karwacki
-[@Kamil-Karwacki](https://github.com/Kamil-Karwacki)
+[@Kamil-Karwacki](https://github.com/Kamil-Karwacki)<br>
 Szymon Kwieciński
-[@skwiecinski](https://github.com/skwiecinski)
+[@skwiecinski](https://github.com/skwiecinski)<br>
 Marek Znamirowski
-[@marekznamir](https://github.com/marekznamir)
+[@marekznamir](https://github.com/marekznamir)<br>
